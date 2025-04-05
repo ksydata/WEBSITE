@@ -38,3 +38,14 @@ mysql> SHOW TABLES;
 | user                       |
 +----------------------------+
 1 row in set (0.04 sec)
+
+
+C:\Users\sooyeon Kang>netstat -ano | findstr :8080
+  TCP    0.0.0.0:8080           0.0.0.0:0              LISTENING       18868
+  TCP    [::]:8080              [::]:0                 LISTENING       18868
+
+C:\Users\sooyeon Kang>netstat -ano | findstr :8005
+  TCP    127.0.0.1:8005         0.0.0.0:0              LISTENING       18868
+
+C:\Users\sooyeon Kang>taskkill /PID 18868 /F
+SUCCESS: The process with PID 18868 has been terminated.

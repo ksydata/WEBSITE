@@ -1,0 +1,57 @@
+package main.java.util;
+
+import java.io.Console;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+// import java.util.Scanner;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+// JAVA에서 MySQL에 JDBC(Java Database Connectivity)를 통해 연결하는 기능을 제공하는 유틸리티 클래스
+public class DatabaseUtil {
+	public static Connection getConnection() {
+		try {
+            // 설정 파일을 로드하여 DB 정보(테이블명, 사용자 ID 가져오기
+			Properties properties = new Properties();
+			properties.load(new FileInputStream("resources/config.properties"));
+			String dbURL = properties.getProperty("db.url");
+			String dbID = properties.getProperty("db.user");
+			
+            // 사용자로부터 데이터베이스 비밀번호가 화면에 보이지 않도록 입력받기
+			Console console = System.console();
+			char[] dbPWArray = console.readPassword("Enter Enter DB password: ");
+            String dbPW = new String(dbPWArray);
+			
+            // MySQL 드라이버 로딩
+			Class.forName("com.mysql.cj.jdbc.Driver");
+				// `com.mysql.jdbc.Driver`, `com.mysql.cj.jdbc.Driver`
+			
+            // 입력받은 정보로 데이터베이스 연결
+			try (Connection connection = DriverManager.getConnection(dbURL, dbID, dbPW)) {
+				return connection;
+			}
+        } catch (IOException e) {
+        	// 설정 파일 읽어오면서 발생한 오류 메시지 출력
+            System.err.println(e.getMessage());
+        }
+		catch (Exception e) {
+            // DB 연결 실패 시 오류 메시지 출력
+			System.err.println(e.getMessage());
+		}
+        // 예외 발생 시 null 반환
+		return null;
+	}
+}
+
+/* 
+Scanner scanner = new Scanner(System.in)
+// 사용자로부터 데이터베이스 테이블명을 입력받음
+System.out.print("Enter DB table name: ");
+String dbURL = scanner.nextLine();
+
+// 사용자로부터 데이터베이스 사용자 ID를 입력받음
+System.out.print("Enter DB id: ");
+String dbID = scanner.nextLine();
+ */
