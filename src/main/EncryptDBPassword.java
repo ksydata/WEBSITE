@@ -32,13 +32,12 @@ public class EncryptDBPassword {
 2. Show in Local Terminal
 	: Terminal 선택
 3. 컴파일 명령어
-	: javac -cp ".;C:\WEBSITE\lib\jasypt-1.9.3.jar" EncryptDBPassword.java
+	: javac -cp ".;\"C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar\"" main.EncryptDBPassword.java
 4. 실행 명령어
-	: java -cp ".;C:\WEBSITE\lib\jasypt-1.9.3.jar" main.EncryptDBPassword
+	: java -cp ".;\"C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar\"" main.EncryptDBPassword
 */
 
 /*
-C:\WEBSITE\WEBSITE\src\main>javac -cp .;jasypt-1.9.3.jar EncryptDBPassword.java 
 EncryptDBPassword.java:4: error: package org.jasypt.util.text does not exist
 import org.jasypt.util.text.BasicTextEncryptor;
                            ^

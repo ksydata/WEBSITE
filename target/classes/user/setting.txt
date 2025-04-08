@@ -1,7 +1,7 @@
 http://localhost:8080
 // index.html
 
-cd C:\Eclipse\eclipse\apache-tomcat-9.0.102\bin
+cd C:\Eclipse\eclipse\apache-tomcat-9.0.95\bin
 // shutdown.bat
 // startup.bat
 
