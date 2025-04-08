@@ -1,10 +1,9 @@
-package main.java.util;
+package util;
 
-import java.io.Console;
 import java.io.IOException;
-
 import java.io.InputStream;
 import java.util.Properties;
+//import java.io.Console;
 //import java.io.FileInputStream;
 // import java.util.Scanner;
 
@@ -27,10 +26,11 @@ public class DatabaseUtil {
 			String dbID = properties.getProperty("db.user");
 
 			// 사용자로부터 데이터베이스 비밀번호가 화면에 보이지 않도록 입력받기
-			// 단, JSP에서 비밀번호를 System.console().readPassword()로 입력받는건 불가능
-			Console console = System.console();
-			char[] dbPWArray = console.readPassword("Enter Enter DB password: ");
-			String dbPW = new String(dbPWArray);
+			String dbPW = properties.getProperty("db.password");
+			// 단, JSP에서 비밀번호를 콘솔로 입력받는건 불가능
+			// Console console = System.console();
+			// char[] dbPWArray = console.readPassword("Enter Enter DB password: ");
+			// String dbPW = new String(dbPWArray);
 				// Cannot invoke "java.io.Console.readPassword(String, Object[])" because "console" is null
 				// java.lang.NullPointerException: Cannot invoke "java.sql.Connection.prepareStatement(String)" because "connection" is null
 

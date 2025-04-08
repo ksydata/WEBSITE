@@ -1,8 +1,9 @@
-package main.java.user;
+package user;
 
-import main.java.util.DatabaseUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+
+import util.DatabaseUtil;
 
 // Data Access Object: util() 활용
 public class UserDAO {

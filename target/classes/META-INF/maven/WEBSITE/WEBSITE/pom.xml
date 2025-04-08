@@ -31,18 +31,26 @@
 	    <version>5.0.0</version>
 	    <scope>provided</scope>
 	</dependency>
+	
+	<!--Java Simplified Encryption library-->
+	<dependency>
+	    <groupId>org.jasypt</groupId>
+	    <artifactId>jasypt</artifactId>
+	    <version>1.9.3</version>
+	</dependency>
        	
   </dependencies>
   
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <!--<sourceDirectory>src</sourceDirectory>-->
     <plugins>
       <!--set compiler plugin-->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <release>21</release>
+          <!--<release>21</release>-->
+          <mainClass>main</mainClass>
         </configuration>
       </plugin>
       

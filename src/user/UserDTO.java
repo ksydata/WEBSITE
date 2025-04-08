@@ -1,4 +1,4 @@
-package main.java.user;
+package user;
 
 // Data Transport Object: getter/setter method
 public class UserDTO {
