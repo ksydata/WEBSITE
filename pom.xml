@@ -38,7 +38,12 @@
 	    <artifactId>jasypt</artifactId>
 	    <version>1.9.3</version>
 	</dependency>
-       	
+	
+	<dependency>
+	    <groupId>mysql</groupId>
+	    <artifactId>mysql-connector-java</artifactId>
+	    <version>8.0.34</version>
+	</dependency>
   </dependencies>
   
   <build>
@@ -49,8 +54,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <!--<release>21</release>-->
-          <mainClass>main</mainClass>
+          <release>21</release>
+          <mainClass>Main</mainClass>
         </configuration>
       </plugin>
       
