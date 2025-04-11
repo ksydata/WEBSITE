@@ -23,11 +23,31 @@
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>2.12.1</version>
-    </dependency>   	
+    </dependency>
+    
+	<dependency>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>javax.servlet-api</artifactId>
+	    <version>3.1.0</version>
+	    <scope>provided</scope>
+	</dependency>
+	
+	<!--Java Simplified Encryption library-->
+	<dependency>
+	    <groupId>org.jasypt</groupId>
+	    <artifactId>jasypt</artifactId>
+	    <version>1.9.3</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>mysql</groupId>
+	    <artifactId>mysql-connector-java</artifactId>
+	    <version>8.0.33</version>
+	</dependency>
   </dependencies>
   
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <!--<sourceDirectory>src</sourceDirectory>-->
     <plugins>
       <!--set compiler plugin-->
       <plugin>
@@ -35,6 +55,7 @@
         <version>3.13.0</version>
         <configuration>
           <release>21</release>
+          <mainClass>Main</mainClass>
         </configuration>
       </plugin>
       
@@ -57,10 +78,18 @@
           <artifactId>tomcat7-maven-plugin</artifactId>
           <version>2.2</version>
           <configuration>
-            <port>8080</port>
+            <port>8088</port>
             <path>/</path>
           </configuration>
       </plugin>
+      
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>      
     </plugins>
   </build>
 </project>
