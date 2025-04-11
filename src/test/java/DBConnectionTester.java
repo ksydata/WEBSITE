@@ -1,4 +1,3 @@
-package test;
 import java.sql.Connection;
 import java.util.Properties;
 import java.io.InputStream;
