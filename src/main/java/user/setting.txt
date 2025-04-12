@@ -119,3 +119,16 @@ SUCCESS: The process with PID 18868 has been terminated.
 %>
 
 ---
+
+✅ 4. .classpath 파일 확인 (숨겨져 있음)
+.classpath 파일을 열어서 MAVEN2_CLASSPATH_CONTAINER가 있다면, exported="true"인지 확인: xml
+<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" exported="true"/>
+
+project-root
+└── src
+    └── test
+        ├── java
+        │   └── test
+        │       └── DBConnectionTester.java
+        └── resources
+            └── config.properties

@@ -36,7 +36,7 @@ public class EncryptDBPassword {
 4. 실행 명령어
 	: java -cp ".;C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar" main.EncryptDBPassword
 5. Input master-key & Input plain text to encrypt
-	: db.password=ENC(vzHXBj4Lys1g3Vu//uPXiA==)
+	: db.password=ENC(BLIsxSBSJefAMW9U0BI/3g==)
 */
 
 /*

@@ -23,8 +23,16 @@ public class DatabaseUtil {
 			InputStream inputStream = DatabaseUtil.class
 					.getClassLoader()
 					.getResourceAsStream("config.properties");
+            
+            // 리소스(프로시저) 경로 디버깅
+            if (inputStream == null) {
+                System.err.println("config.properties 파일을 찾을 수 없습니다.");
+            } else {
+                System.out.println("config.properties 파일을 성공적으로 로드했습니다.");
+            }
 			properties.load(inputStream);
 			// properties.load(new FileInputStream("resources/config.properties"));
+			
 			String dbURL = properties.getProperty("db.url");
 			String dbID = properties.getProperty("db.user");
 

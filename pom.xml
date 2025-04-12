@@ -71,8 +71,12 @@
             </goals>        
           </execution>
         </executions>
+        <configuration>
+          <mainClass>test.DBConnectionTester</mainClass>
+        </configuration>
       </plugin>
       
+      <!--Local Server plugin-->
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
           <artifactId>tomcat7-maven-plugin</artifactId>
