@@ -56,10 +56,12 @@ public class DatabaseUtil {
 			// `com.mysql.jdbc.Driver`, `com.mysql.cj.jdbc.Driver`
 
 			// 입력받은 정보로 데이터베이스 연결
-			try (Connection connection = DriverManager.getConnection(dbURL, dbID, dbPW)) {
+			try {
+			// try (Connection connection = DriverManager.getConnection(dbURL, dbID, dbPW)) {
+				Connection connection = DriverManager.getConnection(dbURL, dbID, dbPW);
 				return connection;
+			} finally {
 			}
-			
 		} catch (IOException e) {
 			// 설정 파일 읽어오면서 발생한 오류 메시지 출력
 			e.printStackTrace();
