@@ -3,7 +3,8 @@ package test;
 import java.sql.Connection;
 import java.util.Properties;
 import java.io.InputStream;
-import org.jasypt.util.text.BasicTextEncryptor;
+import java.net.URL;
+// import org.jasypt.util.text.BasicTextEncryptor;
 import java.sql.DriverManager;
 
 public class DBConnectionTester {
@@ -11,25 +12,30 @@ public class DBConnectionTester {
         try {
             // 설정 파일 로딩
             Properties properties = new Properties();
-            // InputStream inputStream = new FileInputStream("src/test/resources/config.properties");
+            URL url = DBConnectionTester.class
+            		.getClassLoader().getResource("config.properties");
+            if (url == null) System.err.println("config.properties 파일을 찾을 수 없습니다.");
+            
+            System.out.println("실제 로딩된 config.properties 경로는 " + url + "입니다.");
             InputStream inputStream = DBConnectionTester.class
                     .getClassLoader()
                     .getResourceAsStream("config.properties");
             
-            // 리소스(프로시저) 경로 디버깅
+            // 리소스(프로퍼티) 경로 디버깅
             if (inputStream == null) {
                 System.err.println("config.properties 파일을 찾을 수 없습니다.");
             } else {
                 System.out.println("config.properties 파일을 성공적으로 로드했습니다.");
             }
-            
             properties.load(inputStream);
 
-            // 설정 정보 가져오기
-            String dbURL = properties.getProperty("db.url");
-            String dbID = properties.getProperty("db.user");
+            // 설정 정보 가져오기(공백 제거)
+            String dbURL = properties.getProperty("db.url").trim();
+            String dbID = properties.getProperty("db.user").trim();
+            String dbPW = properties.getProperty("db.password").trim();
+            
+            /*
             String encryptedPW = properties.getProperty("db.password");
-
             // 복호화 키 환경변수에서 가져오기
             String encryptKey = System.getenv("JASYPT_ENCRYPTOR_KEY");
             if (encryptKey == null) {
@@ -42,8 +48,12 @@ public class DBConnectionTester {
             textEncryptor.setPassword(encryptKey);
             String dbPW = textEncryptor.decrypt(
                     encryptedPW.replace("ENC(", "").replace(")", ""));
-
+			*/
+            
             // MySQL 드라이버 로딩
+            System.out.println("🔍 DB URL: " + dbURL);
+            System.out.println("🔍 DB User: " + dbID);
+            System.out.println("🔍 DB PW: " + dbPW);
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             // DB 연결 시도
@@ -64,15 +74,18 @@ public class DBConnectionTester {
 }
 
 /*
-[compile]
+[실행 방법]
+1. DBConnectionTester.java 
+	: 테스트 클래스 파일 마우스 우클릭
+2. Show in Local Terminal
+	: Terminal 선택
+3. 컴파일 명령어
 cd C:\WEBSITE\WEBSITE
 javac -d bin -cp ".;C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar" src/test/java/test/DBConnectionTester.java
-
-javac -d . -cp ".;C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar" C:\WEBSITE\WEBSITE\src\test\java\test\DBConnectionTester.java
-
-[execute]
+4. 실행 명령어
 java -cp "bin;src/test/resources;C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar;C:\Users\sooyeon Kang\.m2\repository\mysql\mysql-connector-java\8.0.33\mysql-connector-java-8.0.33.jar" test.DBConnectionTester
-     
+
+[에러 메시지]
 config.properties 파일을 성공적으로 로드했습니다.
 // EncryptionOperationNotPossibleException 문제 해결
 예외 발생: com.mysql.cj.jdbc.Driver
@@ -87,7 +100,7 @@ ssLoader.java:641)
         at java.base/java.lang.Class.forName(Class.java:412)
         at test.DBConnectionTester.main(DBConnectionTester.java:47)
         
-[tree /f bin]
+[디렉터리 구조를 출력하는 명령어] tree /f bin
 Folder PATH listing
 Volume serial number is 000000E6 8C88:2BD0
 C:\WEBSITE\WEBSITE\SRC\TEST\JAVA\TEST\BIN
