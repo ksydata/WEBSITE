@@ -54,8 +54,10 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <release>21</release>
-          <mainClass>Main</mainClass>
+          <release>17</release>
+          <source>17</source>
+          <target>17</target>
+          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
       
@@ -71,8 +73,14 @@
             </goals>        
           </execution>
         </executions>
+        <configuration>
+          <!--<mainClass>test.DBConnectionTester</mainClass>-->
+          <sourceDirectory>src/main/java</sourceDirectory>
+    	  <testSourceDirectory>src/test/java</testSourceDirectory>
+        </configuration>
       </plugin>
       
+      <!--Local Server plugin-->
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
           <artifactId>tomcat7-maven-plugin</artifactId>
