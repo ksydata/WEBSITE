@@ -1,6 +1,7 @@
 package user;
 
 // Data Transport Object: getter/setter method
+// CRUD 작업을 만드는 클래스
 public class UserDTO {
 	// 로그인 페이지 인증 아이디, 비밀번호
 	String userID;

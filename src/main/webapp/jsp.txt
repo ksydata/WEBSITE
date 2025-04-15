@@ -1,0 +1,58 @@
+1. Server: Java Server Pages(.jsp, Model View Controller의 view를 담당)
+- 정의: 서버측 스크립트 언어(Container가 알아서 Java 파일로 변환하여 class 파일로 컴파일 후 실행)
+- 기능: HTML, Java 통합 데이터베이스로부터 데이터를 가져와 사용자에게 동적으로 정보 제공
+(JSP 는 HTTP 프로토콜을 통해 HTML 페이지를 클라이언트에 전달)
+- 기본 구조: index.jsp
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>웹사이트명</title>
+	<script src="script.js"></script>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<%@ include file = "include.jsp" %>
+	<jsp:include page = "include.jsp" flush = "false"/>
+	
+	<h1>JSP와 JavaScript</h1>
+	<%
+		String message = "서버에서 생성된 메시지"
+	%>
+	
+	<p>서버 메시지: <%= message %></p>
+	<button onclick="showMessage()">클릭하세요</button>
+</body>
+
+</html>
+- 태그 종류
+지시자: <%@ 페이지 속성 지정 %>
+주석: <%-- 주석 처리 --%>
+선언: <%! 변수, 메서드의 선언 %>
+표현식: <%= 결과값 출력 %>
+스크립트릿: <% 자바 코드 삽입 %>
+액션 태그: <jsp:action> 페이지 삽입, 공유, 자바빈 사용 </jsp:action>
+<jsp:include> 다른 페이지의 실행 결과를 현재 페이지에 포함시켜줌
+<jsp:forward> 페이지 간의 제어를 이동시켜줌
+<jsp:useBean> 자바빈(java bean)을 페이지에서 사용할 수 있게 해줌
+<jsp:setProperty> Property 값을 세팅할 때 사용
+<jsp:getProperty> Property 값을 가져올 때 사용
+<jsp:param> include, forward 안에서 사용되며, 인자를 추가할 때 사용 
+* 액션태그의 include는 include 디렉티브와 달리 삽입을 요청한 파일의 코드를 가져오는 것이 
+아니라 해당 파일로 가서 로직을 수행한 후 돌아와서 남은 로직을 마저 수행하는 방식
+
+2. Client: JavaScript(.js)
+- 기능: 페이지의 동적 기능 구현(예: 사용자 입력 처리, 버튼 클릭 시 동작)
+- 기본 구조: script.js
+function showMessage() {
+    alert("버튼을 클릭하셨습니다!");
+}
+
+#. 기타
+Window > Show View > Internal Web Browser
+#. 출처(레퍼런스)
+https://inpa.tistory.com/entry/HTML-%F0%9F%93%9A-meta-%ED%83%9C%EA%B7%B8-%EC%A0%95%EB%A6%AC#%E2%80%8B%EB%A9%94%ED%83%80%ED%83%9C%EA%B7%B8meta_tag_%EB%9E%80
+#. 데이터 흐름의 방향
+Contorller(Servelet) → View(*.jsp) → Model(Class) → Controller(Servelet) → ... 
