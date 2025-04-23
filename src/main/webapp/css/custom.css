@@ -12,3 +12,8 @@ h5 {
 body {
 	font-family: "Nanum Gothic";
 }
+.btn-custom-blue {
+	background-color: #007bff;
+	color: white;
+	border-color: #007bff;
+}

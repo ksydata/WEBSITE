@@ -48,21 +48,63 @@
 					</div>
 				</li>
 			</ul>
+			<%-- 상단 검색폼과 검색전송 버튼 --%>
+			<form class="form-inline my-2 my-lg-0">
+				<input class="form-control mr-sm-2" type="search" placeholder="검색어를 입력하세요" aria-label="Search"></input>
+				<button class="btn btn-outline-success my-2 my-sm-0 btn-custom-blue" type="submit">
+				검색
+				</button>
+			</form>
 		</div>
-		<%-- 상단 검색 폼 --%>
     </nav>
     
 	<%-- 컨테이너(본문 콘텐츠를 담는 영역) --%>
-	<div class="container">
+	<section class="container">
 		<%-- 필터 및 버튼이 포함된 검색 폼 --%>
-		<%-- 각각의 강의평가 카드 구성 --%>
-		<%-- 1번째 강의평가 카드 --%>
-		<%-- 2번째 강의평가 카드 --%>
-		<%-- 3번째 강의평가 카드 --%>
-		
-		<%-- 페이지네이션 --%>
-		<%-- 평가 등록 모달(modal) 창 --%>	
-	</div>
+		<form method="get" action="./index.jsp" class="form-inline mt-3">
+			<select name="lecturnDivide" class="form-control mx-1 mt-2">
+				<option value="전체">전체</option>
+				<option value="전공">전공</option>
+				<option value="교양">교양</option>
+				<option value="기타">기타</option>
+			</select>
+			<input type="text" name="search" class="form-control mx-1 mt-2" placeholder="검색어를 입력하세요"></input>
+			<button type="submit" class="btn btn-primary mx-1 mt-2">검색</button>
+			<a class="btn btn-primary mx-1 mt-2" data-toggle="modal" href="#registerModal">등록</a>
+			<a class="btn btn-primary mx-1 mt-2" data-toggle="modal" href="#reportModal">신고</a>
+		</form>
+			<%-- 평가 등록 모달(modal) 창 --%>			
+			<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true"></div>
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+						</div>
+						
+						<div class="modal-body">
+							<form action="./registerClass.jsp" method="post">
+								<div class="form-group col-sm-6">
+									<label>강의명</label>
+									<input type="text" name="lectureName" class="form-control" maxlength="20">
+								</div>
+								<div class="form-group col-sm-6">
+									<label>교수명</label>
+									<input type="text" name="professorName" class="form-control" maxlength="20">
+								</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			<%-- 각각의 강의평가 카드 구성 --%>
+			<%-- 1번째 강의평가 카드 --%>
+			<%-- 2번째 강의평가 카드 --%>
+			<%-- 3번째 강의평가 카드 --%>
+			
+			<%-- 페이지네이션 --%>
+	</section>
 	
     <%-- 푸터(웹사이트 최하단 영역) --%>
     <%-- 어두운 배경(dark background)에 흰색 텍스트로 푸터 설정 --%>
