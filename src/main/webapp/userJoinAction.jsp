@@ -12,39 +12,42 @@
 
     // 응답의 콘텐츠 타입을 UTF-8로 설정
     response.setContentType("text/html;charset=UTF-8");
- 	// HTML 출력을 위한 PrintWriter 객체 생성
     PrintWriter writer = response.getWriter();
 
-    // 아이디 또는 비밀번호가 비어 있거나 null이면 에러 메시지 출력 후 이전 페이지로 이동
+    // 아이디 또는 비밀번호가 비어 있거나 null인 경우
     if (userID == null || userPassword == null || userID.trim().isEmpty() || userPassword.trim().isEmpty()) {
         writer.println("<script>");
-        writer.println("alert('아이디와 비밀번호를 모두 입력해주세요.');"); // 경고창
+        writer.println("alert('아이디와 비밀번호를 모두 입력해주세요.');");
      	// 이전 페이지로 이동
         writer.println("history.back();"); 
         writer.println("</script>");
-     	// 이후 코드 실행하지 않고 종료
-        return; 
+        return;
     }
 
     // DB에 접근하기 위한 UserDAO 객체 생성
     UserDAO userDAO = new UserDAO();
 
-    // join 메서드를 호출해 회원가입 처리 (성공 시 1, 실패 시 -1 등 반환)
+    // join 메서드를 호출해 회원가입 처리
     int result = userDAO.join(userID, userPassword);
 
-    // 회원가입 성공 시
+    // 회원가입 결과에 따른 분기 처리
     if (result == 1) {
+        // 회원가입 성공
         writer.println("<script>");
-        writer.println("alert('회원가입에 성공했습니다.');");
-        // 메인 페이지로 이동
-        writer.println("location.href = 'index.jsp';");
+        writer.println("alert('회원가입에 성공했습니다. 로그인 페이지로 이동합니다.');");
+        writer.println("location.href = 'login.jsp';");
+        writer.println("</script>");
+    } else if (result == -1) {
+        // 중복 아이디 혹은 기타 실패 사유
+        writer.println("<script>");
+        writer.println("alert('이미 존재하는 아이디이거나 오류가 발생했습니다.');");
+        writer.println("history.back();");
         writer.println("</script>");
     } else {
-        // 회원가입 실패 시
+        // 그 외의 예외 상황
         writer.println("<script>");
-        writer.println("alert('회원가입에 실패했습니다. 이미 존재하는 아이디일 수 있습니다.');");
-     	// 이전 페이지로 이동
-        writer.println("history.back();"); 
+        writer.println("alert('회원가입 중 알 수 없는 오류가 발생했습니다.');");
+        writer.println("history.back();");
         writer.println("</script>");
     }
 %>

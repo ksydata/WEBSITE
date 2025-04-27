@@ -1,0 +1,190 @@
+1. Server: Java Server Pages(.jsp, Model View Controller의 view를 담당)
+- 정의: 서버측 스크립트 언어(Container가 알아서 Java 파일로 변환하여 class 파일로 컴파일 후 실행)
+- 기능: HTML, Java 통합 데이터베이스로부터 데이터를 가져와 사용자에게 동적으로 정보 제공
+(JSP 는 HTTP 프로토콜을 통해 HTML 페이지를 클라이언트에 전달)
+- 기본 구조: index.jsp
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>웹사이트명</title>
+	<script src="script.js"></script>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<%@ include file = "include.jsp" %>
+	<jsp:include page = "include.jsp" flush = "false"/>
+	
+	<h1>JSP와 JavaScript</h1>
+	<%
+		String message = "서버에서 생성된 메시지"
+	%>
+	
+	<p>서버 메시지: <%= message %></p>
+	<button onclick="showMessage()">클릭하세요</button>
+</body>
+
+</html>
+- 태그 종류
+지시자: <%@ 페이지 속성 지정 %>
+주석: <%-- 주석 처리 --%>
+선언: <%! 변수, 메서드의 선언 %>
+표현식: <%= 결과값 출력 %>
+스크립트릿: <% 자바 코드 삽입 %>
+액션 태그: <jsp:action> 페이지 삽입, 공유, 자바빈 사용 </jsp:action>
+<jsp:include> 다른 페이지의 실행 결과를 현재 페이지에 포함시켜줌
+<jsp:forward> 페이지 간의 제어를 이동시켜줌
+<jsp:useBean> 자바빈(java bean)을 페이지에서 사용할 수 있게 해줌
+<jsp:setProperty> Property 값을 세팅할 때 사용
+<jsp:getProperty> Property 값을 가져올 때 사용
+<jsp:param> include, forward 안에서 사용되며, 인자를 추가할 때 사용 
+* 액션태그의 include는 include 디렉티브와 달리 삽입을 요청한 파일의 코드를 가져오는 것이 
+아니라 해당 파일로 가서 로직을 수행한 후 돌아와서 남은 로직을 마저 수행하는 방식
+
+2. Client: JavaScript(.js)
+- 기능: 페이지의 동적 기능 구현(예: 사용자 입력 처리, 버튼 클릭 시 동작)
+- 기본 구조: script.js
+function showMessage() {
+    alert("버튼을 클릭하셨습니다!");
+}
+
+#. 기타
+Window > Show View > Internal Web Browser
+#. 출처(레퍼런스)
+https://inpa.tistory.com/entry/HTML-%F0%9F%93%9A-meta-%ED%83%9C%EA%B7%B8-%EC%A0%95%EB%A6%AC#%E2%80%8B%EB%A9%94%ED%83%80%ED%83%9C%EA%B7%B8meta_tag_%EB%9E%80
+#. 데이터 흐름의 방향
+Contorller(Servelet) → View(*.jsp) → Model(Class) → Controller(Servelet) → ... 
+
+
+3. 메인 페이지
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%--HTML 5 문서유형 선언--%>
+<!DOCTYPE html>
+<html>
+
+<head>
+	<%-- 브라우저 탭에 표시될 웹사이트 제목 --%>
+	<title>눈송여자대학교 홈페이지</title>
+	<%-- 문자 인코딩 설정 (Unicode Transformation Format–8bit) --%>
+	<meta charset="UTF-8">
+	<%-- 모바일 웹 반응형 지원(뷰 포트에 맞는 설정 추가) --%>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- 부트스트랩 스타일 시트 연결 href="./css/bootstrap.min.css?ver=1" -->
+	<link rel="stylesheet" href="./css/bootstrap.min.css">
+	<!-- 사용자 정의(커스텀) 스타일 시트 연결 -->
+	<link rel="stylesheet" href="./css/custom.css">
+</head>
+
+<body>
+	<%-- 네비게이션 바(반응형 디자인을 위한 설정, 하얀색 배경) 추가 --%>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="index.jsp">눈송여자대학교 홈페이지</a>
+		<%-- 모바일 메뉴 토글 버튼(화면 크기가 작아질 때 메뉴 축소/확장) --%>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+			<span class="navbar-toggler-icon"></span>
+		</button>		
+		<%-- 네비게이션 항목들 --%>		
+		<div id="navbar" class="collapse navbar-collapse">
+			<%-- 목록(list)를 가지는 요소인 ul 태그 --%>	
+			<ul class="navbar-nav mr-auto">
+                <%-- 메인 페이지 링크(현재 웹사이트의 홈 화면으로 이동하는 항목) --%>                				
+				<li class="nav-item active">
+					<a class="nav-link" href="index.jsp">
+					메인
+					</a>
+				</li>
+				<%-- 회원관리 드롭다운(추가적인 사용자 관리 메뉴를 포함할 공간) --%>				
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" id="dropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					회원관리
+					</a>
+					<%-- 드롭다운 메뉴 컨테이너(드롭다운 항목 포함할 공간) --%>
+					<div class="dropdown-menu" aria-labelledby="dropdown">
+						<a class="dropdown-item" href="#">로그인</a>
+						<a class="dropdown-item" href="#">회원가입</a>
+						<a class="dropdown-item" href="#">로그아웃</a>
+					</div>
+				</li>
+			</ul>
+			<%-- 상단 검색폼과 검색전송 버튼 --%>
+			<form class="form-inline my-2 my-lg-0">
+				<input class="form-control mr-sm-2" type="search" placeholder="검색어를 입력하세요" aria-label="Search"></input>
+				<button class="btn btn-outline-success my-2 my-sm-0 btn-custom-blue" type="submit">
+				검색
+				</button>
+			</form>
+		</div>
+    </nav>
+    
+	<%-- 컨테이너(본문 콘텐츠를 담는 영역) --%>
+	<section class="container">
+		<%-- 필터 및 버튼이 포함된 검색 폼 --%>
+		<form method="get" action="./index.jsp" class="form-inline mt-3">
+			<select name="lecturnDivide" class="form-control mx-1 mt-2">
+				<option value="전체">전체</option>
+				<option value="전공">전공</option>
+				<option value="교양">교양</option>
+				<option value="기타">기타</option>
+			</select>
+			<input type="text" name="search" class="form-control mx-1 mt-2" placeholder="검색어를 입력하세요"></input>
+			<button type="submit" class="btn btn-primary mx-1 mt-2">검색</button>
+			<a class="btn btn-primary mx-1 mt-2" data-toggle="modal" href="#registerModal">등록</a>
+			<a class="btn btn-primary mx-1 mt-2" data-toggle="modal" href="#reportModal">신고</a>
+		</form>
+			<%-- 평가 등록 모달(modal) 창 --%>			
+			<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true"></div>
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+						</div>
+						
+						<div class="modal-body">
+							<form action="./registerClass.jsp" method="post">
+								<div class="form-group col-sm-6">
+									<label>강의명</label>
+									<input type="text" name="lectureName" class="form-control" maxlength="20">
+								</div>
+								<div class="form-group col-sm-6">
+									<label>교수명</label>
+									<input type="text" name="professorName" class="form-control" maxlength="20">
+								</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			<%-- 각각의 강의평가 카드 구성 --%>
+			<%-- 1번째 강의평가 카드 --%>
+			<%-- 2번째 강의평가 카드 --%>
+			<%-- 3번째 강의평가 카드 --%>
+			
+			<%-- 페이지네이션 --%>
+	</section>
+	
+    <%-- 푸터(웹사이트 최하단 영역) --%>
+    <%-- 어두운 배경(dark background)에 흰색 텍스트로 푸터 설정 --%>
+    <footer class="bg-dark mt-4 p-5 text-center" style="color: #FFFFFF;">
+    </footer>
+    
+    <%-- 필수 자바스크립트 라이브러리들 추가 --%>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/popper.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+</body>
+
+</html>
+
+
+<%-- 
+	<form action="./userJoinAction.jsp" method="post">
+		<input type="text" name="userID">
+		<input type="password" name="userPassword">
+		<input type="submit" value="회원가입">
+	</form>
+--%>
