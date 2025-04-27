@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 //WebServlet 어노테이션으로 url 매핑
-@WebServlet("/userJoinAction")
+@WebServlet("/UserJoinServlet")
 public class UserJoinServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -52,7 +52,7 @@ public class UserJoinServlet extends HttpServlet {
             // 회원가입 성공
             writer.println("<script>");
             writer.println("alert('회원가입에 성공했습니다. 로그인 페이지로 이동합니다.');");
-            writer.println("location.href = 'login.jsp';");
+            writer.println("location.href = '" + request.getContextPath() + "/common/login.jsp';");
             writer.println("</script>");
         } else if (result == -1) {
             // 중복 아이디 혹은 기타 실패 사유

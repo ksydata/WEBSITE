@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 
 // WebServlet 어노테이션으로 url 매핑
 // @WebServlet("/common/loginAction")
-@WebServlet("/loginAction")
+@WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	

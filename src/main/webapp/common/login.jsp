@@ -12,8 +12,8 @@
 <body>
 	<div class="container mt-5">
 		<h3 class="text-center mb-4">로그인</h3>
-		<%-- 사용자가 입력한 값을 <form> 태그를 통해 loginAction.jsp에서 처리하도록 설정 --%>
-		<form action="<%=request.getContextPath()%>/loginAction" method="post">
+		<%-- 사용자가 입력한 값을 <form> 태그를 통해 LoginServlet.java(기존 loginAction.jsp)에서 처리하도록 설정 --%>
+		<form action="<%=request.getContextPath()%>/LoginServlet" method="post">
 			<div class="form-group mb-3">
 				<label for="userID">아이디</label>
 				<input type="text" class="form-control" name="userID" id="userID" required>

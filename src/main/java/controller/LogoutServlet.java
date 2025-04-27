@@ -17,6 +17,6 @@ public class LogoutServlet extends HttpServlet {
     	// 세션 해제하여 로그인 정보 끊기
     	request.getSession().invalidate();
     	// 로그인 페이지로 리다이렉트 (즉, 홈페이지로 다시 이동)
-        response.sendRedirect(request.getContextPath() + "/index.jsp"); // 메인페이지로 이동
+        response.sendRedirect(request.getContextPath() + "/common/login.jsp");
     }
 }
