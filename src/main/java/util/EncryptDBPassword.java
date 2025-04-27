@@ -32,9 +32,11 @@ public class EncryptDBPassword {
 2. Show in Local Terminal
 	: Terminal 선택
 3. 컴파일 명령어
-	: javac -d . -cp ".;C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar" EncryptDBPassword.java
+	: (win) javac -d . -cp ".;C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar" EncryptDBPassword.java
+    : (mac) javac -d . -cp ".:/Users/minjoo/codeStudy/FDSStudy/WEBSITE/src/main/webapp/WEB-INF/lib/jasypt-1.9.3.jar" EncryptDBPassword.java
 4. 실행 명령어
-	: java -cp ".;C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar" util.EncryptDBPassword
+	: (win) java -cp ".;C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar" util.EncryptDBPassword
+    : (mac) java -cp ".:/Users/minjoo/codeStudy/FDSStudy/WEBSITE/src/main/webapp/WEB-INF/lib/jasypt-1.9.3.jar" util.EncryptDBPassword
 5. Input master-key & Input plain text to encrypt
 	: db.password=ENC(iyuY71EO0RHCr4XEqHLiXMcusVAkVTYR)
 	
