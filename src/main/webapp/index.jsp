@@ -58,12 +58,3 @@
 </body>
 
 </html>
-
-
-<%-- 
-	<form action="./userJoinAction.jsp" method="post">
-		<input type="text" name="userID">
-		<input type="password" name="userPassword">
-		<input type="submit" value="회원가입">
-	</form>
---%>

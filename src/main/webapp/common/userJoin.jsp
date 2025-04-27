@@ -7,13 +7,13 @@
 	<meta charset="UTF-8">
 	<%-- DB를 통한 회원가입을 위한 입력폼 페이지 --%>
 	<title>회원가입 폼</title>
-	<link rel="stylesheet" href="./css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
         <h3 class="text-center mb-4">회원가입</h3>
         <%-- 사용자가 입력한 값을 <form> 태그를 통해 userJoinAction.jsp에서 처리하도록 설정 --%>
-        <form action="userJoinAction.jsp" method="post">
+        <form action="userJoinAction" method="post">
             <div class="form-group mb-3">
                 <label for="userID">아이디</label>
                 <input type="text" class="form-control" name="userID" id="userID" required>

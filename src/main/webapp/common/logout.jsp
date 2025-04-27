@@ -4,6 +4,6 @@
 <%
 session.invalidate(); 
 // 세션 삭제
-response.sendRedirect("login.jsp"); 
+response.sendRedirect("./login.jsp"); 
 // 로그인 페이지로 리다이렉트
 %>
