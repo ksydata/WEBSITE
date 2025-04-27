@@ -41,7 +41,11 @@
 		<div id="navbar" class="collapse navbar-collapse">
 			<%-- 목록(list)를 가지는 요소인 ul 태그 --%>	
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item"><a class="nav-link" href="logout.jsp">로그아웃</a>
+				<li class="nav-item">
+					<!-- 로그아웃 링크를 nav-item 내부에 배치 -->
+					<a href="<%=request.getContextPath()%>/LogoutServlet" class="btn btn-danger">로그아웃</a>
+				</li>
+				<%-- <li class="nav-item"><a class="nav-link" href="./common/logout.jsp">로그아웃</a> --%>
 			</ul>
 		</div>
     </nav>

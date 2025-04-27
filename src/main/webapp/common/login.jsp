@@ -28,12 +28,12 @@
 			<div class="d-grid gap-2">
 				<button type="submit" class="btn btn-primary">로그인</button>
 				<%-- index.jsp 페이지로 링크를 통해 이동하는 취소 버튼 생성 --%>
-				<a href="index.jsp" class="btn btn-secondary">취소</a>
+				<a href="<%=request.getContextPath()%>/index.jsp" class="btn btn-secondary">취소</a>
 			</div>
 			
 			<%-- 로그인 버튼 아래에 회원가입 링크 추가 --%>
 			<div class="text-center mt-3">
-		        <a href="userJoin.jsp">회원가입</a>
+		        <a href="<%=request.getContextPath()%>/common/userJoin.jsp">회원가입</a>
 		    </div>	
 		</form>
 	</div>

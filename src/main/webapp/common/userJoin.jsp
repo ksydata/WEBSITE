@@ -13,7 +13,7 @@
     <div class="container mt-5">
         <h3 class="text-center mb-4">회원가입</h3>
         <%-- 사용자가 입력한 값을 <form> 태그를 통해 userJoinAction.jsp에서 처리하도록 설정 --%>
-        <form action="userJoinAction" method="post">
+        <form action="<%=request.getContextPath()%>/userJoinAction" method="post">
             <div class="form-group mb-3">
                 <label for="userID">아이디</label>
                 <input type="text" class="form-control" name="userID" id="userID" required>
