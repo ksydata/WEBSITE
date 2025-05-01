@@ -6,6 +6,9 @@ USE WEB_SECURITY_LAB;
 	교수: 사번 P10001~P10400 (약 400명, 대부분 재직(80% 이상))
 	교직원: 사번 E20001~E20090 (약 90명, 대부분 재직(약 80% 이상))
 	관리자: 사번 A30001 ~ A30005 (관리자는 5명, 전원 활성화)
+	
+	비밀번호는 올바른 패스워드 작성규칙
+	영문을 시작으로 영문, 숫자, 특수문자 중 2종류 이상을 조합하여 최소 10자리 이상 또는 3종류 이상을 조합하여 최소 8자리 이상의 길이로 구성
 
 2. PERSONAL_INFO 테이블
 	학생: "재학", "휴학", "수료", "졸업", "자퇴", "제적", "기타"
@@ -19,7 +22,14 @@ USE WEB_SECURITY_LAB;
 4. ACADEMIC_RECORD 테이블
 	FK인 USER 테이블의 사번/학번 컬럼인 userID의 범위 내에서 구성
 	또한, userID가 동일한 경우 USER 테이블의 데이터와 PERSONAL_INFO 테이블의 데이터와 
-	내용이 연계되어야 함(정합성 문제)	
+	내용이 연계되어야 함(정합성 문제)
+	재수강 데이터도 생성해야 함
+	
+각 테이블 
+USER는 학생 950명, 교수 40명, 교직원 9명, 관리자 5명으로 구성 
+NOTICE는 글 100개만 구성해주고 글쓴 사람은 교수, 교직원, 관리자만으로 구성
+ACADEMIC_RECORD는 학생 950명만으로 구성
+PERSONAL_INFO는 학생 950명, 교수 40명, 교직원 9명만 구성
 */
 
 TRUNCATE TABLE USER;
@@ -85,29 +95,23 @@ CREATE TABLE ACADEMIC_RECORD (
     enrollmentReason VARCHAR(255),
     FOREIGN KEY (userID) REFERENCES USER(userID)
 );
+ALTER TABLE ACADEMIC_RECORD MODIFY COLUMN retakeSemester VARCHAR(10);
 
 -- MySQL의 옵션으로 인해 LOAD DATA INFILE 명령어가 실행되는 특정 디렉토리 조회
 SHOW VARIABLES LIKE "secure_file_priv";
 
 -- CSV 파일을 MySQL 서버로 업로드
 -- 사용자 계정 테이블
-LOAD DATA INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/user_data.csv"
+LOAD DATA INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/user.csv"
 INTO TABLE USER 
 FIELDS TERMINATED BY "," 
 ENCLOSED BY '"' 
 LINES TERMINATED BY "\n" 
 IGNORE 1 ROWS 
-(
-  userID, 
-  userPassword, 
-  email, 
-  name, 
-  phoneNumber, 
-  officeNumber, 
-  role);
+(userID, userPassword, email, name, phoneNumber, officeNumber, role);
 
 -- 개인정보 테이블
-LOAD DATA INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/personal_info_data.csv"
+LOAD DATA INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/personal_info.csv"
 -- 데이터 삽입할 테이블 지정
 INTO TABLE PERSONAL_INFO
 -- CSV 파일의 각 열을 구분하는 구분자(쉼표)
@@ -118,18 +122,8 @@ ENCLOSED BY '"'
 LINES TERMINATED BY "\r\n"
 -- 첫 번째 행(헤더)은 무시하고 데이터를 삽입
 IGNORE 1 ROWS
-(
-    userID,
-    address,
-    -- 임시 변수로 저장
-    @birthDate,
-    gender,
-    @residentNumber,
-    @college,
-    @major,
-    @admissionYear,
-    @status
-)
+-- 임시 변수로 저장
+(userID, address, @birthDate, gender, @residentNumber, @college, @major, @admissionYear, @status)
 SET
     birthDate = CASE
     			-- 생년월일이 NULL이거나 빈 문자열이면 NULL(빈값)로 처리
@@ -150,7 +144,7 @@ SET
     status = NULLIF(@status, '');
 
 -- 공지사항(게시판) 테이블
-LOAD DATA INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/notice_data.csv"
+LOAD DATA INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/notice.csv"
 INTO TABLE NOTICE 
 FIELDS TERMINATED BY "," 
 ENCLOSED BY '"' 
@@ -172,50 +166,51 @@ SET
               END;
 
 -- 학사정보 테이블
-LOAD DATA INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/academic_record_data.csv"
-INTO TABLE ACADEMIC_RECORD 
-FIELDS TERMINATED BY "," 
-ENCLOSED BY '"' 
-LINES TERMINATED BY "\n" 
-IGNORE 1 ROWS 
-(recordID, userID, college, major, academicYear, semester, courseID, courseName, courseType, 
- coursePF, @credit, @pass_or_fail, grade, gradePoint, retakeYear, retakeSemester, 
- retakeCourseID, enrollmentReason)
+LOAD DATA INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/academic_record.csv"
+INTO TABLE ACADEMIC_RECORD
+FIELDS TERMINATED BY ","  
+ENCLOSED BY '"'
+LINES TERMINATED BY "\n"
+IGNORE 1 ROWS
+(
+  userID, college, major, academicYear, semester, courseID, courseName, courseType, @coursePF,
+  @credit, @pass_or_fail, grade, @gradePoint, @retakeYear, retakeSemester, @retakeCourseID, enrollmentReason
+)
 SET
-    academicYear = CASE
-        WHEN academicYear IS NULL OR academicYear = '' THEN NULL
-        ELSE CAST(academicYear AS UNSIGNED)
-    END,
-    semester = CASE
-        WHEN semester NOT IN ('1', '2', '여름', '겨울') THEN NULL
-        ELSE semester
-    END,
-    coursePF = CASE
-        WHEN @coursePF = 'TRUE' THEN 1
-        WHEN @coursePF = 'FALSE' THEN 0
-        ELSE NULL
-    END,
-    pass_or_fail = CASE
-        WHEN @pass_or_fail = 'TRUE' THEN 1
-        WHEN @pass_or_fail = 'FALSE' THEN 0
-        ELSE NULL
-    END,
-    gradePoint = CASE
-        WHEN gradePoint IS NULL OR gradePoint = '' THEN NULL
-        ELSE CAST(gradePoint AS DECIMAL(3, 2))
-    END,
-    retakeYear = CASE
-        WHEN retakeYear IS NULL OR retakeYear = '' THEN NULL
-        ELSE CAST(retakeYear AS UNSIGNED)
-    END,
-    retakeSemester = CASE
-        WHEN retakeSemester NOT IN ('1', '2', '여름', '겨울') THEN NULL
-        ELSE retakeSemester
-    END,
-    retakeCourseID = CASE
-        WHEN retakeCourseID IS NULL OR retakeCourseID = '' THEN NULL
-        ELSE CAST(retakeCourseID AS UNSIGNED)
-    END;
+  academicYear = CASE
+      WHEN academicYear IS NULL OR academicYear = '' THEN NULL
+      ELSE CAST(academicYear AS UNSIGNED)
+  END,
+  semester = CASE
+      WHEN semester NOT IN ('1', '2', '여름', '겨울') THEN NULL
+      ELSE semester
+  END,
+  coursePF = CASE
+      WHEN @coursePF = 'TRUE' THEN 1
+      WHEN @coursePF = 'FALSE' THEN 0
+      ELSE NULL
+  END,
+  pass_or_fail = CASE
+      WHEN @pass_or_fail = 'TRUE' THEN 1
+      WHEN @pass_or_fail = 'FALSE' THEN 0
+      ELSE NULL
+  END,
+  gradePoint = CASE
+      WHEN @gradePoint IS NULL OR @gradePoint = '' THEN NULL
+      ELSE CAST(@gradePoint AS DECIMAL(3, 2))
+  END,
+  retakeYear = CASE
+      WHEN @retakeYear = '' THEN NULL
+      ELSE CAST(@retakeYear AS UNSIGNED)
+  END,
+  retakeSemester = CASE
+      WHEN retakeSemester = '' OR retakeSemester NOT IN ('1', '2', '여름', '겨울') THEN NULL
+      ELSE retakeSemester
+  END,
+  retakeCourseID = CASE
+      WHEN @retakeCourseID = '' THEN NULL
+      ELSE CAST(@retakeCourseID AS UNSIGNED)
+  END;
 
 -- 테이블 조회
 SELECT * FROM USER;
