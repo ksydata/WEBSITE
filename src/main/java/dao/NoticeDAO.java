@@ -23,12 +23,13 @@ public class NoticeDAO {
 			
 			while (resultSet.next()) {
 				NoticeDTO notice = new NoticeDTO();
-				notice.setIdx(resultSet.getInt("idx"));
+				notice.setNoticeID(resultSet.getInt("noticeID"));
 				notice.setUserID(resultSet.getString("userID"));
 				notice.setTitle(resultSet.getString("title"));
+				notice.setContents(resultSet.getString("contents"));
 				notice.setCreateDate(resultSet.getTimestamp("createDate"));
 				notice.setUpdateDate(resultSet.getTimestamp("updateDate"));
-				notice.setContents(resultSet.getString("contents"));
+				notice.setEndDate(resultSet.getTimestamp("endDate"));
 				notice.setPermissionRole(resultSet.getString("permissionRole"));
 				
 				noticeList.add(notice);
@@ -55,14 +56,14 @@ public class NoticeDAO {
 			ResultSet resultSet = checkStatement.executeQuery();
 			
 			if (resultSet.next()) {
-				notice.setIdx(resultSet.getInt("idx"));
+				notice.setNoticeID(resultSet.getInt("noticeID"));
 				notice.setUserID(resultSet.getString("userID"));
 				notice.setTitle(resultSet.getString("title"));
+				notice.setContents(resultSet.getString("contents"));
 				notice.setCreateDate(resultSet.getTimestamp("createDate"));
 				notice.setUpdateDate(resultSet.getTimestamp("updateDate"));
-				notice.setContents(resultSet.getString("contents"));
+				notice.setEndDate(resultSet.getTimestamp("endDate"));
 				notice.setPermissionRole(resultSet.getString("permissionRole"));
-				
 			}
 			
 		} catch (SQLException e) {
