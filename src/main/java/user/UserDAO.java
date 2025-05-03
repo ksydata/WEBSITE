@@ -20,6 +20,7 @@ public class UserDAO {
 	    // 이미 해당 아이디가 존재하는지 확인하는 SQL 쿼리
 	    String checkSQL = "SELECT userID FROM USER WHERE userID = ?";
 	    // 회원가입 SQL 쿼리
+	    // ** 각각의 테이블에 삽입하는 코드로 수정 예정 **
 	    String insertSQL = "INSERT INTO USER VALUES (?, ?)";
 
 	    try (Connection connection = DatabaseUtil.getConnection();

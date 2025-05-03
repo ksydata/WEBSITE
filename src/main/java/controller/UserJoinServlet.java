@@ -26,7 +26,20 @@ public class UserJoinServlet extends HttpServlet {
         // 사용자로부터 전달받은 아이디와 비밀번호 파라미터 가져오기
         String userID = request.getParameter("userID");
         String userPassword = request.getParameter("userPassword");
-
+        String role = request.getParameter("role");
+        String status = request.getParameter("status");
+        String name = request.getParameter("name");
+        String residentNumberFront = request.getParameter("residentNumberFront");
+        String residentNumberBack = request.getParameter("residentNumberBack");
+        String gender = request.getParameter("gender");
+        String address = request.getParameter("address");
+        String phoneNumber = request.getParameter("phoneNumber");
+        String officeNumber = request.getParameter("officeNumber");
+        String email = request.getParameter("email");
+        String college = request.getParameter("college");
+        String major = request.getParameter("major");
+        String admissionYear = request.getParameter("admissionYear");
+        
         // 응답의 콘텐츠 타입을 UTF-8로 설정
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter writer = response.getWriter();
@@ -46,6 +59,11 @@ public class UserJoinServlet extends HttpServlet {
 
         // join 메서드를 호출해 회원가입 처리
         int result = userDAO.join(userID, userPassword);
+        /*
+        int result = userDAO.join(
+        	userID, userPassword, email, name, phoneNumber, officeNumber, role, address, 
+    		birthDate, gender, residentNumber, college, major, admissionYear, status); 
+         */
 
         // 회원가입 결과에 따른 분기 처리
         if (result == 1) {

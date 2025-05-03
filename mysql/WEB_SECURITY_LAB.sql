@@ -173,47 +173,32 @@ ENCLOSED BY '"'
 LINES TERMINATED BY "\n"
 IGNORE 1 ROWS
 (
-  userID, college, major, academicYear, semester, courseID, courseName, courseType, @coursePF,
-  @credit, @pass_or_fail, grade, @gradePoint, @retakeYear, retakeSemester, @retakeCourseID, enrollmentReason
+  userID, college, major, @academicYear, @semester, courseID, courseName, courseType, @coursePF,
+  credit, @pass_or_fail, grade, @gradePoint, @retakeYear, @retakeSemester, @retakeCourseID, enrollmentReason
 )
-SET
-  academicYear = CASE
-      WHEN academicYear IS NULL OR academicYear = '' THEN NULL
-      ELSE CAST(academicYear AS UNSIGNED)
-  END,
-  semester = CASE
-      WHEN semester NOT IN ('1', '2', '여름', '겨울') THEN NULL
-      ELSE semester
-  END,
-  coursePF = CASE
-      WHEN @coursePF = 'TRUE' THEN 1
-      WHEN @coursePF = 'FALSE' THEN 0
-      ELSE NULL
-  END,
-  pass_or_fail = CASE
-      WHEN @pass_or_fail = 'TRUE' THEN 1
-      WHEN @pass_or_fail = 'FALSE' THEN 0
-      ELSE NULL
-  END,
-  gradePoint = CASE
-      WHEN @gradePoint IS NULL OR @gradePoint = '' THEN NULL
-      ELSE CAST(@gradePoint AS DECIMAL(3, 2))
-  END,
-  retakeYear = CASE
-      WHEN @retakeYear = '' THEN NULL
-      ELSE CAST(@retakeYear AS UNSIGNED)
-  END,
-  retakeSemester = CASE
-      WHEN retakeSemester = '' OR retakeSemester NOT IN ('1', '2', '여름', '겨울') THEN NULL
-      ELSE retakeSemester
-  END,
-  retakeCourseID = CASE
-      WHEN @retakeCourseID = '' THEN NULL
-      ELSE CAST(@retakeCourseID AS UNSIGNED)
-  END;
+SET 
+  academicYear = IF(@academicYear = '' OR @academicYear = 'NaN', NULL, CAST(@academicYear AS UNSIGNED)),
+  semester = IF(@semester = '' OR @semester = 'NaN', NULL, @semester),
+  coursePF = IF(@coursePF = '' OR @coursePF IS NULL, NULL, CAST(@coursePF AS UNSIGNED)),
+  pass_or_fail = IF(@pass_or_fail = '' OR @pass_or_fail IS NULL, NULL, CAST(@pass_or_fail AS UNSIGNED)),
+  gradePoint = IF(@gradePoint = '' OR @gradePoint = 'NaN', NULL, CAST(@gradePoint AS DECIMAL(3, 2))),
+  retakeYear = IF(@retakeYear = '' OR @retakeYear = 'NaN', NULL, CAST(@retakeYear AS UNSIGNED)),
+  retakeSemester = IF(@retakeSemester = '' OR @retakeSemester = 'NaN', NULL, @retakeSemester),
+  retakeCourseID = IF(@retakeCourseID = '' OR @retakeCourseID = 'NaN', NULL, CAST(@retakeCourseID AS UNSIGNED));
 
 -- 테이블 조회
 SELECT * FROM USER;
 SELECT * FROM NOTICE;
 SELECT * FROM PERSONAL_INFO;
 SELECT * FROM ACADEMIC_RECORD;
+
+-- DCL 
+SELECT college, major, COUNT(*) FROM ACADEMIC_RECORD GROUP BY college, major;
+SELECT college, COUNT(*) FROM ACADEMIC_RECORD GROUP BY college;
+SELECT major, COUNT(*) FROM ACADEMIC_RECORD GROUP BY major;
+
+DESC PERSONAL_INFO;
+SELECT PERSONAL_INFO.status, USER.role, COUNT(*) 
+FROM PERSONAL_INFO
+JOIN USER ON PERSONAL_INFO.userID = USER.userID
+GROUP BY PERSONAL_INFO.status, USER.role;
