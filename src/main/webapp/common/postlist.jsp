@@ -19,6 +19,15 @@
 	<link rel="stylesheet" href="./css/custom.css">
 </head>
 <body class="container mt-5">
+<%
+    String flashMessage = (String) session.getAttribute("flashMessage");
+    if (flashMessage != null) {
+        session.removeAttribute("flashMessage");  // Flash 메시지는 1회용
+%>
+    <script>alert("<%= flashMessage %>");</script>
+<%
+    }
+%>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<h2 class="mb-4">📋 게시판 글 목록</h2>
 

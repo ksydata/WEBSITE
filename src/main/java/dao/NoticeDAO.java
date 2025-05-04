@@ -74,8 +74,14 @@ public class NoticeDAO {
 		return notice;
 	}
 	
-	public boolean uploadNotice(String userID, String title, String contents, String permissionRole) {
-		String sql = "INSERT INTO NOTICE (userID, title, contents, createDate, permissionRole) VALUES (?, ?, ?, ?, ?)";		
+	public boolean uploadNotice(String userID, String title, String contents, String endDate, String permissionRole) {
+		String sql = "INSERT INTO NOTICE (userID, title, contents, createDate, updateDate, endDate, permissionRole) VALUES (?, ?, ?, ?, ?, ?, ?)";		
+		
+		// 문자열 endDate를 Timestamp로 변환
+        Timestamp endDateTime = null;
+        if (endDate != null && !endDate.isEmpty()) {
+            endDateTime = Timestamp.valueOf(endDate.replace("T", " ") + ":00");
+        }
 		
 		try (Connection connection = DatabaseUtil.getConnection();
 			PreparedStatement insertStatement = connection.prepareStatement(sql)) {
@@ -83,9 +89,10 @@ public class NoticeDAO {
 			insertStatement.setString(1, userID);
 			insertStatement.setString(2, title);
 			insertStatement.setString(3, contents);
-			insertStatement.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-			insertStatement.setString(5, permissionRole);
-			insertStatement.executeUpdate();
+			insertStatement.setTimestamp(4, new Timestamp(System.currentTimeMillis())); // createDate: 현재 시간 입력
+			insertStatement.setTimestamp(5, null); // updateDate: 수정이 아니므로 null값 입력
+			insertStatement.setTimestamp(6, endDateTime); // endDate: 미리 지정한 endDate값 입력
+			insertStatement.setString(7, permissionRole);
 			
 			int rowsAffected = insertStatement.executeUpdate();
 			return rowsAffected > 0;

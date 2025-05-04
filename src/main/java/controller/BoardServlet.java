@@ -34,19 +34,21 @@ public class BoardServlet extends HttpServlet {
         String userID = request.getParameter("userID");
         String title = request.getParameter("title");
         String contents = request.getParameter("contents");
+        String endDate = request.getParameter("endDate");
         String permissionRole = request.getParameter("permissionRole");
 
         // DB에 저장
         NoticeDAO dao = new NoticeDAO();
-        boolean result = dao.uploadNotice(userID, title, contents, permissionRole);
+        boolean result = dao.uploadNotice(userID, title, contents, endDate, permissionRole);
 
         if (result) {
             // 저장 성공 시 목록 페이지로 이동
-            response.sendRedirect("BoardServlet");
+        	request.getSession().setAttribute("flashMessage", "게시글이 성공적으로 등록되었습니다.");
+        	response.sendRedirect("common/postlist.jsp");
         } else {
             // 실패 시 에러 페이지로 이동하거나 오류 메시지 처리
             request.setAttribute("errorMessage", "게시글 등록에 실패했습니다.");
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            request.getRequestDispatcher("common/writePost.jsp").forward(request, response);
         }
     }
 	
