@@ -1,6 +1,7 @@
 package controller;
 
 import user.UserDAO;
+import user.UserDTO;
 
 import java.io.IOException;
 
@@ -32,10 +33,10 @@ public class LoginServlet extends HttpServlet {
 
 	    // 데이터접근객체 클래스의 인스턴스 생성 후 로그인 메서드를 활용하여 결과값 받아오기
 	    UserDAO userDAO = new UserDAO();
-	    int result = userDAO.login(userID, userPassword);
+	    UserDTO result = userDAO.login(userID, userPassword);
 
 	    // 로그인 성공
-	    if (result == 1) {
+	    if (result != null) { // result == 1
 	    	HttpSession session = request.getSession();
 	    	// 계정 아이디를 세션에 저장
 	    	session.setAttribute("userID", userID);
@@ -49,29 +50,27 @@ public class LoginServlet extends HttpServlet {
 	        // 응답의 콘텐츠 타입을 UTF-8로 설정
 	    	response.setContentType("text/html;charset=UTF-8");
 	    	
-	    	// 로그인 실패	    	
-	    	response.getWriter().println("<script>");
-	    		// String message = "";
-
-	    	if (result == 0) {
-	            response.getWriter().println("alert('비밀번호가 일치하지 않습니다.')");
-	        } else if (result == -1) {
-                response.getWriter().println("alert('존재하지 않는 아이디입니다.');");
-	        } else if (result == -2) {
-                response.getWriter().println("alert('데이터베이스 관련 오류가 발생했습니다.');");
-	        } else {
-                response.getWriter().println("alert('로그인 중 알 수 없는 오류가 발생했습니다.');");
-	        }
-            
-	    	response.getWriter().println("history.back();");
+	    	// 로그인 실패
+	    	response.getWriter().println("<script>");	    	
+            response.getWriter().println("alert('아이디 또는 비밀번호가 일치하지 않습니다.');");
+            response.getWriter().println("history.back();");
             response.getWriter().println("</script>");
 	    }
-    }	    
+	}
 }
 
 /*
-.setAttribute()
-After this method executes, and if the new object implements HttpSessionBindingListener,
-the container calls HttpSessionBindingListener.valueBound. 
-The container then notifies any HttpSessionAttributeListeners in the web application. 
- */
+[Login Error 초기 소스코드]
+
+if (result == 0) {
+	response.getWriter().println("alert('비밀번호가 일치하지 않습니다.')");
+} else if (result == -1) {
+	response.getWriter().println("alert('존재하지 않는 아이디입니다.');");
+} else if (result == -2) {
+	response.getWriter().println("alert('데이터베이스 관련 오류가 발생했습니다.');");
+} else {
+	response.getWriter().println("alert('로그인 중 알 수 없는 오류가 발생했습니다.');");
+}
+response.getWriter().println("history.back();");
+response.getWriter().println("</script>");
+*/

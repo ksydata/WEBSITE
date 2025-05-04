@@ -1,17 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%
-	// 세션에서 로그인된 사용자 ID를 가져옴
-	String userID = (String) session.getAttribute("userID");
-
-	// 로그인되어있지 않지만 로그인 페이지로 리다이렉트
-	if (userID == null) {
-		// 로그인 페이지로 이동
-		response.sendRedirect("common/login.jsp");
-		// 이후 JSP 실행 중단
-		return;
-	}
-%>
 <%--HTML 5 문서유형 선언--%>
 <!DOCTYPE html>
 <html>

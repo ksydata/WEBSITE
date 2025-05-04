@@ -44,6 +44,7 @@ public class UserJoinServlet extends HttpServlet {
         PrintWriter writer = response.getWriter();
         
         // 입학년도 컬럼의 값을 문자열로 받아 숫자 검증
+        // role별(교수/교직원/관리자)로 분기 처리(admissionYear 개념이 없으므로, 값을 NULL 또는 0으로 저장)        
         int admissionYear = 0;
         try {
         	admissionYear = Integer.parseInt(request.getParameter("admissionYear"));

@@ -3,6 +3,8 @@ package user;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
+
 import util.DatabaseUtil;
 
 /* 로그인 인증 결과(로직과 메시지를 분리하여 유지보수의 편의성 확보)
@@ -34,6 +36,7 @@ public class UserDAO {
         String insertAcademicRecordSQL = "INSERT INTO ACADEMIC_RECORD (userID, college, major) VALUES (?, ?, ?)";
         
         // DB 테이블 연결 객체 초기화
+        // SQL Injection 방어를 위한 PreparedStatement(보안 취약점을 보유한 소스코드를 짜려면 어떻게 할지 고려)
         PreparedStatement userStatement = null;
         PreparedStatement personalInfoStatement = null;
         PreparedStatement academicRecordStatement = null;
@@ -83,8 +86,15 @@ public class UserDAO {
                 personalInfoStatement.setString(5, residentNumberFront + "-" + residentNumberBack);
                 personalInfoStatement.setString(6, college);
                 personalInfoStatement.setString(7, major);
-                // role별(교수/교직원/관리자)로 분기 처리(admissionYear 개념이 없으므로, 값을 NULL 또는 0으로 저장)
-                personalInfoStatement.setInt(8, admissionYear);
+                // role별(교수/교직원/관리자)로 분기 처리
+                // role이 학생이 아닐 경우, admissionYear 개념이 없으므로, 값을 NULL 또는 0으로 저장
+                if (role.equalsIgnoreCase("student")) {
+                    personalInfoStatement.setInt(8, admissionYear);
+                } else {
+                    personalInfoStatement.setNull(8, Types.INTEGER);
+                    // DB에서 해당 컬럼이 공백값을 허용하도록 수정 쿼리 사전 실행절차 필수
+                    // ALTER TABLE PERSONAL_INFO MODIFY admissionYear INT NULL;
+                }
                 personalInfoStatement.setString(9, status);
                 personalInfoStatement.executeUpdate();
 
@@ -103,7 +113,7 @@ public class UserDAO {
             e.printStackTrace();
             try {
                 if (connection != null) {
-                    // 예외 발생 시 롤백
+                    // 예외 발생 시 롤백 트랜잭션 처리
                     connection.rollback();
                 }
             } catch (Exception rollbackException) {
@@ -126,10 +136,12 @@ public class UserDAO {
     }
 
     // 로그인 인증
-    public int login(String userID, String userPassword) {
+    public UserDTO login(String userID, String userPassword) {
         // 로그인 SQL 쿼리
-        String SQL = "SELECT userPassword FROM USER WHERE userID = ?";
-        
+        // 각각 사용자명과 계정 유형을 사용자 아이디(학번/사번)을 통해 DB에서 불러옴  
+    	String SQL = "SELECT userPassword, name, role FROM USER WHERE userID = ?";
+    		// String SQL = "SELECT userPassword FROM USER WHERE userID = ?";
+
         try (Connection connection = DatabaseUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL)) {
             
@@ -138,22 +150,30 @@ public class UserDAO {
             
             if (resultSet.next()) {
                 String storedPassword = resultSet.getString("userPassword");
+               // 아이디, 비밀번호 모두 일치하여 로그인 성공
                 if (storedPassword.equals(userPassword)) {
-                    // 아이디, 비밀번호 모두 일치하여 로그인 성공
-                    return 1;
+                	// 로그인 성공했을 때 사용자 정보 활용
+                	UserDTO user = new UserDTO();
+                	user.setUserID(userID);
+                	// 쿼리 실행결과 객체에서 name, role값 추출
+                    user.setUserName(resultSet.getString("name"));
+                    user.setUserRole(resultSet.getString("role"));
+                    // UserDTO 객체를 생성하여 반환하는 형태
+                    return user;
+                    
                 } else {
                     // 비밀번호 불일치하여 인증 오류발생
-                    return 0;
+                    return null; // return 0;
                 }
             } else {
                 // DB에서 아이디가 조회되지 않아 인증 오류발생
-                return -1;
+            	return null; // return -1;
             }
             
         } catch (Exception e) {
             e.printStackTrace();
             // 데이터베이스 오류 발생
-            return -2;
+            return null; // return -2;
         }
     }
 }
