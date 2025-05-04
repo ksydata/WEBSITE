@@ -1,6 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="java.util.*, dao.NoticeDAO, dto.NoticeDTO" %>
+<%
+    NoticeDAO dao = new NoticeDAO();
+    List<NoticeDTO> noticeList = dao.getAllNotices();
+    request.setAttribute("noticeList", noticeList);
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,8 +33,8 @@
         </thead>
         <tbody>
             <c:forEach var="post" items="${noticeList}">
-                <tr onclick="location.href='viewPost.jsp?id=${post.idx}'" style="cursor:pointer;">
-                    <td>${post.idx}</td>
+                <tr onclick="location.href='postpage.jsp?id=${post.noticeID}'" style="cursor:pointer;">
+                    <td>${post.noticeID}</td>
                     <td>${post.userID}</td>
                     <td>${post.createDate}</td>
                     <td>${post.title}</td>

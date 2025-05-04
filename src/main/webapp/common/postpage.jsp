@@ -1,5 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.util.*, dao.NoticeDAO, dto.NoticeDTO" %>
+<%
+    int id = Integer.parseInt(request.getParameter("id"));
+    NoticeDAO dao = new NoticeDAO();
+    NoticeDTO post = dao.getNoticeByID(id);
+    request.setAttribute("post", post);
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,19 +20,20 @@
 </head>
 <body class="container mt-5">
 	<h2 class="mb-3">${post.title}</h2>
-    <p><strong>작성자:</strong> ${post.author}</p>
-    <p><strong>작성일:</strong> ${post.date}</p>
-    <p><strong>수정일:</strong> ${post.date}</p>
+    <p><strong>작성자:</strong> ${post.userID}</p>
+    <p><strong>작성일:</strong> ${post.createDate}</p>
+    <p><strong>수정일:</strong> ${post.updateDate}</p>
+    <p><strong>종료일:</strong> ${post.endDate}</p>
 
     <hr>
-    <p>${post.content}</p>
+    <p>${post.contents}</p>
     <hr>
 
     <div class="d-flex justify-content-between">
-        <a href="boardList.jsp" class="btn btn-secondary">목록으로</a>
+        <a href="postlist.jsp" class="btn btn-secondary">목록으로</a>
         <div>
-            <a href="editPost.jsp?id=${post.id}" class="btn btn-warning">수정</a>
-            <a href="deletePost.jsp?id=${post.id}" class="btn btn-danger">삭제</a>
+            <a href="editPost.jsp?id=${post.noticeID}" class="btn btn-warning">수정</a>
+            <a href="deletePost.jsp?id=${post.noticeID}" class="btn btn-danger">삭제</a>
         </div>
     </div>
 </body>

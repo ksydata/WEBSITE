@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,13 +47,13 @@ public class NoticeDAO {
 	
 	
 	// 특정 게시글 조회 - 게시글 표 & 게시글 작성자 조회 (학생/교수/관리자 여부와 함께 조회)
-	public NoticeDTO getNoticeByIdx(int idx) {
+	public NoticeDTO getNoticeByID(int noticeID) {
 		NoticeDTO notice = new NoticeDTO();
-		String sql = "SELECT * FROM notice WHERE idx = ?";
+		String sql = "SELECT * FROM NOTICE WHERE noticeID = ?";
 
 		try (Connection connection = DatabaseUtil.getConnection();
 			PreparedStatement checkStatement = connection.prepareStatement(sql)) {
-			checkStatement.setInt(1, idx);
+			checkStatement.setInt(1, noticeID);
 			ResultSet resultSet = checkStatement.executeQuery();
 			
 			if (resultSet.next()) {
@@ -71,7 +72,32 @@ public class NoticeDAO {
 		}
 		
 		return notice;
+	}
+	
+	public boolean uploadNotice(String userID, String title, String contents, String permissionRole) {
+		String sql = "INSERT INTO NOTICE (userID, title, contents, createDate, permissionRole) VALUES (?, ?, ?, ?, ?)";		
 		
+		try (Connection connection = DatabaseUtil.getConnection();
+			PreparedStatement insertStatement = connection.prepareStatement(sql)) {
+			
+			insertStatement.setString(1, userID);
+			insertStatement.setString(2, title);
+			insertStatement.setString(3, contents);
+			insertStatement.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+			insertStatement.setString(5, permissionRole);
+			insertStatement.executeUpdate();
+			
+			int rowsAffected = insertStatement.executeUpdate();
+			return rowsAffected > 0;
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			// 게시 실패
+			return false;
+		}
 		
 	}
 }

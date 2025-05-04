@@ -15,6 +15,8 @@ import dto.NoticeDTO;
 
 @WebServlet("/BoardServlet")
 public class BoardServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		NoticeDAO dao = new NoticeDAO();
         List<NoticeDTO> list = dao.getAllNotices();  // 모든 게시글 조회
@@ -23,4 +25,29 @@ public class BoardServlet extends HttpServlet {
         RequestDispatcher dispatcher = request.getRequestDispatcher("/common/postlist.jsp");
         dispatcher.forward(request, response);       // JSP로 전달
 	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // 한글 처리
+        request.setCharacterEncoding("UTF-8");
+
+        // 폼에서 받은 데이터 추출
+        String userID = request.getParameter("userID");
+        String title = request.getParameter("title");
+        String contents = request.getParameter("contents");
+        String permissionRole = request.getParameter("permissionRole");
+
+        // DB에 저장
+        NoticeDAO dao = new NoticeDAO();
+        boolean result = dao.uploadNotice(userID, title, contents, permissionRole);
+
+        if (result) {
+            // 저장 성공 시 목록 페이지로 이동
+            response.sendRedirect("BoardServlet");
+        } else {
+            // 실패 시 에러 페이지로 이동하거나 오류 메시지 처리
+            request.setAttribute("errorMessage", "게시글 등록에 실패했습니다.");
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+        }
+    }
+	
 }
