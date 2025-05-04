@@ -48,16 +48,20 @@
 		    }
             
             // options 배열을 통해 상태 옵션 드롭다운을 업데이트
-		    options.forEach(function(opt) {
-		        const optionElement = document.createElement("option");
-		        optionElement.value = opt;
-		        optionElement.text = opt;
-		        statusSelect.appendChild(optionElement);
-		    });
+	        options.forEach(function(opt) {
+	            const optionElement = document.createElement("option");
+	            optionElement.value = opt;
+	            optionElement.text = opt;
+	            statusSelect.appendChild(optionElement);
+	        });
+	    }
 		            
-            // 자바스크립트에서 <body>태그 본문의 <select id="role">의 "onchange" 이벤트 다시 걸어주기
-            document.getElementById("role").addEventListener("change", updateStatusOptions);
-	}            
+        // 자바스크립트에서 처음 페이지 로드할 때 <body>태그 본문의 <select id="role">의 "onchange" 이벤트 걸어주기(1번만 호출)
+        // role 셀렉트박스 바꿀 때마다 updateStatusOptions()가 호출하면 change 이벤트가 중첩 등록되어 메모리 누수 위험    
+	    window.onload = function() {
+	        document.getElementById("role").addEventListener("change", updateStatusOptions);
+	        updateStatusOptions();
+	    }
 	</script>
 </head>
 <body onload="updateStatusOptions()">

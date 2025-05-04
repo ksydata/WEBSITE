@@ -61,6 +61,8 @@ public class UserDAO {
                 // USER 테이블에 데이터 삽입
                 userStatement = connection.prepareStatement(insertUserSQL);
                 userStatement.setString(1, userID);
+                // 비밀번호는 원칙적으로 평문이 아닌 해시(일방향) 암호화하여 저장하여야 함
+                // e.g. MessageDigest.getInstance("SHA-256") password.getBytes() messageDigest.digest()
                 userStatement.setString(2, userPassword);
                 userStatement.setString(3, email);
                 userStatement.setString(4, name);
@@ -77,9 +79,11 @@ public class UserDAO {
                 personalInfoStatement.setString(3, residentNumberFront);  
                 personalInfoStatement.setString(4, gender);
                 // 나누어 입력받은 두 값을 하나로 합쳐서 주민등록번호 형식으로 저장 (e.g. "123456-1234567")
+                // 주민등록번호 뒷자리는 원칙적으로 평문이 아닌 해시(일방향) 암호화하여 저장하여야 함
                 personalInfoStatement.setString(5, residentNumberFront + "-" + residentNumberBack);
                 personalInfoStatement.setString(6, college);
                 personalInfoStatement.setString(7, major);
+                // role별(교수/교직원/관리자)로 분기 처리(admissionYear 개념이 없으므로, 값을 NULL 또는 0으로 저장)
                 personalInfoStatement.setInt(8, admissionYear);
                 personalInfoStatement.setString(9, status);
                 personalInfoStatement.executeUpdate();

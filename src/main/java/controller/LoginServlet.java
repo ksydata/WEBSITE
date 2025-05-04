@@ -24,9 +24,11 @@ public class LoginServlet extends HttpServlet {
         // 요청 파라미터를 UTF-8로 인코딩 (한글 깨짐 방지)
 		request.setCharacterEncoding("UTF-8");
 
-        // 사용자로부터 전달받은 아이디와 비밀번호 파라미터 가져오기
+        // 사용자로부터 전달받은 아이디, 비밀번호 및 계정 유형 파라미터 가져오기
 	    String userID = request.getParameter("userID");
 	    String userPassword = request.getParameter("userPassword");
+	    String userRole = request.getParameter("userRole");
+	    String userName = request.getParameter("userName");	    	    
 
 	    // 데이터접근객체 클래스의 인스턴스 생성 후 로그인 메서드를 활용하여 결과값 받아오기
 	    UserDAO userDAO = new UserDAO();
@@ -35,7 +37,13 @@ public class LoginServlet extends HttpServlet {
 	    // 로그인 성공
 	    if (result == 1) {
 	    	HttpSession session = request.getSession();
+	    	// 계정 아이디를 세션에 저장
 	    	session.setAttribute("userID", userID);
+	    	// 계정별 권한(학생, 교수, 교직원, 관리자)을 세션에 저장
+	    	session.setAttribute("role", userRole);
+	    	// 사용자 이름을 세션에 저장
+	    	session.setAttribute("name", userName);
+	    	
 	        response.sendRedirect("index.jsp");
 	    } else {
 	        // 응답의 콘텐츠 타입을 UTF-8로 설정
@@ -60,3 +68,10 @@ public class LoginServlet extends HttpServlet {
 	    }
     }	    
 }
+
+/*
+.setAttribute()
+After this method executes, and if the new object implements HttpSessionBindingListener,
+the container calls HttpSessionBindingListener.valueBound. 
+The container then notifies any HttpSessionAttributeListeners in the web application. 
+ */
