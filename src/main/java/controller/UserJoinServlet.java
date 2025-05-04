@@ -89,7 +89,8 @@ public class UserJoinServlet extends HttpServlet {
         } else {
             // 그 외의 예외 상황
             writer.println("<script>");
-            writer.println("alert('회원가입 중 알 수 없는 오류가 발생했습니다.');");
+            writer.println("alert('회원가입 중 오류가 발생했습니다. 결과 코드: " + result + "');");
+            // writer.println("alert('회원가입 중 알 수 없는 오류가 발생했습니다.');");
             writer.println("history.back();");
             writer.println("</script>");
         }

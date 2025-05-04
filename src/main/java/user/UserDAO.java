@@ -6,10 +6,11 @@ import java.sql.ResultSet;
 import util.DatabaseUtil;
 
 /* 로그인 인증 결과(로직과 메시지를 분리하여 유지보수의 편의성 확보)
-  1 : 로그인 성공
+  1 : 로그인 / 회원가입 등 작업 성공
   0 : 비밀번호 불일치
  -1 : 아이디 없음
  -2 : 데이터베이스 오류
+  2 : 이미 존재하는 아이디와 중복값
 */
 
 // Data Access Object: util() 활용
@@ -30,7 +31,7 @@ public class UserDAO {
         String insertPersonalInfoSQL = "INSERT INTO PERSONAL_INFO (userID, address, birthDate, gender, residentNumber, college, major, admissionYear, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         // ACADEMIC_RECORD 테이블에 학사 정보를 삽입하는 쿼리
-        String insertAcademicRecordSQL = "INSERT INTO ACADEMIC_RECORD (userID, college, major, admissionYear) VALUES (?, ?, ?, ?)";
+        String insertAcademicRecordSQL = "INSERT INTO ACADEMIC_RECORD (userID, college, major) VALUES (?, ?, ?)";
         
         // DB 테이블 연결 객체 초기화
         PreparedStatement userStatement = null;
@@ -44,6 +45,8 @@ public class UserDAO {
         	// connection 초기화
             connection = DatabaseUtil.getConnection(); 
             // 아이디 중복 체크
+            connection.setAutoCommit(false);
+            // 자동 커밋 모드 비활성화: 해당 모드가 활성화된 상태에서 commit()이나 rollback()을 호출하려고 하면 문제 발생
             try (PreparedStatement checkStatement = connection.prepareStatement(checkSQL)) {
 
                 checkStatement.setString(1, userID);
@@ -86,7 +89,6 @@ public class UserDAO {
                 academicRecordStatement.setString(1, userID);
                 academicRecordStatement.setString(2, college);
                 academicRecordStatement.setString(3, major);
-                academicRecordStatement.setInt(4, admissionYear);
                 academicRecordStatement.executeUpdate();
 
                 // 모든 작업이 성공적으로 끝나면 커밋
@@ -111,7 +113,8 @@ public class UserDAO {
                 if (userStatement != null) userStatement.close();
                 if (personalInfoStatement != null) personalInfoStatement.close();
                 if (academicRecordStatement != null) academicRecordStatement.close();
-                if (connection != null) connection.setAutoCommit(true);  // 자동 커밋 모드 복구
+                // 자동 커밋 모드 복구
+                if (connection != null) connection.setAutoCommit(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
