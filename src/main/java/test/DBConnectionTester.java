@@ -32,9 +32,7 @@ public class DBConnectionTester {
             // 설정 정보 가져오기(공백 제거)
             String dbURL = properties.getProperty("db.url").trim();
             String dbID = properties.getProperty("db.user").trim();
-            String dbPW = properties.getProperty("db.password").trim();
-            
-            /*
+            String dbPW = properties.getProperty("db.password").trim();            /*
             String encryptedPW = properties.getProperty("db.password");
             // 복호화 키 환경변수에서 가져오기
             String encryptKey = System.getenv("JASYPT_ENCRYPTOR_KEY");

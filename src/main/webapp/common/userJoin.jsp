@@ -13,36 +13,54 @@
 		// 회원 유형별로 상태가 다르게 보이도록 설정하는 Javascript
 		function updateStatusOptions() {
 			const role = document.getElementById("role").value;
-			const statusSelect = document.getElementById("status").value;
+			const statusSelect = document.getElementById("status");
+		    const collegeDiv = document.getElementById("collegeDiv");
+		    const majorDiv = document.getElementById("majorDiv");
+		    const admissionYearDiv = document.getElementById("admissionYearDiv");			
 			
 			// 상태 옵션 드롭다운 초기화
 			statusSelect.innerHTML = "";
 			let options = [];
 			
             // 학생, 교수, 교직원, 관리자별로 각 상태 옵션 다르게 설정
-            if (role === "학생") {
-                options = ["재학", "수료", "휴학", "졸업", "기타"];
-            } else if (role === "교수") {
-                options = ["재직", "휴직", "퇴직", "안식년", "기타"];
-            } else if (role === '교직원') {
-                options = ["재직", "휴직", "퇴직", "기타"];
-            } else if (role === "교직원") {
-                options = ["활성화", "비활성화"];                
-            } else {
-                options = ["회원 유형을 먼저 선택하세요"];
-            }
+		    if (role === "학생") {
+		        options = ["재학", "수료", "휴학", "졸업", "기타"];
+		        collegeDiv.style.display = "block";
+		        majorDiv.style.display = "block";
+		        admissionYearDiv.style.display = "block";		        
+		    } else if (role === "교수") {
+		        options = ["재직", "휴직", "퇴직", "안식년", "기타"];
+		        collegeDiv.style.display = "block";
+		        majorDiv.style.display = "block";
+		        admissionYearDiv.style.display = "none";		        
+		    } else if (role === "교직원") {
+		        options = ["재직", "휴직", "퇴직", "기타"];
+		        collegeDiv.style.display = "none";
+		        majorDiv.style.display = "none";
+		        admissionYearDiv.style.display = "none";			        
+		    } else if (role === "관리자") {
+		        options = ["활성화", "비활성화"];
+		        collegeDiv.style.display = "none";
+		        majorDiv.style.display = "none";
+		        admissionYearDiv.style.display = "none";		        
+		    } else {
+		        options = ["회원 유형을 먼저 선택하세요"];
+		    }
             
             // options 배열을 통해 상태 옵션 드롭다운을 업데이트
-            options.forEach(function(opt)) {
-            	const optionElement = document.createElement("option");
-            	optionElement.value = opt;
-            	optionElement.text = opt;
-            	statusSelect.appendChild(optionElement);
-            }
+		    options.forEach(function(opt) {
+		        const optionElement = document.createElement("option");
+		        optionElement.value = opt;
+		        optionElement.text = opt;
+		        statusSelect.appendChild(optionElement);
+		    });
+		            
+            // 자바스크립트에서 <body>태그 본문의 <select id="role">의 "onchange" 이벤트 다시 걸어주기
+            document.getElementById("role").addEventListener("change", updateStatusOptions);
 	}            
 	</script>
 </head>
-<body>
+<body onload="updateStatusOptions()">
     <div class="container mt-5">
         <h3 class="text-center mb-4">회원가입</h3>
         <%-- 사용자가 입력한 값을 <form> 태그를 통해 userJoinAction.jsp에서 처리하도록 설정 --%>
@@ -58,9 +76,10 @@
             </div>
             
             <%-- 가입자 회원 유형과 상태값 --%>
+            <%-- 회원 유형 변경 시 상태 옵션 셀렉트박스가 바뀌도록 자바스크립트 함수를 호출 --%>
             <div class="form-group mb-4">
             	<label for="role">회원 유형</label>
-            	<select class="form-select" name="role" id="role" required>
+            	<select class="form-select" name="role" id="role" required onchange="updateStatusOptions()">
 			        <option value="">선택</option>
 			        <option value="학생">학생</option>
 			        <option value="교수">교수</option>
@@ -123,8 +142,8 @@
             	<input type="email" class="form-control" name="email" id="email" required></input>
             </div>
             
-            <%-- 학사정보 --%>            
-            <div class="form-group mb-3">
+            <%-- 학생, 교수 입력 폼: 학사정보 --%>            
+            <div class="form-group mb-3" id="collegeDiv">
             	<label for="college">단과대학</label>
             	<select class="form-select" name="college" id="college">
             		<option value="">선택</option>
@@ -136,7 +155,7 @@
             		<option value="자연과학대학">자연과학대학</option>
             	</select>            		    		
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" id="majorDiv">
             	<label for="major">전공</label>
             	<select class="form-select" name="major" id="major">
             		<option value="">선택</option>
@@ -149,7 +168,7 @@
             		<option value="컴퓨터공학과">컴퓨터공학과</option>
             	</select>
             </div>
-            <div class="form-group mb-4">
+            <div class="form-group mb-4" id="admissionYearDiv">
                 <label for="admissionYear">입학년도</label>
                 <input type="number" class="form-control" name="admissionYear" id="admissionYear">
             </div>

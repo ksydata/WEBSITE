@@ -38,13 +38,24 @@ public class UserJoinServlet extends HttpServlet {
         String email = request.getParameter("email");
         String college = request.getParameter("college");
         String major = request.getParameter("major");
-        String admissionYear = request.getParameter("admissionYear");
         
         // 응답의 콘텐츠 타입을 UTF-8로 설정
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter writer = response.getWriter();
+        
+        // 입학년도 컬럼의 값을 문자열로 받아 숫자 검증
+        int admissionYear = 0;
+        try {
+        	admissionYear = Integer.parseInt(request.getParameter("admissionYear"));
+        } catch (NumberFormatException e) {
+            writer.println("<script>");
+            writer.println("alert('입학년도는 숫자로 입력해주세요.');");
+            writer.println("history.back();");
+            writer.println("</script>");
+            return;
+        }
 
-        // 아이디 또는 비밀번호가 비어 있거나 null인 경우
+        // 아이디 또는 비밀번호가 비어 있거나 null인 경우를 고려해 필수값 체크
         if (userID == null || userPassword == null || userID.trim().isEmpty() || userPassword.trim().isEmpty()) {
             writer.println("<script>");
             writer.println("alert('아이디와 비밀번호를 모두 입력해주세요.');");
@@ -58,12 +69,9 @@ public class UserJoinServlet extends HttpServlet {
         UserDAO userDAO = new UserDAO();
 
         // join 메서드를 호출해 회원가입 처리
-        int result = userDAO.join(userID, userPassword);
-        /*
         int result = userDAO.join(
         	userID, userPassword, email, name, phoneNumber, officeNumber, role, address, 
-    		birthDate, gender, residentNumber, college, major, admissionYear, status); 
-         */
+        	residentNumberFront, residentNumberBack, gender, college, major, admissionYear, status); 
 
         // 회원가입 결과에 따른 분기 처리
         if (result == 1) {
