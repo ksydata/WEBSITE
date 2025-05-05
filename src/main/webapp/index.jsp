@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--HTML 5 문서유형 선언--%>
 <!DOCTYPE html>
 <html>
@@ -24,7 +25,37 @@
 		<%-- 모바일 메뉴 토글 버튼(화면 크기가 작아질 때 메뉴 축소/확장) --%>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
 			<span class="navbar-toggler-icon"></span>
-		</button>		
+		</button>
+		
+		<%-- 사용자 권한에 따라 메뉴 표시 --%>
+		<c:choose>
+			<c:when test="${userRole == '학생'}">
+				<li class="nav-item">
+					<a class="nav-link" href="student/myPersonalInfoPage.jsp">나의 개인정보 조회</a>
+					<a class="nav-link" href="student/myAcademicRecordPage.jsp">나의 학사정보 조회</a>					
+				</li>
+			</c:when>
+			<c:when test="${userRole == '교수'}">
+				<li class="nav-item">
+					<a class="nav-link" href="professor/myPersonalInfo.jsp">나의 개인정보 조회</a>
+					<a class="nav-link" href="professor/classAcademic.jsp">수강생 학사정보 조회</a>					
+				</li>
+			</c:when>
+			<c:when test="${userRole == '교직원'}">
+				<li class="nav-item">
+					<a class="nav-link" href="employee/myPersonalInfo.jsp">나의 개인정보 조회</a>
+					<a class="nav-link" href="employee/studentPersonalInfo.jsp">학생 개인정보 조회</a>					
+				</li>
+			</c:when>
+			<c:when test="${userRole == '관리자'}">
+				<li class="nav-item">
+					<a class="nav-link" href="admin/myPersonalInfo.jsp">나의 개인정보 조회</a>
+					<a class="nav-link" href="admin/userPersonalInfo.jsp">사용자 개인정보 조회</a>
+					<a class="nav-link" href="admin/userAcademicRecord.jsp">사용자 학사정보 조회</a>														
+				</li>
+			</c:when>						
+		</c:choose>
+			
 		<%-- 네비게이션 항목들 --%>		
 		<div id="navbar" class="collapse navbar-collapse">
 			<%-- 목록(list)를 가지는 요소인 ul 태그 --%>	
@@ -36,6 +67,7 @@
 				<%-- <li class="nav-item"><a class="nav-link" href="./common/logout.jsp">로그아웃</a> --%>
 			</ul>
 		</div>
+
     </nav>
 
     <%-- 푸터(웹사이트 최하단 영역) --%>
