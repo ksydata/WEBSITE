@@ -17,6 +17,7 @@ import dto.NoticeDTO;
 public class BoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	// notice 리스트 조회
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		NoticeDAO dao = new NoticeDAO();
         List<NoticeDTO> list = dao.getAllNotices();  // 모든 게시글 조회
@@ -26,6 +27,7 @@ public class BoardServlet extends HttpServlet {
         dispatcher.forward(request, response);       // JSP로 전달
 	}
 	
+	// 개별 notice 작성 및 등록
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 한글 처리
         request.setCharacterEncoding("UTF-8");
@@ -39,17 +41,18 @@ public class BoardServlet extends HttpServlet {
 
         // DB에 저장
         NoticeDAO dao = new NoticeDAO();
-        boolean result = dao.uploadNotice(userID, title, contents, endDate, permissionRole);
 
-        if (result) {
-            // 저장 성공 시 목록 페이지로 이동
-        	request.getSession().setAttribute("flashMessage", "게시글이 성공적으로 등록되었습니다.");
-        	response.sendRedirect("common/postlist.jsp");
+        // DB 저장 결과로 noticeID (PK, auto increment) 반환
+        int newNoticeID = dao.uploadNotice(userID, title, contents, endDate, permissionRole);
+
+        if (newNoticeID > 0) {
+            request.getSession().setAttribute("flashMessage", "게시글이 성공적으로 등록되었습니다.");
+            response.sendRedirect("common/postpage.jsp?id=" + newNoticeID);
         } else {
-            // 실패 시 에러 페이지로 이동하거나 오류 메시지 처리
             request.setAttribute("errorMessage", "게시글 등록에 실패했습니다.");
             request.getRequestDispatcher("common/writePost.jsp").forward(request, response);
         }
+        
     }
 	
 }

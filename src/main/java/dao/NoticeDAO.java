@@ -74,8 +74,9 @@ public class NoticeDAO {
 		return notice;
 	}
 	
-	public boolean uploadNotice(String userID, String title, String contents, String endDate, String permissionRole) {
+	public int uploadNotice(String userID, String title, String contents, String endDate, String permissionRole) {
 		String sql = "INSERT INTO NOTICE (userID, title, contents, createDate, updateDate, endDate, permissionRole) VALUES (?, ?, ?, ?, ?, ?, ?)";		
+		int insertedID = -1;
 		
 		// 문자열 endDate를 Timestamp로 변환
         Timestamp endDateTime = null;
@@ -84,7 +85,7 @@ public class NoticeDAO {
         }
 		
 		try (Connection connection = DatabaseUtil.getConnection();
-			PreparedStatement insertStatement = connection.prepareStatement(sql)) {
+			PreparedStatement insertStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);) {
 			
 			insertStatement.setString(1, userID);
 			insertStatement.setString(2, title);
@@ -95,16 +96,38 @@ public class NoticeDAO {
 			insertStatement.setString(7, permissionRole);
 			
 			int rowsAffected = insertStatement.executeUpdate();
-			return rowsAffected > 0;
+			
+			if (rowsAffected > 0) {
+	            ResultSet rs = insertStatement.getGeneratedKeys();
+	            if (rs.next()) {
+	                insertedID = rs.getInt(1);  // 자동 증가한 PK 반환
+	            }
+	        }
 			
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			
-			// 게시 실패
-			return false;
 		}
 		
+		// 게시 성공 시 해당 행의 noticeID (auto increment), 게시 실패 시 -1 반환
+		return insertedID;
+		
+	}
+	
+	public boolean updateNotice(int id, String title, String contents) {
+	    String sql = "UPDATE NOTICE SET title = ?, contents = ?, updateDate = NOW() WHERE noticeID = ?";
+	    
+	    try (Connection conn = DatabaseUtil.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setString(1, title);
+	        pstmt.setString(2, contents);
+	        pstmt.setInt(3, id);
+	        return pstmt.executeUpdate() > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
 	}
 }

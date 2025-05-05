@@ -6,6 +6,9 @@
     NoticeDAO dao = new NoticeDAO();
     NoticeDTO post = dao.getNoticeByID(id);
     request.setAttribute("post", post);
+    
+    String loginUserID = (String) session.getAttribute("userID");
+    boolean isAuthor = loginUserID != null && loginUserID.equals(post.getUserID());
 %>
 <!DOCTYPE html>
 <html>
@@ -31,10 +34,12 @@
 
     <div class="d-flex justify-content-between">
         <a href="postlist.jsp" class="btn btn-secondary">목록으로</a>
+        <% if (isAuthor) { %>
         <div>
             <a href="editPost.jsp?id=${post.noticeID}" class="btn btn-warning">수정</a>
             <a href="deletePost.jsp?id=${post.noticeID}" class="btn btn-danger">삭제</a>
         </div>
+        <% } %>
     </div>
 </body>
 </html>

@@ -4,11 +4,6 @@
 <%
     String userID = (String) session.getAttribute("userID");
 	String permissionRole = (String) session.getAttribute("permissionRole");
-
-	/* if (userID == null || permissionRole == null) {
-	    response.sendRedirect("login.jsp");
-	    return;
-	} */
 %>
 <!DOCTYPE html>
 <html>
