@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.*, dao.NoticeDAO, dto.NoticeDTO" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
     int id = Integer.parseInt(request.getParameter("id"));
     NoticeDAO dao = new NoticeDAO();
@@ -14,7 +15,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Insert title here</title>
+	<title>${post.title}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- 부트스트랩 스타일 시트 연결 href="./css/bootstrap.min.css?ver=1" -->
 	<link rel="stylesheet" href="./css/bootstrap.min.css">
@@ -24,21 +25,29 @@
 <body class="container mt-5">
 	<h2 class="mb-3">${post.title}</h2>
     <p><strong>작성자:</strong> ${post.userID}</p>
-    <p><strong>작성일:</strong> ${post.createDate}</p>
-    <p><strong>수정일:</strong> ${post.updateDate}</p>
-    <p><strong>종료일:</strong> ${post.endDate}</p>
+    
+    <p><strong>작성일:</strong> <fmt:formatDate value="${post.createDate}" pattern="yyyy-MM-dd HH:mm:ss" timeZone="Asia/Seoul" /></p>
+    <p><strong>수정일:</strong> <fmt:formatDate value="${post.updateDate}" pattern="yyyy-MM-dd HH:mm:ss" timeZone="Asia/Seoul" /></p>
+    <p><strong>종료일:</strong> <fmt:formatDate value="${post.endDate}" pattern="yyyy-MM-dd HH:mm:ss" timeZone="Asia/Seoul" /></p>
 
     <hr>
-    <p>${post.contents}</p>
+    	<p>${post.contents}</p>
     <hr>
 
     <div class="d-flex justify-content-between">
         <a href="postlist.jsp" class="btn btn-secondary">목록으로</a>
+
         <% if (isAuthor) { %>
-        <div>
-            <a href="editPost.jsp?id=${post.noticeID}" class="btn btn-warning">수정</a>
-            <a href="deletePost.jsp?id=${post.noticeID}" class="btn btn-danger">삭제</a>
-        </div>
+        <div class="d-flex gap-2">
+		    <!-- 수정 버튼 -->
+		    <a href="editPost.jsp?id=<%= post.getNoticeID() %>" class="btn btn-warning">수정</a>
+		
+		    <!-- 삭제 버튼: 스타일 일치 -->
+		    <form action="<%= request.getContextPath() %>/DeleteServlet" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');" style="margin: 0;">
+		        <input type="hidden" name="id" value="<%= post.getNoticeID() %>">
+		        <button type="submit" class="btn btn-warning">삭제</button>  <%-- btn-warning → btn-danger 도 가능 --%>
+		    </form>
+		</div>
         <% } %>
     </div>
 </body>

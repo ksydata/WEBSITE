@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page import="java.util.*, dao.NoticeDAO, dto.NoticeDTO" %>
 <%
     NoticeDAO dao = new NoticeDAO();
@@ -19,6 +20,7 @@
 	<link rel="stylesheet" href="./css/custom.css">
 </head>
 <body class="container mt-5">
+	
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<h2 class="mb-4">📋 게시판 글 목록</h2>
 
@@ -36,8 +38,10 @@
                 <tr onclick="location.href='postpage.jsp?id=${post.noticeID}'" style="cursor:pointer;">
                     <td>${post.noticeID}</td>
                     <td>${post.userID}</td>
-                    <td>${post.createDate}</td>
-                    <td>${post.title}</td>
+					<td>
+					    <fmt:formatDate value="${post.createDate}" pattern="yyyy-MM-dd HH:mm:ss" timeZone="Asia/Seoul" />
+					</td>                    
+					<td>${post.title}</td>
                 </tr>
             </c:forEach>
         </tbody>

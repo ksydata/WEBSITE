@@ -130,4 +130,19 @@ public class NoticeDAO {
 	    }
 	    return false;
 	}
+	
+	
+	public boolean deleteNotice(int id) {
+	    String sql = "DELETE FROM NOTICE WHERE noticeID = ?";
+
+	    try (Connection conn = DatabaseUtil.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, id);
+	        return pstmt.executeUpdate() > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
+	
 }
