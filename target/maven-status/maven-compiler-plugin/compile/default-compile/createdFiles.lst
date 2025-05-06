@@ -1,5 +1,12 @@
-user\UserDAO.class
-util\EncryptDBPassword.class
-test\DBConnectionTester.class
-user\UserDTO.class
-util\DatabaseUtil.class
+controller/PostServlet.class
+dto/NoticeDTO.class
+test/DBConnectionTester.class
+controller/LoginServlet.class
+user/UserDTO.class
+controller/LogoutServlet.class
+controller/UserJoinServlet.class
+user/UserDAO.class
+util/EncryptDBPassword.class
+util/DatabaseUtil.class
+controller/BoardServlet.class
+dao/NoticeDAO.class
