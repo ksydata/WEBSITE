@@ -1,19 +1,57 @@
+[Architecture] 3-Tier
+	Controller(서블릿, http 요청/응답 처리)
+    	↓
+	Service(비즈니스 로직)  
+    	↓
+	DAO, DTO(데이터베이스 접근, 통신)  
+    	↓
+	DB(MySQL RDBMS)
+		↓
+	JSP(View)
+
 [Structure]
+	src/main/java
+        ├── controller
+        ├── service        
+        ├── dao        
+        ├── model(e.g. dto)
+        
 	webapp
+        ├── index.jsp // 메인 페이지
+        ├── common
+        │    ├── login.jsp // 로그인 페이지
+        │    ├── userJoin.jsp // 회원가입 페이지
+        │    ├── header.jsp // 공통 상단 메뉴 
+        │    ├── footer.jsp // 공통 하단 영역
+        │    ├── 
+        │          
         ├── student
-        │   └── test
-        │       └── --.java
+        │    ├── main.jsp // 학생용 메인 페이지
+        │    ├── myPersonalInfo.jsp // 나의 개인정보 조회/수정 페이지
+        │    ├── myAcademicRecord.jsp // 나의 학사정보 조회 페이지
+        │    ├── 
+        │                  
         ├── professor
-        │   └── test
-        │       └── --.java
+        │    ├── main.jsp // 교수용 메인 페이지
+        │    ├── myPersonalInfo.jsp // 나의 개인정보 조회/수정 페이지
+        │    ├── classAcademicRecord.jsp // 수강생 학사정보 조회
+        │    ├── 
+        │          
         ├── employee
-        │   └── test
-        │       └── --.java
+        │    ├── main.jsp // 교직원용 메인 페이지
+        │    ├── myPersonalInfo.jsp // 나의 개인정보 조회/수정 페이지
+        │    ├── studentPersonalInfo.jsp // 학생 개인정보 조회 페이지
+        │    ├── 
+        │          
         ├── admin
-        │   └── test
-        │       └── --.java            
+        │    ├── main.jsp // 관리자용 메인 페이지
+        │    ├── myPersonalInfo.jsp // 나의 개인정보 조회/수정 페이지        
+        │    ├── userPersonalInfo.jsp // 사용자 개인정보 조회/수정 페이지
+        │    ├── userAcademicRecord.jsp // 사용자 학사정보 조회 페이지
+        │    ├──            
+        │                  
         └── board
-            └── --.java
+            └── --.jsp
 
 [화면, 기능별 권한 매핑]
 기능						학생	교수 교직원 관리자

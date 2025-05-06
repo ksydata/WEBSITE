@@ -88,7 +88,7 @@ public class UserDAO {
                 personalInfoStatement.setString(7, major);
                 // role별(교수/교직원/관리자)로 분기 처리
                 // role이 학생이 아닐 경우, admissionYear 개념이 없으므로, 값을 NULL 또는 0으로 저장
-                if (role.equalsIgnoreCase("student")) {
+                if (role.equalsIgnoreCase("학생")) {
                     personalInfoStatement.setInt(8, admissionYear);
                 } else {
                     personalInfoStatement.setNull(8, Types.INTEGER);
