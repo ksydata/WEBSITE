@@ -43,8 +43,15 @@ public class DatabaseUtil {
 
 			// Jasypt 라이브러리로 키값을 활용하여 복호화
 			BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
+			
+			// 임시 변수
+			String encryptKey = "your_decrypt_key";
+					
+			// UNIT TEST
+			// System.out.println("복호화 키: " + System.getProperty("JASYPT_ENCRYPTOR_KEY"));
 			// 윈도우 시스템 환경변수에 저장된 복호화 키값 불러오기 
-			String encryptKey = System.getenv("JASYPT_ENCRYPTOR_KEY");
+			// String encryptKey = System.getenv("JASYPT_ENCRYPTOR_KEY"); 
+			
 			textEncryptor.setPassword(encryptKey);
 			// 프로퍼티 파일 내 암호화된 비밀번호를 복호화된 키값을 통해 보안 해제 후 문자열로 저장 
 			String dbPW = textEncryptor.decrypt(

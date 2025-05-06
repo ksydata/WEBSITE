@@ -1,0 +1,101 @@
+[Architecture] 3-Tier
+	Controller(서블릿, http 요청/응답 처리)
+    	↓
+	Service(비즈니스 로직)  
+    	↓
+	DAO, DTO(데이터베이스 접근, 통신)  
+    	↓
+	DB(MySQL RDBMS)
+		↓
+	JSP(View)
+
+[Structure]
+	src/main/java
+        ├── controller
+        ├── service        
+        ├── dao        
+        ├── model(e.g. dto)
+        
+	webapp
+        ├── index.jsp // 메인 페이지
+        ├── common
+        │    ├── login.jsp // 로그인 페이지
+        │    ├── userJoin.jsp // 회원가입 페이지
+        │    ├── header.jsp // 공통 상단 메뉴 
+        │    ├── footer.jsp // 공통 하단 영역
+        │    ├── 
+        │          
+        ├── student
+        │    ├── main.jsp // 학생용 메인 페이지
+        │    ├── myPersonalInfo.jsp // 나의 개인정보 조회/수정 페이지
+        │    ├── myAcademicRecord.jsp // 나의 학사정보 조회 페이지
+        │    ├── 
+        │                  
+        ├── professor
+        │    ├── main.jsp // 교수용 메인 페이지
+        │    ├── myPersonalInfo.jsp // 나의 개인정보 조회/수정 페이지
+        │    ├── classAcademicRecord.jsp // 수강생 학사정보 조회
+        │    ├── 
+        │          
+        ├── employee
+        │    ├── main.jsp // 교직원용 메인 페이지
+        │    ├── myPersonalInfo.jsp // 나의 개인정보 조회/수정 페이지
+        │    ├── studentPersonalInfo.jsp // 학생 개인정보 조회 페이지
+        │    ├── 
+        │          
+        ├── admin
+        │    ├── main.jsp // 관리자용 메인 페이지
+        │    ├── myPersonalInfo.jsp // 나의 개인정보 조회/수정 페이지        
+        │    ├── userPersonalInfo.jsp // 사용자 개인정보 조회/수정 페이지
+        │    ├── userAcademicRecord.jsp // 사용자 학사정보 조회 페이지
+        │    ├──            
+        │                  
+        └── board
+            └── --.jsp
+
+[화면, 기능별 권한 매핑]
+기능						학생	교수 교직원 관리자
+(1) 본인 개인정보 조회/수정	O	O	O	O
+(2) 본인 비밀번호 변경		O	O	O	O
+(3) 본인 성적 조회			O	X	X	O
+(4) 전체 학생 성적 조회		X	O	X	O
+(5) 전체 사용자 개인정보 조회	X	X	O	O
+(6) 전체 화면 접근 권한		X	X	X	O
+
+[로그인 후 세션 저장할 정보]
+1. 유저 데이터접근객체에서 각각 사용자명과 계정 유형을 사용자 아이디(학번/사번)을 통해 DB에서 불러옴
+	- 로그인할 때 userPassword뿐만 아니라 userName, userRole까지 셋 다 SELECT
+2. 유저 데이터통신객체에서 각 변수의(USER.name, USER.role) getter, setter 메서드를 생성함
+3. 로그인 서블릿도구에서 속성을 저장하여, 웹에서 HTTP 세션에 객체를 바인딩할 때 필요한 동작을 수행하는 등 이벤트를 처리하도록 함
+	- session.setAttribute("user_id", 로그인한 계정 아이디(학번/사번));
+	- session.setAttribute("name", 로그인한 이름);
+	- session.setAttribute("role", 로그인한 역할);
+4. 참고 로직
+	- Capture user type during login: S%, P%, E% A%
+	- Validate user credentials. Once validated, retrieve the user type.
+	- Redirect based on user type
+
+
+[Reference]
+[Googling]
+[1] https://blognavercomcheetah254.tistory.com/78
+[2] https://suinchoi.tistory.com/121
+[3] https://javapp.tistory.com/267
+
+[GPT Source]
+[1] JSP/Servlet 기반 회원가입/로그인, 권한 관리하는 기본 플로우 설명
+	https://mangkyu.tistory.com/49
+[2] 로그인 후 세션에 role 저장 → 페이지 분기 방법 자세함
+	https://itworldyo.tistory.com/27 (X)
+[3] JSP/Servlet 권한별 페이지 제어 (실습형)
+	https://velog.io/@jkijk0516/JSP-Servlet-회원권한별-페이지-제어
+[4] JSP/Servlet 로그인 구현 및 권한 확인 예제 (DB연동 role 저장, 로그인 검증 예제)
+	https://coding-factory.tistory.com/259 (X)
+[5] JSP 세션 정보로 사용자 권한 다루기 (sessionScope를 활용한 role별 접근제어 방법)
+	https://sjh836.tistory.com/142 (X)
+[6] MVC 패턴에서 Role별 분기 처리 방법 (서블릿 Controller단에서 role 체크)
+	https://goddaehee.tistory.com/237 (X)
+[7] JSP 로그인 후 사용자 권한별 대시보드 리디렉션 구현 (학생/교수/관리자 따로 dashboard 보내는 방법)
+	https://ddolcat.tistory.com/761 (X) 
+[8] JSP 조건문 <c:if>로 세션 role에 따라 HTML 숨기기/보이기 등 버튼/화면 제어하기
+	https://madplay.github.io/post/jsp-core-tag-library-c-if (X)
