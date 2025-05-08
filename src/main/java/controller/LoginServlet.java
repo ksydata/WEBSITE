@@ -28,8 +28,8 @@ public class LoginServlet extends HttpServlet {
         // 사용자로부터 전달받은 아이디, 비밀번호 및 계정 유형 파라미터 가져오기
 	    String userID = request.getParameter("userID");
 	    String userPassword = request.getParameter("userPassword");
-	    String userRole = request.getParameter("userRole");
-	    String userName = request.getParameter("userName");	    	    
+	    // [ERROR CODE] String userRole = request.getParameter("userRole");
+	    // [ERROR CODE] String userName = request.getParameter("userName");	    	    
 
 	    // 데이터접근객체 클래스의 인스턴스 생성 후 로그인 메서드를 활용하여 결과값 받아오기
 	    UserDAO userDAO = new UserDAO();
@@ -41,11 +41,11 @@ public class LoginServlet extends HttpServlet {
 	    	// 계정 아이디를 세션에 저장
 	    	session.setAttribute("userID", userID);
 	    	// 계정별 권한(학생, 교수, 교직원, 관리자)을 세션에 저장
-	    	session.setAttribute("role", userRole);
+	    	session.setAttribute("userRole", result.getUserRole());
 	    	// 사용자 이름을 세션에 저장
-	    	session.setAttribute("name", userName);
+	    	session.setAttribute("userName", result.getUserName());
 	    	
-	        response.sendRedirect("index.jsp");
+	        response.sendRedirect(request.getContextPath() + "/index.jsp");
 	    } else {
 	        // 응답의 콘텐츠 타입을 UTF-8로 설정
 	    	response.setContentType("text/html;charset=UTF-8");
