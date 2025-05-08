@@ -9,6 +9,85 @@
 		↓
 	JSP(View)
 
+
+[화면, 기능별 권한 매핑]
+기능						학생	교수 교직원 관리자
+(1) 본인 개인정보 조회/수정	O	O	O	O
+(2) 본인 비밀번호 변경		O	O	O	O
+(3) 본인 성적 조회			O	X	X	O
+(4) 전체 학생 성적 조회		X	O	X	O
+(5) 전체 사용자 개인정보 조회	X	X	O	O
+(6) 전체 화면 접근 권한		X	X	X	O
+
+
+[로그인 후 세션 저장할 정보]
+1. 유저 데이터접근객체에서 각각 사용자명과 계정 유형을 사용자 아이디(학번/사번)을 통해 DB에서 불러옴
+	- 로그인할 때 userPassword뿐만 아니라 userName, userRole까지 셋 다 SELECT
+2. 유저 데이터전송객체에서 각 변수의(USER.name, USER.role) getter, setter 메서드를 생성함
+3. 로그인 서블릿도구에서 속성을 저장하여, 웹에서 HTTP 세션에 객체를 바인딩할 때 필요한 동작을 수행하는 등 이벤트를 처리하도록 함
+	- session.setAttribute("user_id", 로그인한 계정 아이디(학번/사번));
+	- session.setAttribute("name", 로그인한 이름);
+	- session.setAttribute("role", 로그인한 역할);
+4. 참고 로직
+	- Capture user type during login: S%, P%, E% A%
+	- Validate user credentials. Once validated, retrieve the user type.
+	- Redirect based on user type
+
+
+[사용자 권한별 웹사이트 각 페이지 구조]
+- 학생
+본인이 아닐 경우 오류 후 리다이렉트 팝업(세션값 검증)
+1. 나의 개인정보 조회/수정(student/myPersonalInfo.jsp)
+- DB에서 요청하여 http 세션에 불러올 데이터와 기능
+	1) 학번 - USER & (단과대학 전공 입학년도 상태값) - PERSONAL_INFO 
+	2) 비밀번호 마스킹(변경 버튼 > 변경하시겠습니까 팝업 > 공백값 비허용 오류 팝업 > 변경되었습니다 팝업)
+	   보안취약점 심을 것 - USER
+	3) 이름 - USER
+	4) 생년월일 - 주민등록번호 뒷자리 6자리 마스킹(인증 등을 통한 조회 기능) - PERSONAL_INFO 
+	   보안취약점 심을 것
+	5) 개인 연락처 뒷자리 4자리 마스킹(변경 버튼, 인증 등을 통한 조회 기능) - USER
+	5) 이메일(변경 버튼) - USER
+	6) 주소(변경 버튼) - PERSONAL_INFO
+ 
+- 3계층 구조, 패턴
+	1) controller/student/StudentInfoServlet.java (서블릿, http 요청/응답 처리)
+	2) service/StudentService.java (비즈니스 로직)
+	3) dao/StudentDAO.java & util/DatabaseUtil.java (데이터베이스 접근)
+	4) dto/StudentDTO.java (데이터 전송)
+		↓
+	5) myPersonalInfo.jsp (View)
+
+	
+2. 나의 학사정보 조회(student/myAcademicRecord.jsp)
+
+3. 공지사항(common/postlist.jsp)
+
+4. 메인 페이지를 통해 세부 기능 링크 타고 들어가는 방식으로 구현(student/main.jsp)
+	디자인 버튼이 아닌 탭 형식으로 변경 예정
+	홈에서 미리보기 대시보드 기능 제공
+		
+- 교수
+1. 나의 개인정보 조회/수정(professor/myPersonalInfo.jsp)
+	1) 사번 & (단과대학 전공 상태값) 
+	2) 비밀번호(변경 버튼 > 변경하시겠습니까 팝업 > 공백값 비허용 오류 팝업 > 변경되었습니다 팝업)
+	   보안취약점 심을 것
+	3) 이름
+	4) 생년월일 - 주민등록번호 뒷자리 6자리 마스킹(인증 등을 통한 조회 기능)
+	   보안취약점 심을 것
+	5) 개인 연락처 뒷자리 4자리 마스킹(변경 버튼, 인증 등을 통한 조회 기능)
+	6) 오피스 연락처(변경 버튼)
+	5) 이메일(변경 버튼)
+	6) 주소(변경 버튼)
+
+2. 수강생 학사정보 조회(professor/classAcademicRecord.jsp)
+
+3. 공지사항(common/postlist.jsp)
+
+- 교직원
+
+- 관리자
+
+
 [Structure]
 	src/main/java
         ├── controller
@@ -52,35 +131,14 @@
         │                  
         └── board
             └── --.jsp
-
-[화면, 기능별 권한 매핑]
-기능						학생	교수 교직원 관리자
-(1) 본인 개인정보 조회/수정	O	O	O	O
-(2) 본인 비밀번호 변경		O	O	O	O
-(3) 본인 성적 조회			O	X	X	O
-(4) 전체 학생 성적 조회		X	O	X	O
-(5) 전체 사용자 개인정보 조회	X	X	O	O
-(6) 전체 화면 접근 권한		X	X	X	O
-
-[로그인 후 세션 저장할 정보]
-1. 유저 데이터접근객체에서 각각 사용자명과 계정 유형을 사용자 아이디(학번/사번)을 통해 DB에서 불러옴
-	- 로그인할 때 userPassword뿐만 아니라 userName, userRole까지 셋 다 SELECT
-2. 유저 데이터통신객체에서 각 변수의(USER.name, USER.role) getter, setter 메서드를 생성함
-3. 로그인 서블릿도구에서 속성을 저장하여, 웹에서 HTTP 세션에 객체를 바인딩할 때 필요한 동작을 수행하는 등 이벤트를 처리하도록 함
-	- session.setAttribute("user_id", 로그인한 계정 아이디(학번/사번));
-	- session.setAttribute("name", 로그인한 이름);
-	- session.setAttribute("role", 로그인한 역할);
-4. 참고 로직
-	- Capture user type during login: S%, P%, E% A%
-	- Validate user credentials. Once validated, retrieve the user type.
-	- Redirect based on user type
-
+	
 
 [Reference]
 [Googling]
 [1] https://blognavercomcheetah254.tistory.com/78
 [2] https://suinchoi.tistory.com/121
 [3] https://javapp.tistory.com/267
+[4] https://vibeee.tistory.com/184
 
 [GPT Source]
 [1] JSP/Servlet 기반 회원가입/로그인, 권한 관리하는 기본 플로우 설명
