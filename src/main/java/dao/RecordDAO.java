@@ -28,7 +28,7 @@ public class RecordDAO {
 				record.setUserID(resultSet.getString("userID"));
 				record.setCollege(resultSet.getString("college"));
 				record.setMajor(resultSet.getString("major"));
-				record.setAcademicYear(resultSet.getInt("academidYear"));
+				record.setAcademicYear(resultSet.getInt("academicYear"));
 				record.setSemester(resultSet.getString("semester"));
 				record.setCourseID(resultSet.getInt("courseID"));
 				record.setCourseName(resultSet.getString("courseName"));
@@ -40,7 +40,7 @@ public class RecordDAO {
 				record.setRetakeYear(resultSet.getInt("retakeYear"));
 				record.setRetakeSemester(resultSet.getString("retakeSemester"));
 				record.setRetakeCourseID(resultSet.getInt("retakeCourseID"));
-				record.setEnrollmentReason(resultSet.getString("enroolmentReason"));
+				record.setEnrollmentReason(resultSet.getString("enrollmentReason"));
 				
 				recordList.add(record);
 				
