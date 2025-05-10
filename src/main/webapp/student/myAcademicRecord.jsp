@@ -1,5 +1,17 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.*, dao.RecordDAO, dto.RecordDTO" %>
+<%
+    String userID = (String) session.getAttribute("userID");
+    if (userID != null) {
+        RecordDAO dao = new RecordDAO();
+        List<RecordDTO> recordList = dao.getRecordsByStudent(userID);
+        request.setAttribute("recordList", recordList);
+    } else {
+        response.sendRedirect("login.jsp");
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -45,24 +57,32 @@
                             <th>평점(숫자)</th>
                             <th>P/F 여부</th>
                             <th>P/F</th>
-                            <th>재수강 여부</th>
+                            <th>재수강 년도</th>
+                            <th>재수강 학기</th>
                             <th>재수강 사유</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="record" items="${academicRecords}">
+                        <c:forEach var="record" items="${recordList}">
                             <tr>
-                                <td>${record.year}</td>
+                                <td>${record.academicYear}</td>
                                 <td>${record.semester}</td>
                                 <td>${record.courseType}</td>
+                                <td>${record.college}</td>
+                                <td>${record.major}</td>
                                 <td>${record.courseName}</td>
-                                <td>${record.gradeAlpha}</td>
-                                <td>${record.gradeNumeric}</td>
+                                <td>${record.grade}</td>
+                                <td>${record.gradePoint}</td>
+                                <td>${record.passOrFail}</td>
+                                <td>${record.coursePF}</td>
+                                <td>${record.retakeYear}</td>
+                                <td>${record.retakeSemester}</td>
+                                <td>${record.enrollmentReason}</td>
                             </tr>
                         </c:forEach>
-                        <c:if test="${empty academicRecords}">
+                        <c:if test="${empty recordList}">
                             <tr>
-                                <td colspan="12">성적 정보가 없습니다.</td>
+                                <td colspan="13">성적 정보가 없습니다.</td>
                             </tr>
                         </c:if>
                     </tbody>
