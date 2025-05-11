@@ -1,41 +1,42 @@
 package dto;
 
-import java.sql.Time;
+// import java.sql.Time;
 
+// USER 테이블과 PERSONAL_INFO 테이블 데이터를 담는 학생 1명의 정보에 대한 전송 객체
 public class StudentDTO {
 	// 화면 구성요소: 학번, 단과대학, 전공, 입학년도, 상태값, 비밀번호, 이름, 주민등록번호, 개인연락처, 이메일, 주소
 	private String userID; // USER table 
 
 	private String college; // PERSONAL_INFO table 
 	private String major; // PERSONAL_INFO table 
-	private Time admissionYear; // PERSONAL_INFO table 
+	private int admissionYear; // PERSONAL_INFO table 
 	private String status; // PERSONAL_INFO table 
 
-	private String userPaswword; // USER table 
+	private String userPassword; // USER table 
 	private String name; // USER table 
 	private String residentNumber; // USER table 
 	private String phoneNumber; // USER table 
 	private String email; // USER table 
 	
 	private String address; // PERSONAL_INFO table 
-
+	// getter/setter는 public이어야 jsp, Service, DAO 등 다른 클래스에서 자유롭게 값을 읽고 수정 가능
 	
-	private String getUserPaswword() {
-		return userPaswword;
+	public String getUserPassword() {
+		return userPassword;
 	}
-	private void setUserPaswword(String userPaswword) {
-		this.userPaswword = userPaswword;
+	public void setUserPassword(String userPassword) {
+		this.userPassword = userPassword;
 	}
-	private String getResidentNumber() {
+	public String getResidentNumber() {
 		return residentNumber;
 	}
-	private void setResidentNumber(String residentNumber) {
+	public void setResidentNumber(String residentNumber) {
 		this.residentNumber = residentNumber;
 	}
-	private String getPhoneNumber() {
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
-	private void setPhoneNumber(String phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 	
@@ -57,10 +58,10 @@ public class StudentDTO {
 	public void setMajor(String major) {
 		this.major = major;
 	}
-	public Time getAdmissionYear() {
+	public int getAdmissionYear() {
 		return admissionYear;
 	}
-	public void setAdmissionYear(Time admissionYear) {
+	public void setAdmissionYear(int admissionYear) {
 		this.admissionYear = admissionYear;
 	}
 	public String getStatus() {
