@@ -1,1 +1,47 @@
+package service;
+//StudentInfoServlet과 StudentDAO 사이에서 비즈니스 로직
+
+import dao.StudentDAO;
+import dto.StudentDTO;
+
 // 개인정보 일부(전화번호, 주민등록번호 뒷자리) 마스킹할 때는 서비스단에서 처리
+public class StudentService {
+	private StudentDAO studentDAO;
+    
+	// 생성자: StudentDAO 객체를 초기화 (DB 접근을 위해 필요)
+	// 단, 데이터 추출하는 핵심 로직은 데이터 접근객체인 DAO에서 수행
+	public StudentService() {
+		studentDAO = new StudentDAO();
+	}
+	
+	// 학번/사번(userID)를 받아 개인정보를 가져오는 서비스 메서드
+    public StudentDTO getStudentInfo(String userID) {
+        if (userID == null || userID.isEmpty()) {
+            // userID가 비어있으면 null 반환
+            return null;
+        }
+		
+        // DAO를 통해 DB에서 학생 정보 조회
+        StudentDTO student = studentDAO.getMyInfo(userID);
+
+        // 학생 정보가 존재할 경우, 민감 정보 일부를 마스킹 처리
+        if (student != null) {
+            // 전화번호 뒷 4자리 마스킹 (예: 010-1234-****)
+            String phone = student.getPhoneNumber();
+            if (phone != null && phone.length() >= 4) {
+                String maskedPhoneNum = phone.substring(0, phone.length() - 4) + "****";
+                student.setPhoneNumber(maskedPhoneNum);
+            }
+
+            // 주민등록번호 뒷 6자리 마스킹 (예: 010101-1******)
+            String resident = student.getResidentNumber();
+            if (resident != null && resident.length() >= 7) {
+                String maskedResidentNum = resident.substring(0, 7) + "******";
+                student.setResidentNumber(maskedResidentNum);
+            }
+        }
+        
+        // StudentDTO의 객체인 학생 1명의 정보를 리턴
+        return student;
+    }
+}

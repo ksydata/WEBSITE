@@ -2,6 +2,7 @@ package controller.student;
 
 import dao.StudentDAO;
 import dto.StudentDTO;
+import service.StudentService;
 import user.UserDAO;
 import user.UserDTO;
 
@@ -31,9 +32,18 @@ public class StudentInfoServlet extends HttpServlet {
         String userID = (String) session.getAttribute("userID");
         // [LoginServlet.java] String userID = request.getParameter("userID");
 		
-	    // 데이터접근객체 클래스의 인스턴스 생성 후 로그인 메서드를 활용하여 결과값 받아오기
-		StudentDAO studentDAO = new StudentDAO();
-		StudentDTO studentInfo = studentDAO.getMyInfo(userID);
+        if (userID == null) {
+            // 세션이 없으면 로그인 페이지로 리다이렉트
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+        
+		// [TO-BE] StudentDAO를 직접 부르는 게 아니라 StudentService 통해 데이터 전송
+		StudentService studentService = new StudentService();
+		StudentDTO studentInfo = studentService.getStudentInfo(userID);
+	    // [AS-IS] 데이터접근객체 클래스의 인스턴스 생성 후 로그인 메서드를 활용하여 결과값 받아오기
+			// StudentDAO studentDAO = new StudentDAO();
+			// StudentDTO studentInfo = studentDAO.getMyInfo(userID);
 		
 		if (studentInfo != null) {
 			request.setAttribute("studentInfo", studentInfo);

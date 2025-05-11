@@ -68,18 +68,6 @@ public class StudentDAO {
 }
 
 /*
-public UserDTO login(String userID, String userPassword) {
-// 로그인 SQL 쿼리
-// 각각 사용자명과 계정 유형을 사용자 아이디(학번/사번)을 통해 DB에서 불러옴  
-String SQL = "SELECT userPassword, name, role FROM USER WHERE userID = ?";
-	// String SQL = "SELECT userPassword FROM USER WHERE userID = ?";
-
-try (Connection connection = DatabaseUtil.getConnection();
-     PreparedStatement statement = connection.prepareStatement(SQL)) {
-    
-    statement.setString(1, userID);
-    ResultSet resultSet = statement.executeQuery();
-    
     if (resultSet.next()) {
         String storedPassword = resultSet.getString("userPassword");
        // 아이디, 비밀번호 모두 일치하여 로그인 성공
@@ -97,15 +85,4 @@ try (Connection connection = DatabaseUtil.getConnection();
             // 비밀번호 불일치하여 인증 오류발생
             return null; // return 0;
         }
-    } else {
-        // DB에서 아이디가 조회되지 않아 인증 오류발생
-    	return null; // return -1;
-    }
-    
-} catch (Exception e) {
-    e.printStackTrace();
-    // 데이터베이스 오류 발생
-    return null; // return -2;
-}
-}
 */
