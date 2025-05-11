@@ -2,13 +2,13 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ include file="/common/header.jsp" %>
 <%@ page import="java.util.*, dao.NoticeDAO, dto.NoticeDTO" %>
-<%
+<%@ include file="/common/header.jsp" %>
+<%-- <%
     NoticeDAO dao = new NoticeDAO();
     List<NoticeDTO> noticeList = dao.getAllNotices();
     request.setAttribute("noticeList", noticeList);
-%>
+%> --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,10 +21,13 @@
 	<link rel="stylesheet" href="./css/custom.css">
 </head>
 
-<body class="container mt-5">
+<body> 
+<div class="container mt-5">
+	<h2 class="text-center mb-4">📋 게시판 글 목록</h2>
+	<div class="text-right">
+        <a href="common/writePost.jsp" class="btn btn-primary">글쓰기</a>
+    </div>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-	<h2 class="mb-4">📋 게시판 글 목록</h2>
-
     <table class="table table-hover">
         <thead class="table-dark">
             <tr>
@@ -36,7 +39,8 @@
         </thead>
         <tbody>
             <c:forEach var="post" items="${noticeList}">
-                <tr onclick="location.href='postpage.jsp?id=${post.noticeID}'" style="cursor:pointer;">
+               <tr onclick="location.href='postpage.jsp?id=${post.noticeID}'" style="cursor:pointer;"> 
+               <!-- <tr onclick="<c:url value='/BoardServlet' />" style="cursor:pointer;"> -->
                     <td>${post.noticeID}</td>
                     <td>${post.userID}</td>
 					<td>
@@ -48,11 +52,10 @@
         </tbody>
     </table>
 
-    <div class="text-end">
-        <a href="writePost.jsp" class="btn btn-primary">글쓰기</a>
-    </div>
+    
 	
 	</nav>
+</div>
 </body>
 </html>
 

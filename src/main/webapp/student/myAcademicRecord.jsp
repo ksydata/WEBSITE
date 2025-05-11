@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.*, dao.RecordDAO, dto.RecordDTO" %>
-<%
+<%-- <%
     String userID = (String) session.getAttribute("userID");
     if (userID != null) {
         RecordDAO dao = new RecordDAO();
@@ -10,8 +10,7 @@
     } else {
         response.sendRedirect("login.jsp");
     }
-%>
-
+%> --%>
 <!DOCTYPE html>
 <html lang="ko">
 
