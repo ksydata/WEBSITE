@@ -15,13 +15,16 @@ import dao.RecordDAO;
 import dto.RecordDTO;
 
 @WebServlet("/RecordServlet")
+//@WebServlet("/student/myAcademicRecord.jsp")
 public class RecordServlet extends HttpServlet {
 	
+	private static final long serialVersionUID = 1L;
+
 	// userID별 성적 리스트 조회
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		String userID = (String) session.getAttribute("userID");
-		
+				
 		if (userID != null) {
 	        RecordDAO dao = new RecordDAO();
 	        List<RecordDTO> records = dao.getRecordsByStudent(userID);
