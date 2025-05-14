@@ -25,7 +25,9 @@
 	<!-- 사용자 정의(커스텀) 스타일 시트 연결 -->
 	<link rel="stylesheet" href="./css/custom.css">
 </head>
-<body class="container mt-5">
+<body>
+<jsp:include page="../common/header.jsp" />
+<div class="container mt-5">
 	<h2 class="mb-3">${post.title}</h2>
     <p><strong>작성자:</strong> ${post.userID}</p>
     
@@ -43,7 +45,7 @@
 	    <div class="d-flex gap-2">
 	        <%-- 수정 버튼: 작성자만 가능 --%>
 	        <% if (isAuthor) { %>
-	            <a href="editPost.jsp?id=<%= post.getNoticeID() %>" class="btn btn-warning">수정</a>
+	            <a href="common/editPost.jsp?id=<%= post.getNoticeID() %>" class="btn btn-warning">수정</a>
 	        <% } %>
 	
 	        <%-- 삭제 버튼: 작성자 또는 관리자 --%>
@@ -55,5 +57,7 @@
 	        <% } %>
     </div>
 </div>
+</div>
+<jsp:include page="../common/footer.jsp" />
 </body>
 </html>

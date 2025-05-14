@@ -4,11 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page import="java.util.*, dao.NoticeDAO, dto.NoticeDTO" %>
 <%@ include file="/common/header.jsp" %>
-<%-- <%
-    NoticeDAO dao = new NoticeDAO();
-    List<NoticeDTO> noticeList = dao.getAllNotices();
-    request.setAttribute("noticeList", noticeList);
-%> --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,8 +34,7 @@
         </thead>
         <tbody>
             <c:forEach var="post" items="${noticeList}">
-               <tr onclick="location.href='postpage.jsp?id=${post.noticeID}'" style="cursor:pointer;"> 
-               <!-- <tr onclick="<c:url value='/BoardServlet' />" style="cursor:pointer;"> -->
+               <tr onclick="location.href='post?id=${post.noticeID}'" style="cursor:pointer;">
                     <td>${post.noticeID}</td>
                     <td>${post.userID}</td>
 					<td>

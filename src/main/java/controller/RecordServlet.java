@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import dao.RecordDAO;
 import dto.RecordDTO;
 
-@WebServlet("/RecordServlet")
+@WebServlet("/record")
 //@WebServlet("/student/myAcademicRecord.jsp")
 public class RecordServlet extends HttpServlet {
 	
