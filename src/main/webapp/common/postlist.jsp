@@ -19,6 +19,16 @@
 <body> 
 <div class="container mt-5">
 	<h2 class="text-center mb-4">📋 게시판 글 목록</h2>
+	
+	<!--  삭제 완료 팝업 띄우기 -->
+	<c:if test="${not empty sessionScope.flashMessage}">
+	    <script>
+	        alert("${sessionScope.flashMessage}");
+	    </script>
+	    <c:remove var="flashMessage" scope="session" />
+	</c:if>
+	
+	
 	<div class="text-right">
         <a href="common/writePost.jsp" class="btn btn-primary">글쓰기</a>
     </div>

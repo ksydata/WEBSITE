@@ -30,7 +30,15 @@ public class PostServlet extends HttpServlet {
 	    NoticeDTO post = dao.getNoticeByID(id); 
 	    request.setAttribute("post", post);
 	    
-//	    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/postlist.jsp?id=" + id);
+	    boolean isAuthor = loginUserID != null && loginUserID.equals(post.getUserID());
+	    boolean isAdmin = loginUserRole != null && loginUserRole.equals("관리자");
+	    boolean canDelete = isAuthor || isAdmin;
+	    
+	    // 권한 관련 플래그 JSP로 전달
+	    request.setAttribute("isAuthor", isAuthor);
+	    request.setAttribute("isAdmin", isAdmin);
+	    request.setAttribute("canDelete", canDelete);
+	    
 	    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/postpage.jsp");
 	    dispatcher.forward(request, response);       // JSP로 전달
 	    

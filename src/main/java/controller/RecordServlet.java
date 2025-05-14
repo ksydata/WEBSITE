@@ -15,7 +15,6 @@ import dao.RecordDAO;
 import dto.RecordDTO;
 
 @WebServlet("/record")
-//@WebServlet("/student/myAcademicRecord.jsp")
 public class RecordServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
