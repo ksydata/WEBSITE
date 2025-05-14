@@ -14,10 +14,9 @@ public class StudentDTO {
 
 	private String userPassword; // USER table 
 	private String name; // USER table 
-	private String residentNumber; // USER table 
+	private String residentNumber; // PERSONAL_INFO table 
 	private String phoneNumber; // USER table 
 	private String email; // USER table 
-	
 	private String address; // PERSONAL_INFO table 
 	// getter/setter는 public이어야 jsp, Service, DAO 등 다른 클래스에서 자유롭게 값을 읽고 수정 가능
 	

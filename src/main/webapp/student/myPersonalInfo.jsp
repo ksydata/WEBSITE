@@ -21,7 +21,7 @@
 <c:if test="${empty studentInfo}">
     <script>
         alert('개인정보를 찾을 수 없습니다.');
-        window.location.href = '<c:url value="/student/main.jsp" />';
+        window.location.href = '<c:url value="student/main.jsp" />';
     </script>
 </c:if>
 
@@ -36,7 +36,7 @@
     </tr>
     <tr>
         <th>비밀번호</th>
-        <td>****** (변경 버튼)</td>
+        <td>${studentInfo.userPassword}</td>
     </tr>
     <tr>
         <th>주민등록번호</th>
@@ -73,7 +73,7 @@
 </table>
 
 <br>
-<a href="<c:url value='/student/main.jsp' />">메인으로 돌아가기</a>
+<a href='<c:url value="student/main.jsp" />'>메인으로 돌아가기</a>
 
 </body>
 </html>

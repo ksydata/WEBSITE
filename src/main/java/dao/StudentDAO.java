@@ -15,7 +15,7 @@ public class StudentDAO {
 		String personalInfoSQL = "SELECT * FROM PERSONAL_INFO WHERE userID = ?";
 
 		// 로그인 성공했을 때 사용자 정보 활용
-    	StudentDTO student = new StudentDTO();
+    	StudentDTO student = null;
     	
     	// USER 테이블에서 로그인 인증 관련 정보 추출
 		try (Connection connection = DatabaseUtil.getConnection();
@@ -25,12 +25,16 @@ public class StudentDAO {
 			
 			try (ResultSet resultSet = userInfoStatement.executeQuery()) {
 	            if (resultSet.next()) {
+	            	// 사용자 정보가 존재할 경우 StudentDTO 객체 생성
+	            	student = new StudentDTO();
 	                student.setUserID(resultSet.getString("userID"));
 	                student.setUserPassword(resultSet.getString("userPassword"));
 	                student.setName(resultSet.getString("name"));
-	                student.setResidentNumber(resultSet.getString("residentNumber"));
 	                student.setPhoneNumber(resultSet.getString("phoneNumber"));
 	                student.setEmail(resultSet.getString("email"));
+	            } else {
+	            	// userID에 해당하는 사용자가 존재하지 않을 경우
+	            	return null;
 	            }
 	        }				
 
@@ -48,10 +52,12 @@ public class StudentDAO {
 	        
 	        try (ResultSet resultSet = personalInfoStatement.executeQuery()) {
 	            if (resultSet.next()) {
+	            	// PERSONAL_INFO가 있을 경우에만 학사 정보 세팅
 	                student.setCollege(resultSet.getString("college"));
 	                student.setMajor(resultSet.getString("major"));
 	                student.setAdmissionYear(resultSet.getInt("admissionYear"));
 	                student.setStatus(resultSet.getString("status"));
+	                student.setResidentNumber(resultSet.getString("residentNumber"));	                
 	                student.setAddress(resultSet.getString("address"));
 	            }
 	        }
@@ -65,24 +71,25 @@ public class StudentDAO {
     	// 학생 데이터 객체 반환
     	return student;
 	}
+	
+	public StudentDTO updateMyInfo(String userID) {
+		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보를 수정하는 SQL 쿼리
+		// ** 수정 예정 **
+		return null;
+	}
 }
 
 /*
-    if (resultSet.next()) {
-        String storedPassword = resultSet.getString("userPassword");
-       // 아이디, 비밀번호 모두 일치하여 로그인 성공
-        if (storedPassword.equals(userPassword)) {
-        	// 로그인 성공했을 때 사용자 정보 활용
-        	UserDTO user = new UserDTO();
-        	user.setUserID(userID);
-        	// 쿼리 실행결과 객체에서 name, role값 추출
-            user.setUserName(resultSet.getString("name"));
-            user.setUserRole(resultSet.getString("role"));
-            // UserDTO 객체를 생성하여 반환하는 형태
-            return user;
-            
-        } else {
-            // 비밀번호 불일치하여 인증 오류발생
-            return null; // return 0;
-        }
+config.properties 파일을 성공적으로 로드했습니다.
+java.sql.SQLException: Column 'residentNumber' not found.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:130)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:98)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:90)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:64)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.findColumn(ResultSetImpl.java:584)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.getString(ResultSetImpl.java:896)
+	at dao.StudentDAO.getMyInfo(StudentDAO.java:33)
+	at service.StudentService.getStudentInfo(StudentService.java:24)
+userID from session: S2024096
+studentInfo: null
 */
