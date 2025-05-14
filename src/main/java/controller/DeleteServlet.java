@@ -32,8 +32,9 @@ public class DeleteServlet extends HttpServlet {
 	    boolean result = dao.deleteNotice(id);
 
 	    if (result) {
-	        request.getSession().setAttribute("flashMessage", "게시글이 삭제되었습니다.");
-	        response.sendRedirect("common/postlist.jsp");
+	        // flashMessage는 세션에 저장하고, board 서블릿으로 리다이렉트
+	        session.setAttribute("flashMessage", "게시글이 삭제되었습니다.");
+	        response.sendRedirect(request.getContextPath() + "/board");
 	    } else {
 	        response.setContentType("text/html; charset=UTF-8");
 	        response.getWriter().write("<script>alert('삭제에 실패했습니다.'); history.back();</script>");
