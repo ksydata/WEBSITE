@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import dao.NoticeDAO;
 import dto.NoticeDTO;
 
-@WebServlet("/BoardServlet")
+@WebServlet("/board")
 public class BoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
