@@ -44,4 +44,17 @@ public class PostServlet extends HttpServlet {
 	    
 	
 	}
+	
+	// 게시글 작성 폼으로 이동
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    HttpSession session = request.getSession();
+	    String userID = (String) session.getAttribute("userID");
+	    String permissionRole = (String) session.getAttribute("permissionRole");
+
+	    request.setAttribute("userID", userID);
+	    request.setAttribute("permissionRole", permissionRole);
+
+	    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/writePost.jsp");
+	    dispatcher.forward(request, response);
+	}
 }

@@ -30,7 +30,10 @@
 	
 	
 	<div class="text-right">
-        <a href="common/writePost.jsp" class="btn btn-primary">글쓰기</a>
+        <!-- <a href="common/writePost.jsp" class="btn btn-primary">글쓰기</a> -->
+        <a href="${pageContext.request.contextPath}/post" class="btn btn-primary"
+   		onclick="event.preventDefault(); document.getElementById('writeForm').submit();">글쓰기</a>
+		<form id="writeForm" action="${pageContext.request.contextPath}/post" method="post" style="display: none;"></form>
     </div>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <table class="table table-hover">
