@@ -47,7 +47,7 @@ public class BoardServlet extends HttpServlet {
 
         if (newNoticeID > 0) {
             request.getSession().setAttribute("flashMessage", "게시글이 성공적으로 등록되었습니다.");
-            response.sendRedirect("common/postpage.jsp?id=" + newNoticeID);
+            response.sendRedirect(request.getContextPath() + "/board");
         } else {
             request.setAttribute("errorMessage", "게시글 등록에 실패했습니다.");
             request.getRequestDispatcher("common/writePost.jsp").forward(request, response);
