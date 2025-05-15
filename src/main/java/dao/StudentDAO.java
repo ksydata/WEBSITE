@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import dto.StudentDTO;
 import util.DatabaseUtil;
@@ -72,9 +73,54 @@ public class StudentDAO {
     	return student;
 	}
 	
-	public StudentDTO updateMyInfo(String userID) {
+	public StudentDTO updatePhoneNumber(String userID, String phoneNumber) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보를 수정하는 SQL 쿼리
 		// ** 수정 예정 **
+		String updateQuery = "UPDATE USER SET phoneNumber = ? WHERE userID = ?";
+		
+	    try (Connection connection = DatabaseUtil.getConnection();
+	         PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+			statement.setString(1, phoneNumber);
+			statement.setString(2, userID);
+			statement.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;	    
+	}
+	
+	public StudentDTO updateEmail(String userID, String email) {
+		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보를 수정하는 SQL 쿼리
+		// ** 수정 예정 **
+		String updateQuery = "UPDATE USER SET email = ? WHERE userID = ?";
+		
+	    try (Connection connection = DatabaseUtil.getConnection();
+		     PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+			statement.setString(1, email);
+			statement.setString(2, userID);
+			statement.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;	    
+	}
+	
+	public StudentDTO updateAddress(String userID, String address) {
+		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보를 수정하는 SQL 쿼리
+		// ** 수정 예정 **
+		String updateQuery = "UPDATE USER SET address = ? WHERE userID = ?";
+		
+	    try (Connection connection = DatabaseUtil.getConnection();
+		     PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+			statement.setString(1, address);
+			statement.setString(2, userID);
+			statement.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 }

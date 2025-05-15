@@ -40,16 +40,27 @@
     </tr>
     <tr>
         <th>주민등록번호</th>
-        <td>${studentInfo.residentNumber}</td>
+        <td>${studentInfo.residentNumber}"</td>
     </tr>
     <tr>
-        <th>개인 연락처</th>
-        <td>${studentInfo.phoneNumber}</td>
+        <th>휴대전화번호</th>
+        <td>
+        	<input class="form-input" type="text" name="phoneNumber" value="${studentInfo.phoneNumber}">
+        </td>
     </tr>
     <tr>
         <th>이메일</th>
-        <td>${studentInfo.email}</td>
+        <td>
+        	<input class="form-input" type="text" name="email" value="${studentInfo.email}">
+    	</td>
     </tr>
+    <tr>
+        <th>주소</th>
+        <td>
+        	<input class="form-input" type="text" name="address" value="${studentInfo.address}">
+        </td>
+    </tr>
+    
     <tr>
         <th>단과대학</th>
         <td>${studentInfo.college}</td>
@@ -66,10 +77,7 @@
         <th>상태</th>
         <td>${studentInfo.status}</td>
     </tr>
-    <tr>
-        <th>주소</th>
-        <td>${studentInfo.address}</td>
-    </tr>
+
 </table>
 
 <br>
