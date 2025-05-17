@@ -24,9 +24,9 @@ public class PostServlet extends HttpServlet {
 		
 		int id = Integer.parseInt(request.getParameter("id"));
 		String loginUserID = (String) session.getAttribute("userID");
-	    String loginUserRole = (String) session.getAttribute("role"); // 예: 관리자, 교직원, 학생, 교수
-		
-		NoticeDAO dao = new NoticeDAO();
+	    String loginUserRole = (String) session.getAttribute("userRole"); // 예: 관리자, 교직원, 학생, 교수
+	    
+	    NoticeDAO dao = new NoticeDAO();
 	    NoticeDTO post = dao.getNoticeByID(id); 
 	    request.setAttribute("post", post);
 	    
