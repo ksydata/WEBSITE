@@ -58,9 +58,6 @@
                                 <td>${record.semester}</td>
                                 <td>${record.courseName}</td>
                                 <td>${record.courseType}</td>
-                                <td>${record.college}</td>
-                                <td>${record.major}</td>
-                                <td>${record.courseName}</td>
                                 <td>${record.grade}</td>
                                 <td>${record.gradePoint}</td>
                                 <td>${record.passOrFail}</td>
