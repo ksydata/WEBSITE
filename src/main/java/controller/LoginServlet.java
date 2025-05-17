@@ -49,19 +49,22 @@ public class LoginServlet extends HttpServlet {
 	        String role = result.getUserRole();
 	        String path = "";
 	        
-	        if (role.equals("학생")) {
+	        if (role.trim().equals("학생")) {
 	        	path = "student/main.jsp";
-	        } else if (role.equals("교수")) {
+	        } else if (role.trim().equals("교수")) {
 	        	path = "professor/main.jsp";
-	        } else if (role.equals("교직원")) {
+	        } else if (role.trim().equals("교직원")) {
 	            path = "employee/main.jsp";
-	        } else if (role.equals("관리자")) {
+	        } else if (role.trim().equals("관리자")) {
 	            path = "admin/main.jsp";
 	        } else {
 	        	path = "index.jsp";
 	        }
+	        System.out.println(role);
+	        System.out.println(path);
 	        
 	        request.getRequestDispatcher(path).forward(request, response);
+	        // request.getContextPath()
 	        // response.sendRedirect(request.getContextPath() + "/index");
 	        // 로그인 서블릿에서 리다이렉션 대상을 index.jsp에서 index(메인 서블릿)으로 변경
 	        // response.sendRedirect(request.getContextPath() + "/index.jsp");
