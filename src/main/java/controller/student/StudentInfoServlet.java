@@ -49,7 +49,7 @@ public class StudentInfoServlet extends HttpServlet {
 		// System.out.println("userID from session: " + userID);
 		// System.out.println("studentInfo: " + studentInfo);
 		if (studentInfo != null) {
-		    System.out.println("학생 정보가 존재합니다: " + studentInfo.getName());			
+		    // [TEST-CODE] System.out.println("학생 정보가 존재합니다: " + studentInfo.getName());			
 		    request.setAttribute("studentInfo", studentInfo);
 		    
 		    // JSP 페이지로 포워딩

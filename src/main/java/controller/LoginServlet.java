@@ -45,7 +45,27 @@ public class LoginServlet extends HttpServlet {
 	    	// 사용자 이름을 세션에 저장
 	    	session.setAttribute("userName", result.getUserName());
 	    	
-	        response.sendRedirect(request.getContextPath() + "/index.jsp");
+	        // 기존 메인 페이지(index.jsp)의 <c:choose>를 통한 자동 분기처리를 서블릿에서 로그인 성공 시 사용자 권한별로 페이지 이동하도록 설정
+	        String role = result.getUserRole();
+	        String path = "";
+	        
+	        if (role.equals("학생")) {
+	        	path = "student/main.jsp";
+	        } else if (role.equals("교수")) {
+	        	path = "professor/main.jsp";
+	        } else if (role.equals("교직원")) {
+	            path = "employee/main.jsp";
+	        } else if (role.equals("관리자")) {
+	            path = "admin/main.jsp";
+	        } else {
+	        	path = "index.jsp";
+	        }
+	        
+	        request.getRequestDispatcher(path).forward(request, response);
+	        // response.sendRedirect(request.getContextPath() + "/index");
+	        // 로그인 서블릿에서 리다이렉션 대상을 index.jsp에서 index(메인 서블릿)으로 변경
+	        // response.sendRedirect(request.getContextPath() + "/index.jsp");
+	        
 	    } else {
 	        // 응답의 콘텐츠 타입을 UTF-8로 설정
 	    	response.setContentType("text/html;charset=UTF-8");

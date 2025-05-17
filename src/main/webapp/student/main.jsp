@@ -15,19 +15,19 @@
 </head>
 
 <body>
-<%-- <jsp:include page="../common/header.jsp" /> --%>
 
 <div class="container mt-5 text-center">
 	<h1>${sessionScope.userName}님 (${sessionScope.userID}) 환영합니다.</h1>
 	<div class="mt-4">
 		<a href="<c:url value='/studentInfo' />" class="btn btn-primary m-2">나의 개인정보 조회/수정</a>
-		<%-- <a href="student/myPersonalInfo.jsp" class="btn btn-primary m-2">나의 개인정보 조회/수정</a> --%>
-		<a href="student/myAcademicRecord.jsp" class="btn btn-primary m-2">나의 학사정보 조회</a>
-		<a href="student/common/postlist.jsp" class="btn btn-primary m-2">공지사항</a>		
+		<%-- 
+		<a href="student/myPersonalInfo.jsp" class="btn btn-primary m-2">나의 개인정보 조회/수정</a> 
+		--%>
+		<a href="<c:url value='/studentRecord' />" class="btn btn-primary m-2">나의 학사정보 조회</a>
+		<a href="student/common/postlist.jsp" class="btn btn-primary m-2">공지사항</a>
 	</div>	
 </div>
 
-<%-- <jsp:include page="../common/footer.jsp" /> --%>
 <%-- 필수 자바스크립트 라이브러리들 추가 --%>
 <script src="../js/jquery.min.js"></script>
 <script src="../js/popper.min.js"></script>

@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import dto.StudentDTO;
 import util.DatabaseUtil;
@@ -40,8 +42,8 @@ public class StudentDAO {
 	        }				
 
 		} catch (Exception e) {
+			// 데이터베이스 오류 발생			
 			e.printStackTrace();
-			// 데이터베이스 오류 발생
 			return null;
 		}
 		
@@ -64,14 +66,57 @@ public class StudentDAO {
 	        }
 			
 		} catch (Exception e) {
+			// 데이터베이스 오류 발생			
 			e.printStackTrace();
-			// 데이터베이스 오류 발생
 			return null;
 		}
-		
     	// 학생 데이터 객체 반환
     	return student;
 	}
+	
+	public List<StudentDTO> getRecordsByStudent(String userID) {
+		// 학번/사번(userID)으로 나의 학사정보 페이지에서 조회할 정보 불러오는 SQL 쿼리
+		// 학사정보 객체를 받기 위한 빈 배열 객체 생성 
+		List<StudentDTO> recordList = new ArrayList<>();
+		String sql = "SELECT * FROM ACADEMIC_RECORD WHERE userID = ?";
+		
+		// ACADEMIC_RECORD 테이블에서 학사정보 추출
+		try (Connection connection = DatabaseUtil.getConnection();
+			 PreparedStatement checkStatement = connection.prepareStatement(sql)) {
+			// 쿼리(where절 userID = ?)에 학번 포함
+			checkStatement.setString(1, userID);
+			ResultSet resultSet = checkStatement.executeQuery();
+			
+			while (resultSet.next()) {
+				StudentDTO record = new StudentDTO();
+				record.setUserID(resultSet.getString("userID"));
+				record.setCollege(resultSet.getString("college"));
+				record.setMajor(resultSet.getString("major"));
+				record.setAcademicYear(resultSet.getInt("academicYear"));
+				record.setSemester(resultSet.getString("semester"));
+				record.setCourseID(resultSet.getInt("courseID"));
+				record.setCourseName(resultSet.getString("courseName"));
+				record.setCourseType(resultSet.getString("courseType"));
+				record.setCoursePF(resultSet.getString("coursePF"));
+				record.setPassOrFail(resultSet.getBoolean("pass_or_fail"));
+				record.setGrade(resultSet.getString("grade"));
+				record.setGradePoint(resultSet.getFloat("gradePoint"));
+				record.setRetakeYear(resultSet.getInt("retakeYear"));
+				record.setRetakeSemester(resultSet.getString("retakeSemester"));
+				record.setRetakeCourseID(resultSet.getInt("retakeCourseID"));
+				record.setEnrollmentReason(resultSet.getString("enrollmentReason"));
+				
+				// 학사정보 배열에 저장
+				recordList.add(record);	
+			}
+			
+		} catch (SQLException e) {
+			// 데이터베이스 오류 발생			
+			e.printStackTrace();
+		}
+    	// 학사 데이터 배열 객체 반환
+		return recordList;
+	}	
 	
 	public StudentDTO updatePhoneNumber(String userID, String phoneNumber) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보를 수정하는 SQL 쿼리
