@@ -61,17 +61,17 @@ public class StudentService {
     }
     
     // 개인정보 수정 메서드
-    public void updateStudentInfo(String userID, String phoneNumber, String email, String address) {
+    public void updateStudentInfo(String userID, String phoneNumber, String email, String address) {    	    	
     	// 휴대전화번호 수정
-    	if (phoneNumber != null && phoneNumber.trim().isEmpty()) {
+    	if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
     		studentDAO.updatePhoneNumber(userID, phoneNumber);
     	}
     	// 이메일 수정
-    	if (email != null && email.trim().isEmpty()) {
+    	if (email != null && !email.trim().isEmpty()) {
     		studentDAO.updateEmail(userID, email);
     	}
     	// 주소 수정
-    	if (address != null && address.trim().isEmpty()) {
+    	if (address != null && !address.trim().isEmpty()) {
     		studentDAO.updateAddress(userID, address);
     	}
     }
