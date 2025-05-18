@@ -13,74 +13,50 @@
 <!-- 공통 상단 메뉴 -->
 <jsp:include page="../common/header.jsp" />
 
-<h2>나의 개인정보</h2>
-<!-- StudentDTO 객체인 studentInfo가 공백일 경우 오류 팝업창 호출 -->
-<c:if test="${empty studentInfo}">
-    <script>
-        alert("개인정보를 찾을 수 없습니다.");
-        window.location.href = "<c:url value='student/main.jsp' />";
-    </script>
-</c:if>
-
-<!-- 세션에 저장된 StudentDTO 객체인 studentInfo를 불러와 만든 나의 개인정보 조회 테이블 -->
-<table>
-    <tr>
-        <th>학번</th>
-        <td>${studentInfo.userID}</td>
-    </tr>
-    <tr>
-        <th>이름</th>
-        <td>${studentInfo.name}</td>
-    </tr>
-    <tr>
-        <th>비밀번호</th>
-        <td>${studentInfo.userPassword}</td>
-    </tr>
-    <tr>
-        <th>주민등록번호</th>
-        <td>${studentInfo.residentNumber}"</td>
-    </tr>
-    <!-- 개인이 직접 수정가능한 개인정보 -->
-    <tr>
-        <th>휴대전화번호</th>
-        <td>
-        	<input class="form-input" type="text" name="phoneNumber" value="${studentInfo.phoneNumber}">
-        </td>
-    </tr>
-    <!-- 개인이 직접 수정가능한 개인정보 -->
-    <tr>
-        <th>이메일</th>
-        <td>
-        	<input class="form-input" type="text" name="email" value="${studentInfo.email}">
-    	</td>
-    </tr>
-    <!-- 개인이 직접 수정가능한 개인정보 -->    
-    <tr>
-        <th>주소</th>
-        <td>
-        	<input class="form-input" type="text" name="address" value="${studentInfo.address}">
-        </td>
-    </tr>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">나의 개인정보</h2>
     
-    <tr>
-        <th>단과대학</th>
-        <td>${studentInfo.college}</td>
-    </tr>
-    <tr>
-        <th>전공</th>
-        <td>${studentInfo.major}</td>
-    </tr>
-    <tr>
-        <th>입학년도</th>
-        <td>${studentInfo.admissionYear}</td>
-    </tr>
-    <tr>
-        <th>상태</th>
-        <td>${studentInfo.status}</td>
-    </tr>
+	<!-- StudentDTO 객체인 studentInfo가 공백일 경우 알림 호출 -->
+	<c:if test="${empty studentInfo}">
+    	<script>
+        	alert("개인정보를 찾을 수 없습니다.");
+        	window.location.href = "<c:url value='student/main.jsp' />";
+    	</script>
+	</c:if>
 
-</table>
+	<!-- 세션에 저장된 StudentDTO 객체인 studentInfo를 불러와 만든 나의 개인정보 조회 카드 -->
 
+    <!-- 기본 정보 카드(읽기 전용) -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">기본 정보</div>
+        <div class="card-body">
+            <p><strong>학번:</strong> ${studentInfo.userID}</p>
+            <p><strong>이름:</strong> ${studentInfo.name}</p>
+            <p><strong>주민등록번호:</strong> ${studentInfo.residentNumber}</p>
+            <p><strong>단과대학:</strong> ${studentInfo.college}</p>
+            <p><strong>전공:</strong> ${studentInfo.major}</p>
+            <p><strong>입학년도:</strong> ${studentInfo.admissionYear}</p>
+            <p><strong>상태:</strong> ${studentInfo.status}</p>
+        </div>
+    </div>
+
+    <!-- 수정 가능한 정보 카드 -->
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">수정 가능한 정보</div>
+        <div class="card-body">
+            <p><strong>휴대전화번호:</strong> ${studentInfo.phoneNumber}</p>
+            <p><strong>이메일:</strong> ${studentInfo.email}</p>
+            <p><strong>주소:</strong> ${studentInfo.address}</p>
+        </div>
+    </div>
+
+    <!-- 버튼 -->
+    <div class="text-center">
+        <a href="<c:url value='student/updateMyInfo.jsp' />" class="btn btn-warning">개인정보 수정</a>
+        <a href="<c:url value='student/updateMyPassword.jsp' />" class="btn btn-warning">비밀번호 변경</a>        
+    </div>
+</div>
+  
 <!-- 하단 영역의 메인 페이지로 돌아가는 링크 -->
 <br>
 <a href="<c:url value='student/main.jsp' />">메인으로 돌아가기</a>

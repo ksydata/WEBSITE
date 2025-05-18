@@ -8,6 +8,7 @@ import dto.StudentDTO;
 public class StudentService {
 	private StudentDAO studentDAO;
     
+	// 1. 개인정보 조회 메서드
 	// 생성자: StudentDAO 객체를 초기화 (DB 접근을 위해 필요)
 	// 단, 데이터 추출하는 핵심 로직은 데이터 접근객체인 DAO에서 수행
 	public StudentService() {
@@ -57,5 +58,21 @@ public class StudentService {
         
         // StudentDTO의 객체인 학생 1명의 정보를 리턴
         return student;
+    }
+    
+    // 개인정보 수정 메서드
+    public void updateStudentInfo(String userID, String phoneNumber, String email, String address) {
+    	// 휴대전화번호 수정
+    	if (phoneNumber != null && phoneNumber.trim().isEmpty()) {
+    		studentDAO.updatePhoneNumber(userID, phoneNumber);
+    	}
+    	// 이메일 수정
+    	if (email != null && email.trim().isEmpty()) {
+    		studentDAO.updateEmail(userID, email);
+    	}
+    	// 주소 수정
+    	if (address != null && address.trim().isEmpty()) {
+    		studentDAO.updateAddress(userID, address);
+    	}
     }
 }

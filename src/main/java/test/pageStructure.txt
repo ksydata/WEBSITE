@@ -57,6 +57,10 @@
 		↓
 	5) myPersonalInfo.jsp (View)
 
+- 나의 개인정보 수정 기능
+	1) 휴대전화번호, 이메일, 주소 수정 폼
+	
+	2) 비밀번호 변경 폼
 	
 2. 나의 학사정보 조회(student/myAcademicRecord.jsp)
 

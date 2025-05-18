@@ -120,7 +120,7 @@ public class StudentDAO {
 	
 	public StudentDTO updatePhoneNumber(String userID, String phoneNumber) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보를 수정하는 SQL 쿼리
-		// ** 수정 예정 **
+		// ** 수정 진행중 **
 		String updateQuery = "UPDATE USER SET phoneNumber = ? WHERE userID = ?";
 		
 	    try (Connection connection = DatabaseUtil.getConnection();
@@ -137,7 +137,7 @@ public class StudentDAO {
 	
 	public StudentDTO updateEmail(String userID, String email) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보를 수정하는 SQL 쿼리
-		// ** 수정 예정 **
+		// ** 수정 진행중 **
 		String updateQuery = "UPDATE USER SET email = ? WHERE userID = ?";
 		
 	    try (Connection connection = DatabaseUtil.getConnection();
