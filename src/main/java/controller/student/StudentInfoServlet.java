@@ -94,3 +94,11 @@ public class StudentInfoServlet extends HttpServlet {
         doGet(request, response);
 	}
 }
+
+/*
+// 비밀번호 변경 메서드
+@Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+        throws ServletException, IOException {
+}
+*/

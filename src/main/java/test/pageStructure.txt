@@ -145,6 +145,7 @@
 [4] https://vibeee.tistory.com/184
 [5] https://doublesprogramming.tistory.com/91
 	자바 스프링 - 회원 상세정보 조회 구현(MVC 패턴 적용) 
+[6] https://kimfk567.tistory.com/54
 
 [GPT Source]
 [1] JSP/Servlet 기반 회원가입/로그인, 권한 관리하는 기본 플로우 설명

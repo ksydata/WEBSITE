@@ -120,7 +120,6 @@ public class StudentDAO {
 	
 	public StudentDTO updatePhoneNumber(String userID, String phoneNumber) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보를 수정하는 SQL 쿼리
-		// ** 수정 진행중 **
 		String updateQuery = "UPDATE USER SET phoneNumber = ? WHERE userID = ?";
 		
 	    try (Connection connection = DatabaseUtil.getConnection();
@@ -137,7 +136,6 @@ public class StudentDAO {
 	
 	public StudentDTO updateEmail(String userID, String email) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보를 수정하는 SQL 쿼리
-		// ** 수정 진행중 **
 		String updateQuery = "UPDATE USER SET email = ? WHERE userID = ?";
 		
 	    try (Connection connection = DatabaseUtil.getConnection();
@@ -154,7 +152,6 @@ public class StudentDAO {
 	
 	public StudentDTO updateAddress(String userID, String address) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보를 수정하는 SQL 쿼리
-		// ** 수정 예정 **
 		String updateQuery = "UPDATE USER SET address = ? WHERE userID = ?";
 		
 	    try (Connection connection = DatabaseUtil.getConnection();
@@ -168,6 +165,25 @@ public class StudentDAO {
 		}
 		return null;
 	}
+	
+	public StudentDTO updatePassword(String userID, String userPassword) {
+		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 비밀번호를 변경하는 SQL 쿼리
+		// ** 수정 진행중 **
+		// https://velog.io/@gmlstjq123/%EB%A7%88%EC%9D%B4%ED%8E%98%EC%9D%B4%EC%A7%80-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8-%EB%B3%80%EA%B2%BD%ED%95%98%EA%B8%B0
+		String updateQuery = "UPDATE USER SET userPassword = ? WHERE userID = ?";
+		
+	    try (Connection connection = DatabaseUtil.getConnection();
+	         PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+			statement.setString(1, userPassword);
+			statement.setString(2, userID);
+			statement.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;	    
+	}
+	
 }
 
 /*
