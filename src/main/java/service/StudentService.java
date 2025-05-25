@@ -50,7 +50,7 @@ public class StudentService {
     }
     
     // 개인정보 수정 메서드
-    public void updateStudentInfo(String userID, String phoneNumber, String email, String address) {
+    public void updateStudentInfo(String userID, String phoneNumber, String email, String address) {    	    	
     	// 휴대전화번호 수정
     	if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
     		studentDAO.updatePhoneNumber(userID, phoneNumber);
