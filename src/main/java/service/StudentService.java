@@ -43,17 +43,6 @@ public class StudentService {
                 // StudentDTO.setter method
                 student.setResidentNumber(maskedResidentNum);
             }
-            
-            // 비밀번호 전체 마스킹 (예: ********)
-            // StudentDTO.getter method            
-            String password = student.getUserPassword();
-            if (password != null) {
-            	// ** 수정 예정 **
-                String maskedPassword = password.substring(0, 9) + "********";
-                // StudentDTO.setter method
-                student.setUserPassword(maskedPassword);
-            }
-            
         }
         
         // StudentDTO의 객체인 학생 1명의 정보를 리턴
@@ -75,4 +64,25 @@ public class StudentService {
     		studentDAO.updateAddress(userID, address);
     	}
     }
+    
+    // 비밀번호 변경 메서드
+    public void updateStudentPW(String userID, String userPassword) {
+    	// 데이터접근객체에서 비밀번호 변경 메서드 적용
+    	if (userPassword != null && !userPassword.trim().isEmpty()) {
+    		studentDAO.updatePassword(userID, userPassword);
+    	}
+    }
 }
+
+
+/*
+// 비밀번호 전체 마스킹 (예: ********)
+// StudentDTO.getter method            
+String password = student.getUserPassword();
+if (password != null) {
+	// ** 수정 예정 **
+    String maskedPassword = password.substring(0, 9) + "********";
+    // StudentDTO.setter method
+    student.setUserPassword(maskedPassword);
+}
+*/
