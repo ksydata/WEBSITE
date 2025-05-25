@@ -186,19 +186,98 @@ SET
   retakeSemester = IF(@retakeSemester = '' OR @retakeSemester = 'NaN', NULL, @retakeSemester),
   retakeCourseID = IF(@retakeCourseID = '' OR @retakeCourseID = 'NaN', NULL, CAST(@retakeCourseID AS UNSIGNED));
 
--- 테이블 조회
+-- 스키마 내 전체 테이블 데이터 조회 쿼리
+-- USE WEB_SECURITY_LAB;
 SELECT * FROM USER;
-SELECT * FROM NOTICE;
 SELECT * FROM PERSONAL_INFO;
 SELECT * FROM ACADEMIC_RECORD;
+SELECT * FROM NOTICE;
+-- 테이블 컬럼명 조회
+DESC PERSONAL_INFO;
+-- USER, NOTICE, PERSONAL_INFO, ACADEMIC_RECORD, 
 
--- DCL 
+-- 단과대학별 전공 현황 조회 쿼리
 SELECT college, major, COUNT(*) FROM ACADEMIC_RECORD GROUP BY college, major;
 SELECT college, COUNT(*) FROM ACADEMIC_RECORD GROUP BY college;
 SELECT major, COUNT(*) FROM ACADEMIC_RECORD GROUP BY major;
 
-DESC PERSONAL_INFO;
+-- 사용자 계정(권한)별 상태값 현황 조회(개인정보 테이블) 쿼리
 SELECT PERSONAL_INFO.status, USER.role, COUNT(*) 
 FROM PERSONAL_INFO
 JOIN USER ON PERSONAL_INFO.userID = USER.userID
 GROUP BY PERSONAL_INFO.status, USER.role;
+
+-- 사용자 계정(권한)별 상태값 현황 조회(학사정보 테이블) 쿼리
+SELECT ACADEMIC_RECORD.status, USER.role, COUNT(*) 
+FROM ACADEMIC_RECORD
+JOIN USER ON ACADEMIC_RECORD.userID = USER.userID
+GROUP BY ACADEMIC_RECORD.status, USER.role;
+
+-- 학생 학번 데이터 조건 설정하여 조회 쿼리
+SELECT * FROM PERSONAL_INFO WHERE userID like 'S%';
+SELECT * FROM USER WHERE userID = "S20240960";
+SELECT * FROM PERSONAL_INFO WHERE userID = "S20240960";
+SELECT * FROM  ACADEMIC_RECORD WHERE userID = "S20240960";
+SELECT * FROM PERSONAL_INFO WHERE userID like 'S%';
+SELECT * FROM USER WHERE userID like 'S%';
+
+-- USE WEB_SECURITY_LAB;
+
+-- 교수 사번 사용자 단과대학 및 전공 데이터 수정 쿼리
+-- 학생 데이터에 등장한 34개 조합에 각 조합당 최소 1명의 교수 배정(총 40명)
+-- (1) 자연과학대학
+UPDATE PERSONAL_INFO SET college='자연과학대학', major='영어영문학과' WHERE userID='P10001';
+UPDATE PERSONAL_INFO SET college='자연과학대학', major='심리학과' WHERE userID='P10002';
+UPDATE PERSONAL_INFO SET college='자연과학대학', major='컴퓨터공학과' WHERE userID='P10003';
+UPDATE PERSONAL_INFO SET college='자연과학대학', major='경영학과' WHERE userID='P10004';
+UPDATE PERSONAL_INFO SET college='자연과학대학', major='수학과' WHERE userID='P10005';
+UPDATE PERSONAL_INFO SET college='자연과학대학', major='전자공학과' WHERE userID='P10006';
+
+-- (2) 공과대학
+UPDATE PERSONAL_INFO SET college='공과대학', major='경영학과' WHERE userID='P10007';
+UPDATE PERSONAL_INFO SET college='공과대학', major='컴퓨터공학과' WHERE userID='P10008';
+UPDATE PERSONAL_INFO SET college='공과대학', major='수학과' WHERE userID='P10009';
+UPDATE PERSONAL_INFO SET college='공과대학', major='전자공학과' WHERE userID='P10010';
+UPDATE PERSONAL_INFO SET college='공과대학', major='심리학과' WHERE userID='P10011';
+UPDATE PERSONAL_INFO SET college='공과대학', major='데이터사이언스학과' WHERE userID='P10012';
+
+-- (3) 경영대학
+UPDATE PERSONAL_INFO SET college='경영대학', major='컴퓨터공학과' WHERE userID='P10013';
+UPDATE PERSONAL_INFO SET college='경영대학', major='경영학과' WHERE userID='P10014';
+UPDATE PERSONAL_INFO SET college='경영대학', major='영어영문학과' WHERE userID='P10015';
+UPDATE PERSONAL_INFO SET college='경영대학', major='수학과' WHERE userID='P10016';
+UPDATE PERSONAL_INFO SET college='경영대학', major='심리학과' WHERE userID='P10017';
+UPDATE PERSONAL_INFO SET college='경영대학', major='데이터사이언스학과' WHERE userID='P10018';
+
+-- (4) 사회과학대학
+UPDATE PERSONAL_INFO SET college='사회과학대학', major='경영학과' WHERE userID='P10019';
+UPDATE PERSONAL_INFO SET college='사회과학대학', major='영어영문학과' WHERE userID='P10020';
+UPDATE PERSONAL_INFO SET college='사회과학대학', major='수학과' WHERE userID='P10021';
+UPDATE PERSONAL_INFO SET college='사회과학대학', major='컴퓨터공학과' WHERE userID='P10022';
+UPDATE PERSONAL_INFO SET college='사회과학대학', major='심리학과' WHERE userID='P10023';
+UPDATE PERSONAL_INFO SET college='사회과학대학', major='데이터사이언스학과' WHERE userID='P10024';
+UPDATE PERSONAL_INFO SET college='사회과학대학', major='전자공학과' WHERE userID='P10025';
+
+-- (5) 문과대학
+UPDATE PERSONAL_INFO SET college='문과대학', major='영어영문학과' WHERE userID='P10026';
+UPDATE PERSONAL_INFO SET college='문과대학', major='수학과' WHERE userID='P10027';
+UPDATE PERSONAL_INFO SET college='문과대학', major='심리학과' WHERE userID='P10028';
+UPDATE PERSONAL_INFO SET college='문과대학', major='데이터사이언스학과' WHERE userID='P10029';
+UPDATE PERSONAL_INFO SET college='문과대학', major='컴퓨터공학과' WHERE userID='P10030';
+UPDATE PERSONAL_INFO SET college='문과대학', major='전자공학과' WHERE userID='P10031';
+UPDATE PERSONAL_INFO SET college='문과대학', major='경영학과' WHERE userID='P10032';
+
+-- (6) 소프트웨어융합대학
+UPDATE PERSONAL_INFO SET college='소프트웨어융합대학', major='컴퓨터공학과' WHERE userID='P10033';
+UPDATE PERSONAL_INFO SET college='소프트웨어융합대학', major='데이터사이언스학과' WHERE userID='P10034';
+
+-- (7) 추가배정
+UPDATE PERSONAL_INFO SET college='자연과학대학', major='컴퓨터공학과' WHERE userID='P10035';
+UPDATE PERSONAL_INFO SET college='경영대학', major='컴퓨터공학과' WHERE userID='P10036';
+UPDATE PERSONAL_INFO SET college='공과대학', major='컴퓨터공학과' WHERE userID='P10037';
+
+UPDATE PERSONAL_INFO SET college='경영대학', major='경영학과' WHERE userID='P10038';
+UPDATE PERSONAL_INFO SET college='문과대학', major='영어영문학과' WHERE userID='P10039';
+UPDATE PERSONAL_INFO SET college='사회과학대학', major='영어영문학과' WHERE userID='P10040';
+
+SELECT * FROM PERSONAL_INFO;
