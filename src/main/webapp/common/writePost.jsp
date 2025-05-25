@@ -1,10 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ page import="dao.NoticeDAO, dto.NoticeDTO" %>
-<%
-    String userID = (String) session.getAttribute("userID");
-	String permissionRole = (String) session.getAttribute("permissionRole");
-%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,10 +11,10 @@
 <body class="container mt-5">
     <h2 class="mb-4">📝 게시글 작성</h2>
 
-    <form action="<%= request.getContextPath() %>/BoardServlet" method="post">
-    	<!-- 숨겨진 필드로 userID, permissionRole 전달 -->
-    	<input type="hidden" name="userID" value="<%= userID %>">
-    	<input type="hidden" name="permissionRole" value="<%= permissionRole %>">
+    <form action="${pageContext.request.contextPath}/board" method="post">
+        <!-- 숨겨진 필드로 userID, permissionRole 전달 -->
+        <input type="hidden" name="userID" value="${userID}">
+        <input type="hidden" name="permissionRole" value="${permissionRole}">
 
         <div class="mb-3">
             <label for="title" class="form-label">제목</label>
@@ -32,9 +27,9 @@
         </div>
         
         <div class="mb-3">
-    		<label for="endDate" class="form-label">공지 종료일시</label>
-    		<input type="datetime-local" class="form-control" id="endDate" name="endDate">
-		</div>
+            <label for="endDate" class="form-label">공지 종료일시</label>
+            <input type="datetime-local" class="form-control" id="endDate" name="endDate">
+        </div>
 
         <button type="submit" class="btn btn-primary">등록</button>
         <a href="postlist.jsp" class="btn btn-secondary">취소</a>

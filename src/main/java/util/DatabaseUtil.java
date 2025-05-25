@@ -45,7 +45,8 @@ public class DatabaseUtil {
 			BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
 			
 			// 임시 변수
-			String encryptKey = "your_decrypt_key";
+//			String encryptKey = "your_decrypt_key";
+		    String encryptKey = "webmasterkey";
 					
 			// UNIT TEST
 			// System.out.println("복호화 키: " + System.getProperty("JASYPT_ENCRYPTOR_KEY"));

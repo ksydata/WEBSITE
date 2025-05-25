@@ -3,11 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page import="java.util.*, dao.NoticeDAO, dto.NoticeDTO" %>
-<%
-    NoticeDAO dao = new NoticeDAO();
-    List<NoticeDTO> noticeList = dao.getAllNotices();
-    request.setAttribute("noticeList", noticeList);
-%>
+<%@ include file="/common/header.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,11 +15,27 @@
 	<!-- 사용자 정의(커스텀) 스타일 시트 연결 -->
 	<link rel="stylesheet" href="./css/custom.css">
 </head>
-<body class="container mt-5">
-	
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-	<h2 class="mb-4">📋 게시판 글 목록</h2>
 
+<body> 
+<div class="container mt-5">
+	<h2 class="text-center mb-4">📋 게시판 글 목록</h2>
+	
+	<!--  삭제 완료 팝업 띄우기 -->
+	<c:if test="${not empty sessionScope.flashMessage}">
+	    <script>
+	        alert("${sessionScope.flashMessage}");
+	    </script>
+	    <c:remove var="flashMessage" scope="session" />
+	</c:if>
+	
+	
+	<div class="text-right">
+        <!-- <a href="common/writePost.jsp" class="btn btn-primary">글쓰기</a> -->
+        <a href="${pageContext.request.contextPath}/post" class="btn btn-primary"
+   		onclick="event.preventDefault(); document.getElementById('writeForm').submit();">글쓰기</a>
+		<form id="writeForm" action="${pageContext.request.contextPath}/post" method="post" style="display: none;"></form>
+    </div>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <table class="table table-hover">
         <thead class="table-dark">
             <tr>
@@ -35,7 +47,7 @@
         </thead>
         <tbody>
             <c:forEach var="post" items="${noticeList}">
-                <tr onclick="location.href='postpage.jsp?id=${post.noticeID}'" style="cursor:pointer;">
+               <tr onclick="location.href='post?id=${post.noticeID}'" style="cursor:pointer;">
                     <td>${post.noticeID}</td>
                     <td>${post.userID}</td>
 					<td>
@@ -47,10 +59,11 @@
         </tbody>
     </table>
 
-    <div class="text-end">
-        <a href="writePost.jsp" class="btn btn-primary">글쓰기</a>
-    </div>
+    
 	
 	</nav>
+</div>
 </body>
 </html>
+
+<%@ include file="/common/footer.jsp" %>
