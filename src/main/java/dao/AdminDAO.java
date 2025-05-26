@@ -114,17 +114,17 @@ public class AdminDAO {
                 admin.setUserRole(resultSet.getString("role"));
 
                 // PERSONAL_INFO 테이블 조회
-                String infoSql = "SELECT * FROM PERSONAL_INFO WHERE user_id = ?";
+                String infoSql = "SELECT * FROM PERSONAL_INFO WHERE userID = ?";
                 try (PreparedStatement infoStmt = connection.prepareStatement(infoSql)) {
                     infoStmt.setString(1, admin.getUserID());
                     ResultSet infoRs = infoStmt.executeQuery();
                     if (infoRs.next()) {
-                    	admin.setCollege(resultSet.getString("college"));
-		                admin.setMajor(resultSet.getString("major"));
-		                admin.setAdmissionYear(resultSet.getInt("admissionYear"));
-		                admin.setStatus(resultSet.getString("status"));
-		                admin.setResidentNumber(resultSet.getString("residentNumber"));	                
-		                admin.setAddress(resultSet.getString("address"));
+                    	admin.setCollege(infoRs.getString("college"));
+		                admin.setMajor(infoRs.getString("major"));
+		                admin.setAdmissionYear(infoRs.getInt("admissionYear"));
+		                admin.setStatus(infoRs.getString("status"));
+		                admin.setResidentNumber(infoRs.getString("residentNumber"));	                
+		                admin.setAddress(infoRs.getString("address"));
                     }
                 }
 
