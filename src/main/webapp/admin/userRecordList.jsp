@@ -27,19 +27,23 @@
             <tr>
                 <th>학생 ID</th>
                 <th>이름</th>
-                <th>학번</th>
+                <th>이메일</th>
+                <th>단과대학</th>
                 <th>전공</th>
                 <th>입학년도</th>
+                <th>재학상태</th>
             </tr>
         </thead>
         <tbody>
             <c:forEach var="student" items="${studentList}">
-                <tr onclick="location.href='studentInfo?id=${student.studentID}'" style="cursor: pointer;">
-                    <td>${student.studentID}</td>
+                <tr onclick="location.href='userRecord?id=${student.userID}'" style="cursor: pointer;">
+                    <td>${student.userID}</td>
                     <td>${student.name}</td>
-                    <td>${student.studentNumber}</td>
+                    <td>${student.email}</td>
+                    <td>${student.college}</td>
                     <td>${student.major}</td>
                     <td>${student.admissionYear}</td>
+                    <td>${student.status}</td>
                 </tr>
             </c:forEach>
         </tbody>

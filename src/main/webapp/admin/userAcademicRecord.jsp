@@ -5,7 +5,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>${userName}의 학사정보</title>
+    <title>${recordList[0].userID}의 학사정보</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
 </head>
 
@@ -22,7 +22,7 @@
             학적 정보
         </div>
         <div class="card-body">
-            <p><strong>이름:</strong> ${userName}</p>
+            <p><strong>이름:</strong> ${recordList[0].userID}</p>
             <p><strong>단과대학:</strong> ${recordList[0].college}></p>
             <p><strong>전공:</strong> ${recordList[0].major}</p>
         </div>

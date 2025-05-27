@@ -63,7 +63,7 @@
 	    </thead>
 	    <tbody>
 	        <c:forEach var="user" items="${userList}">
-	            <tr>
+	            <tr onclick="location.href='userInfo?id=${user.userID}'" style="cursor:pointer;">
 	                <td>${user.userID}</td>
 	                <td>${user.name}</td>
 	                <td>${user.email}</td>
