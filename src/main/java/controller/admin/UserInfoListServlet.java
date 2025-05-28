@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.AdminDAO;
 import dto.AdminPersonalInfoDTO;
+import service.AdminService;
 
 @WebServlet("/adminUserList")
 public class UserInfoListServlet extends HttpServlet {
@@ -20,21 +20,35 @@ public class UserInfoListServlet extends HttpServlet {
 
 	// 개인정보 리스트 조회 메서드
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		// 인코딩
-		request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
+	    request.setCharacterEncoding("UTF-8");
+	    response.setContentType("text/html;charset=UTF-8");
 
-        // 파라미터에서 역할(role) 정보 가져오기
-        String userRole = request.getParameter("role");  // 예: "학생", "교수", "전체" 등
-        
-        AdminDAO dao = new AdminDAO();
-        List<AdminPersonalInfoDTO> list = dao.getUserListByRole(userRole);  // 역할 인자 전달
-	
-        request.setAttribute("userList", list);
-        request.setAttribute("selectedRole", userRole);  // 선택된 역할을 JSP에서 표시
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/userInfoList.jsp");
-        dispatcher.forward(request, response); 
+	    String userRole = request.getParameter("role");
+	    String pageParam = request.getParameter("page");
+	    int page = 1;
+	    
+	    
+	    if (pageParam != null && pageParam.matches("\\d+")) {
+	        page = Integer.parseInt(pageParam);
+	    }
+
+	    AdminService service = new AdminService();
+	    List<AdminPersonalInfoDTO> list = service.getPagedUserList(userRole, page);
+	    int totalPage = service.getTotalPageCount(userRole);
+	    
+	    int blockSize = 10; // 10개 단위 블록
+	    int startPage = ((page - 1) / blockSize) * blockSize + 1;
+	    int endPage = Math.min(startPage + blockSize - 1, totalPage);
+
+	    request.setAttribute("userList", list);
+	    request.setAttribute("selectedRole", userRole);
+	    request.setAttribute("currentPage", page);
+	    request.setAttribute("startPage", startPage);
+	    request.setAttribute("endPage", endPage);
+	    request.setAttribute("totalPage", totalPage);
+
+	    RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/userInfoList.jsp");
+	    dispatcher.forward(request, response);
 	}
 	
 }

@@ -75,6 +75,34 @@
 	        </c:forEach>
 	    </tbody>
 	</table>
+	<div class="d-flex justify-content-center mt-4">
+    <nav>
+        <ul class="pagination">
+
+            <!-- 이전 블록 -->
+            <c:if test="${startPage > 1}">
+                <li class="page-item">
+                    <a class="page-link" href="adminUserList?role=${selectedRole}&page=${startPage - 1}">&laquo;</a>
+                </li>
+            </c:if>
+
+            <!-- 페이지 번호 -->
+            <c:forEach var="p" begin="${startPage}" end="${endPage}">
+                <li class="page-item ${p == currentPage ? 'active' : ''}">
+                    <a class="page-link" href="adminUserList?role=${selectedRole}&page=${p}">${p}</a>
+                </li>
+            </c:forEach>
+
+            <!-- 다음 블록 -->
+            <c:if test="${endPage < totalPage}">
+                <li class="page-item">
+                    <a class="page-link" href="adminUserList?role=${selectedRole}&page=${endPage + 1}">&raquo;</a>
+                </li>
+            </c:if>
+
+        </ul>
+    </nav>
+</div>
 </div>
 </body>
 </html>

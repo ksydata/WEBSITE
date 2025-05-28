@@ -48,6 +48,35 @@
             </c:forEach>
         </tbody>
     </table>
+    <!-- 페이지 네비게이션 -->
+<div class="d-flex justify-content-center mt-4">
+    <nav>
+        <ul class="pagination">
+
+            <!-- 이전 블록 이동 -->
+            <c:if test="${startPage > 1}">
+                <li class="page-item">
+                    <a class="page-link" href="studentRecordList?page=${startPage - 1}">&laquo;</a>
+                </li>
+            </c:if>
+
+            <!-- 각 페이지 번호 출력 -->
+            <c:forEach var="p" begin="${startPage}" end="${endPage}">
+                <li class="page-item ${p == currentPage ? 'active' : ''}">
+                    <a class="page-link" href="studentRecordList?page=${p}">${p}</a>
+                </li>
+            </c:forEach>
+
+            <!-- 다음 블록 이동 -->
+            <c:if test="${endPage < totalPage}">
+                <li class="page-item">
+                    <a class="page-link" href="studentRecordList?page=${endPage + 1}">&raquo;</a>
+                </li>
+            </c:if>
+
+        </ul>
+    </nav>
+</div>
 </div>
 </body>
 </html>
