@@ -45,6 +45,50 @@ public class NoticeDAO {
 		return noticeList;
 	}
 	
+	// offset부터 limit 개수만큼 게시글 목록 조회
+	public List<NoticeDTO> getNoticesWithPaging(int offset, int limit) {
+	    List<NoticeDTO> noticeList = new ArrayList<>();
+	    String sql = "SELECT * FROM NOTICE ORDER BY createDate DESC LIMIT ? OFFSET ?";
+
+	    try (Connection connection = DatabaseUtil.getConnection();
+	         PreparedStatement stmt = connection.prepareStatement(sql)) {
+	        stmt.setInt(1, limit);
+	        stmt.setInt(2, offset);
+	        ResultSet rs = stmt.executeQuery();
+
+	        while (rs.next()) {
+	            NoticeDTO notice = new NoticeDTO();
+	            notice.setNoticeID(rs.getInt("noticeID"));
+	            notice.setUserID(rs.getString("userID"));
+	            notice.setTitle(rs.getString("title"));
+	            notice.setContents(rs.getString("contents"));
+	            notice.setCreateDate(rs.getTimestamp("createDate"));
+	            notice.setUpdateDate(rs.getTimestamp("updateDate"));
+	            notice.setEndDate(rs.getTimestamp("endDate"));
+	            notice.setPermissionRole(rs.getString("permissionRole"));
+	            noticeList.add(notice);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return noticeList;
+	}
+
+	// 전체 게시글 수 반환
+	public int getTotalNoticeCount() {
+	    String sql = "SELECT COUNT(*) FROM NOTICE";
+	    try (Connection connection = DatabaseUtil.getConnection();
+	         PreparedStatement stmt = connection.prepareStatement(sql)) {
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            return rs.getInt(1);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return 0;
+	}
+	
 	
 	// 특정 게시글 조회 - 게시글 표 & 게시글 작성자 조회 (학생/교수/관리자 여부와 함께 조회)
 	public NoticeDTO getNoticeByID(int noticeID) {
