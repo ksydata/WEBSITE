@@ -16,7 +16,7 @@
 <div class="container mt-5">
 	<h2 class="text-center mb-4">비밀번호 변경</h2>
 	
-	<form action="c:url value='/studentInfo' />" method="post"></form>
+	<form action="c:url value='/studentPassword' />" method="post"></form>
 		<div class="card">
 			<div class="card-header bg-warning">비밀번호 변경</div>
 				<div class="card-body">

@@ -73,7 +73,7 @@
 		
 	    const emailId = document.getElementById("emailId").value.trim();
 	    const emailDomain = document.getElementById("emailDomain").value.trim();
-	    document.getElementById("email").value = emailId + '@' + emailDomain;
+	    document.getElementById("email").value = emailId + "@" + emailDomain;
 	    
 	    return true;
 	  }

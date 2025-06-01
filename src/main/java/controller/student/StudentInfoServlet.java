@@ -84,7 +84,7 @@ public class StudentInfoServlet extends HttpServlet {
         String address = request.getParameter("address");
         
         // 비즈니스 로직을 정의한 StudentService 계층 호출하여 DB 테이블에 사용자에 의해 수정된 개인정보 업데이트
-        // ** 수정 진행중 * studentService.method(userID, phoneNumber, residentNumber);
+        // studentService.method(userID, phoneNumber, residentNumber);
         StudentService studentService = new StudentService();
         studentService.updateStudentInfo(userID, phoneNumber, email, address);
         
