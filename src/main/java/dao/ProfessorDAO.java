@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dto.ProfessorDTO;
-import dto.StudentDTO;
 import dto.AcademicRecordDTO;
 import util.DatabaseUtil;
 
@@ -156,42 +155,37 @@ public class ProfessorDAO {
 		}
 		return null;	    
 	}
-	
-    public List<AcademicRecordDTO> getAcademicRecordsByCollege(String professorId) {
-    	// 교수 1명의 동일 단과대학에 해당하는 수강생 1명의 정보에 대한 접근하는 조인 쿼리
+    
+    public List<AcademicRecordDTO> getAcademicRecordsByCollege(String professorID) {
+        // 교수 1명의 동일 단과대학에 해당하는 수강생 정보를 가져오는 쿼리
         String recordQuery = """
-            SELECT
-                U.user_id,
-                U.name,
-                P.college,                
-                P.major,
-                R.courseName,
-                R.grade,
-                R.gradePoint,                
-                R.semester,
-            FROM USER U
-            JOIN PERSONAL_INFO P ON U.user_id = P.user_id
-            JOIN ACADEMIC_RECORD R ON U.user_id = R.student_id
-            WHERE P.college = (
-                SELECT college FROM PERSONAL_INFO WHERE user_id = ?
-            )
-            AND U.role = 'student'
-            ORDER BY R.semester DESC, R.name ASC;
-        """;
-        List<AcademicRecordDTO> classRecordsList = new ArrayList<>();        
-
+			SELECT
+				U.userID, U.name, P.college, P.major,
+			    R.courseName, R.grade, R.gradePoint, R.academicYear, R.semester
+			FROM USER U
+			JOIN PERSONAL_INFO P ON U.userID = P.userID
+			JOIN ACADEMIC_RECORD R ON U.userID = R.userID
+			WHERE P.college IN (
+				SELECT DISTINCT college FROM PERSONAL_INFO WHERE userID = ?
+			) 
+			ORDER BY R.semester DESC, U.name ASC""";
+        List<AcademicRecordDTO> classRecordsList = new ArrayList<>();
+        
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(recordQuery)) {
-        	preparedStatement.setString(1, professorId);
+            
+            preparedStatement.setString(1, professorID);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 AcademicRecordDTO dto = new AcademicRecordDTO();
-                dto.setUserID(resultSet.getString("user_id"));
+                dto.setUserID(resultSet.getString("userID"));
                 dto.setName(resultSet.getString("name"));
+                dto.setCollege(resultSet.getString("college"));
                 dto.setMajor(resultSet.getString("major"));
                 dto.setCourseName(resultSet.getString("courseName"));
                 dto.setGrade(resultSet.getString("grade"));
+                dto.setAcademicYear(resultSet.getInt("academicYear"));
                 dto.setGradePoint(resultSet.getInt("gradePoint"));
                 dto.setSemester(resultSet.getString("semester"));
                 classRecordsList.add(dto);

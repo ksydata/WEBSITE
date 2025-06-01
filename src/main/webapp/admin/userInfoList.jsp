@@ -16,7 +16,7 @@
 
 <body> 
 <div class="container mt-5">
-	<h2 class="text-center mb-4">👥 회원 리스트</h2>
+	<h2 class="text-center mb-4">회원 리스트</h2>
 	
 	<!-- 회원 관련 메시지 (예: 삭제 완료, 등록 완료 등) -->
 	<c:if test="${not empty sessionScope.flashMessage}">
