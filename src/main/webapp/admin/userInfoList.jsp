@@ -25,6 +25,39 @@
 	    </script>
 	    <c:remove var="flashMessage" scope="session" />
 	</c:if>
+	
+	<!-- 검색창 UI -->
+	<form method="get" action="adminUserList" class="row mb-3 justify-content-between align-items-center">
+    <!-- 드롭다운 -->
+    <div class="col-md-3">
+        <select class="form-select" name="searchType">
+            <option value="userID" ${param.searchType == 'userID' ? 'selected' : ''}>회원 ID</option>
+            <option value="name" ${param.searchType == 'name' ? 'selected' : ''}>이름</option>
+            <option value="phone" ${param.searchType == 'phoneNumber' ? 'selected' : ''}>휴대전화번호</option>
+            <option value="email" ${param.searchType == 'email' ? 'selected' : ''}>이메일</option>
+            <option value="address" ${param.searchType == 'address' ? 'selected' : ''}>주소</option>
+            <option value="college" ${param.searchType == 'college' ? 'selected' : ''}>단과대학</option>
+            <option value="major" ${param.searchType == 'major' ? 'selected' : ''}>전공</option>
+            <option value="admissionYear" ${param.searchType == 'admissionYear' ? 'selected' : ''}>입학년도</option>
+            <option value="status" ${param.searchType == 'status' ? 'selected' : ''}>상태</option>
+            <option value="ssn" ${param.searchType == 'residentNumber' ? 'selected' : ''}>주민등록번호</option>
+        </select>
+    </div>
+
+    <!-- 검색어 입력 -->
+    <div class="col-md-6">
+        <input type="text" class="form-control" name="searchKeyword" placeholder="검색어를 입력하세요"
+               value="${param.searchKeyword}">
+    </div>
+
+    <!-- 검색 버튼 -->
+    <div class="col-md-2 text-end">
+        <button type="submit" class="btn btn-primary w-100">검색</button>
+    </div>
+    
+    <!-- 숨겨진 역할 전달 -->
+   <input type="hidden" name="role" value="${selectedRole != null ? selectedRole : '전체'}">
+</form>
 
 	<!-- 역할 필터 라디오 버튼 -->
 	<form method="get" action="adminUserList" class="mb-4 text-center">
@@ -50,6 +83,9 @@
 	        <label class="btn btn-outline-primary" for="role-admin">관리자</label>
 	    </div>
 	</form>
+	
+	
+	
 
 	<table class="table table-hover">
 	    <thead class="table-dark">
