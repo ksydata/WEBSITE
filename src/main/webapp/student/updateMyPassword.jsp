@@ -16,15 +16,24 @@
 <div class="container mt-5">
 	<h2 class="text-center mb-4">비밀번호 변경</h2>
 	
-	<form action="c:url value='/studentPassword' />" method="post"></form>
+	<!-- 비밀번호 변경 실패 시 에러 메시지 출력 -->
+	<c:if test="${not empty error}">
+		<div class="alert alert-danger text-center">${error}</div>
+	</c:if>
+	<!-- 비밀번호 변경 성공 시 메시지 출력 -->
+	<c:if test="${not empty success}">
+		<div class="alert alert-success text-center">${success}</div>
+	</c:if>
+
+	<form action="<c:url value='/studentPassword' />" method="post">
 		<div class="card">
 			<div class="card-header bg-warning">비밀번호 변경</div>
 				<div class="card-body">
 					<!-- 1. 현재 비밀번호 일치 여부 확인 -->			
                 	<div class="mb-3">	
 						<label for="currentPassword" class="form-label">현재 비밀번호</label>
-						<input type="text" class="form-control" id="currentPassword" name="currentPassword"
-				 		 value="${studentInfo.userPassword}" required>
+						<input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+						<!-- value="${studentInfo.userPassword}" 보안상 취약한 비밀번호 노출 위험  -->
 					</div>
 					<!-- 2. 새 비밀번호 입력받기 -->
                 	<div class="mb-3">	
@@ -44,6 +53,7 @@
 				<button type="submit" class="btn btn-primary">변경</button>
 				<a href="<c:url value='/studentInfo' />" class="btn btn-secondary">취소</a>
 			</div>
+	</form>
 </div>
 
 <jsp:include page="../common/footer.jsp" />

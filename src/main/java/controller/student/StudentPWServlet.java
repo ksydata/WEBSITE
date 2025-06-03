@@ -44,22 +44,22 @@ public class StudentPWServlet extends HttpServlet {
         
         // i. 현재 비밀번호 확인
         if (!studentService.verifyCurrentPassword(userID, currentPassword)) {
-        	request.setAttribute("message", "현재 비밀번호와 일치하지 않습니다.");
+        	request.setAttribute("error", "현재 비밀번호와 일치하지 않습니다.");
 		    // JSP 페이지로 포워딩        	
         	request.getRequestDispatcher("/student/updateMyPassword.jsp").forward(request, response);
         	return ;
         }
         // ii. 새 비밀번호 한번 더 입력받은 값과 일치하는지 확인
         if (!newPassword.equals(confirmPassword)) {
-        	request.setAttribute("message", "새 비밀번호가 일치하지 않습니다.");
+        	request.setAttribute("error", "새 비밀번호가 일치하지 않습니다.");
 		    // JSP 페이지로 포워딩        	
         	request.getRequestDispatcher("/student/updateMyPassword.jsp").forward(request, response);
         	return ;
         }
         // iii. 변경 비밀번호를 DB에 업데이트
-        studentService.updateStudentPW(userID, newPassword);
-        
+        studentService.updateStudentPW(userID, newPassword);   
         // 비밀번호 변경 완료 후 알림
-        request.setAttribute("message", "비밀번호가 성공적으로 변경되었습니다.");
+        request.setAttribute("success", "비밀번호가 성공적으로 변경되었습니다.");
+        request.getRequestDispatcher("/student/updateMyPassword.jsp").forward(request, response);
 	}
 }
