@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.AdminDAO;
 import dto.AdminRecordDTO;
+import service.AdminService;
 
 @WebServlet("/userRecord")
 public class UserAcademicRecordServlet extends HttpServlet {
@@ -26,8 +26,8 @@ public class UserAcademicRecordServlet extends HttpServlet {
         
         String userID = request.getParameter("id");
         
-        AdminDAO dao = new AdminDAO();
-        List<AdminRecordDTO> recordList = dao.getRecordsByStudent(userID);
+        AdminService service = new AdminService();
+        List<AdminRecordDTO> recordList = service.getRecordsByStudent(userID);
         request.setAttribute("recordList", recordList);
         
         RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/userAcademicRecord.jsp");

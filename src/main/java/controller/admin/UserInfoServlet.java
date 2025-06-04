@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.AdminDAO;
 import dto.AdminPersonalInfoDTO;
+import service.AdminService;
 
 @WebServlet("/userInfo")
 public class UserInfoServlet extends HttpServlet {
@@ -25,8 +25,8 @@ public class UserInfoServlet extends HttpServlet {
 		
 		String id = request.getParameter("id");
 		
-		AdminDAO dao = new AdminDAO();
-		AdminPersonalInfoDTO info = dao.getUserInfo(id);
+		AdminService service = new AdminService();
+		AdminPersonalInfoDTO info = service.getUserInfo(id);
 		request.setAttribute("studentInfo", info);
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/userPersonalInfo.jsp");
