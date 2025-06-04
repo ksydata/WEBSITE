@@ -65,7 +65,7 @@ public class StudentService {
     	}
     }
     
-    // 비밀번호 검증 메서드 (verify: 과정 중심의 시스템 검증 / validate: 최종 결괌ㄹ에 대한 검사)
+    // 비밀번호 검증 메서드 (verify: 과정 중심의 시스템 검증 / validate: 최종 결과물에 대한 검사)
     public boolean verifyCurrentPassword(String userID, String inputPassword) {
     	return studentDAO.checkCurrentPassword(userID, inputPassword);
     }

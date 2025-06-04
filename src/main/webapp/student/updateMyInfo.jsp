@@ -30,7 +30,9 @@
                     <label for="phoneNumber" class="form-label">휴대전화번호</label>
                     <div class="d-flex gap-2 aligin=items-center">
 	                    <input type="text" class="form-control" id="phoneNum1st" maxlength="3" placeholder="010" required>
+	                    <span>-</span>	                    
 	                    <input type="text" class="form-control" id="phoneNum2nd" maxlength="4" placeholder="1234" required>
+	                    <span>-</span>	                    
 	                    <input type="text" class="form-control" id="phoneNum3rd" maxlength="4" placeholder="5678" required>
 	                </div>
                     <input type="hidden" id="phoneNumber" name="phoneNumber" 

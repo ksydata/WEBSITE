@@ -59,15 +59,15 @@ public class ProfessorInfoServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
         
-        // 세션값에 저장된 학번 불러오기
+        // 세션값에 저장된 사번 불러오기
         String userID = (String) request.getSession().getAttribute("userID");
-        // 학번이 없으면 로그인 페이지로 리다이렉트
+        // 사번이 없으면 로그인 페이지로 리다이렉트
         if (userID == null) {
 	        response.sendRedirect(request.getContextPath() + "/index.jsp");
 	        return;
         }
 		
-        // 수정대상 개인정보(전화번호, 이메일, 주소)
+        // 수정대상 개인정보(휴대전화번호, 사무실전화번호, 이메일, 주소)
         String phoneNumber = request.getParameter("phoneNumber");
         String officeNumber = request.getParameter("officeNumber");        
         String email = request.getParameter("email");
