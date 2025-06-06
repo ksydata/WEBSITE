@@ -52,4 +52,15 @@ public class AdminService {
     	return dao.getUserInfo(userID);
     }
     
+    public List<AdminPersonalInfoDTO> getUserListWithSorting(String role, int page, int pageSize, String sortOrder, String orderField) {
+    	AdminListDAO dao = new AdminListDAO();
+    	int offset = (page - 1) * pageSize;
+        return dao.getUserListByRoleWithPagingAndSorting(role, offset, pageSize, sortOrder, orderField);
+    }
+
+    public int getTotalUserCount(String role) {
+    	AdminListDAO dao = new AdminListDAO();
+        return dao.countUsersByRole(role);
+    }
+    
 }
