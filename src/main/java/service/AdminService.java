@@ -52,6 +52,7 @@ public class AdminService {
     	return dao.getUserInfo(userID);
     }
     
+    // 유저 리스트 정렬 기능 작동 (userInfoList.jsp)
     public List<AdminPersonalInfoDTO> getUserListWithSorting(String role, int page, int pageSize, String sortOrder, String orderField) {
     	AdminListDAO dao = new AdminListDAO();
     	int offset = (page - 1) * pageSize;
