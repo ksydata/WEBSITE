@@ -31,9 +31,15 @@ public class ProfessorRecordServlet extends HttpServlet {
         // 세션에서 로그인된 학번 가져오기
 		HttpSession session = request.getSession();
 		String userID = (String) session.getAttribute("userID");
-
-		// 로그인되어 있을 경우에만 학사정보(성적) 조회
+		
+	    // 로그인되어 있을 경우에만 학사정보(성적) 조회
 		if (userID != null) {
+			// [수정 진행중] 사용자로부터 정렬 파라미터를 받아오기
+		    String sortColumn = request.getParameter("sortColumn");
+		    String sortOrder = request.getParameter("sortOrder");
+			
+		    // 정렬 파라미터가 공백일 경우 > DB에 저장된 기본값으로 정렬 (단, 미리 기본값 지정 semester DESC 가능)		    
+		    
 			// DAO 객체를 이용해 전공생의 학사정보 리스트 조회 
 			ProfessorDAO dao = new ProfessorDAO();
 		    List<AcademicRecordDTO> records = dao.getAcademicRecordsByCollege(userID);
@@ -43,6 +49,10 @@ public class ProfessorRecordServlet extends HttpServlet {
 		    // DTO에서 이름을 추출하여 전달
 		    ProfessorDTO professor = dao.getMyInfo(userID);
 		    if (professor != null) request.setAttribute("userName", professor.getName());
+
+			// [수정 진행중] Servlet에서 정렬 파라미터를 DAO 호출 시 반영하기
+		    request.setAttribute("sortColumn", sortColumn);
+		    request.setAttribute("sortOrder", sortOrder);
 		    
 		    // 결과값을 표시할 jsp 페이지로 포워딩
 		    RequestDispatcher dispatcher = request.getRequestDispatcher("/professor/classAcademicRecord.jsp");
