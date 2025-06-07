@@ -78,11 +78,11 @@ public class StudentDAO {
 		// 학번/사번(userID)으로 나의 학사정보 페이지에서 조회할 정보 불러오는 SQL 쿼리
 		// 학사정보 객체를 받기 위한 빈 배열 객체 생성 
 		List<StudentDTO> recordList = new ArrayList<>();
-		String sql = "SELECT * FROM ACADEMIC_RECORD WHERE userID = ?";
+		String viewQuery = "SELECT * FROM ACADEMIC_RECORD WHERE userID = ?";
 		
 		// ACADEMIC_RECORD 테이블에서 학사정보 추출
 		try (Connection connection = DatabaseUtil.getConnection();
-			 PreparedStatement checkStatement = connection.prepareStatement(sql)) {
+			 PreparedStatement checkStatement = connection.prepareStatement(viewQuery)) {
 			// 쿼리(where절 userID = ?)에 학번 포함
 			checkStatement.setString(1, userID);
 			ResultSet resultSet = checkStatement.executeQuery();
@@ -166,15 +166,39 @@ public class StudentDAO {
 		return null;
 	}
 	
-	public StudentDTO updatePassword(String userID, String newPassword) {
+	public boolean checkCurrentPassword(String userID, String inputPassword) {
+		// 비밀번호 변경 전 현재 비밀번호에 대한 확인용 메서드
+		String checkQuery = "SELECT userPassword FROM USER WHERE userID = ?";
+		
+		try (Connection connection = DatabaseUtil.getConnection();
+			 PreparedStatement statement = connection.prepareStatement(checkQuery)) {
+			// SQL쿼리 조건절에 ID값을 삽입하여 학번 설정
+			statement.setString(1, userID);
+			// 쿼리를 실행하고 결과를 저장
+			ResultSet resultSet = statement.executeQuery();
+			// 현재 비밀번호와 입력된 비밀번호 비교
+			if (resultSet.next()) {
+				// 해당 학번(아이디)에 매칭되는 비밀번호를 변수로 저장
+				String dbPassword = resultSet.getString("userPassword");
+				// 사용자에게 입력받은 비밀번호와 데이터베이스에 저장된 비밀번호 같은지 비교하여 T/F 반환
+				return dbPassword.equals(inputPassword);
+			}
+		} catch (Exception e) {
+			// 예외 발생 시 에러 메시지 반환
+			e.printStackTrace();
+		}
+		// 기본값은 false 반환
+		return false;
+	}
+	
+	public StudentDTO updatePassword(String userID, String userPassword) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 비밀번호를 변경하는 SQL 쿼리
-		// ** 수정 진행중 **
 		// https://velog.io/@gmlstjq123/%EB%A7%88%EC%9D%B4%ED%8E%98%EC%9D%B4%EC%A7%80-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8-%EB%B3%80%EA%B2%BD%ED%95%98%EA%B8%B0
-		String updateQuery = "UPDATE USER SET newPassword = ? WHERE userID = ?";
+		String updateQuery = "UPDATE USER SET userPassword = ? WHERE userID = ?";
 		
 	    try (Connection connection = DatabaseUtil.getConnection();
 	         PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-			statement.setString(1, newPassword);
+			statement.setString(1, userPassword);
 			statement.setString(2, userID);
 			statement.executeUpdate();
 			

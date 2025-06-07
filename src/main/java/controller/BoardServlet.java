@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.NoticeDAO;
 import dto.NoticeDTO;
+import service.NoticeService;
 
 @WebServlet("/board")
 public class BoardServlet extends HttpServlet {
@@ -19,12 +20,23 @@ public class BoardServlet extends HttpServlet {
 
 	// notice 리스트 조회
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		NoticeDAO dao = new NoticeDAO();
-        List<NoticeDTO> list = dao.getAllNotices();  // 모든 게시글 조회
-        
-        request.setAttribute("noticeList", list);    // request에 저장
+		// 페이징 파라미터 처리
+        int page = 1;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && pageParam.matches("\\d+")) {
+            page = Integer.parseInt(pageParam);
+        }
+
+        NoticeService service = new NoticeService();
+        List<NoticeDTO> list = service.getPagedNotices(page);
+        int totalPages = service.getTotalPages();
+
+        request.setAttribute("noticeList", list);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("/common/postlist.jsp");
-        dispatcher.forward(request, response);       // JSP로 전달
+        dispatcher.forward(request, response);
 	}
 	
 	// 개별 notice 작성 및 등록

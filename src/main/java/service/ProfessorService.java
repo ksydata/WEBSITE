@@ -68,11 +68,16 @@ public class ProfessorService {
     	}
     }
     
+    // 비밀번호 검증 메서드 (verify: 과정 중심의 시스템 검증)
+    public boolean verifyCurrentPassword(String userID, String inputPassword) {
+    	return professorDAO.checkCurrentPassword(userID, inputPassword);
+    }
+    
     // 비밀번호 변경 메서드
-    public void updateProfessorDAOPW(String userID, String newPassword) {
+    public void updateProfessorPW(String userID, String userPassword) {
     	// 데이터접근객체에서 비밀번호 변경 메서드 적용
-    	if (newPassword != null && !newPassword.trim().isEmpty()) {
-    		professorDAO.updatePassword(userID, newPassword);
+    	if (userPassword != null && !userPassword.trim().isEmpty()) {
+    		professorDAO.updatePassword(userID, userPassword);
     	}
     }
 }

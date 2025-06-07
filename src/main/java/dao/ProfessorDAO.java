@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dto.ProfessorDTO;
-import dto.StudentDTO;
 import dto.AcademicRecordDTO;
 import util.DatabaseUtil;
 
@@ -20,23 +19,24 @@ public class ProfessorDAO {
 		String personalInfoSQL = "SELECT * FROM PERSONAL_INFO WHERE userID = ?";
 
 		// 로그인 성공했을 때 사용자 정보 활용
-		ProfessorDTO student = null;
+		ProfessorDTO professor = null;
     	
     	// USER 테이블에서 로그인 인증 관련 정보 추출
 		try (Connection connection = DatabaseUtil.getConnection();
 			 PreparedStatement userInfoStatement = connection.prepareStatement(userInfoSQL)) {	
-			// 쿼리(where절 userID = ?)에 학번 포함
+			// 쿼리(where절 userID = ?)에 사번 포함
 			userInfoStatement.setString(1, userID);
 			
 			try (ResultSet resultSet = userInfoStatement.executeQuery()) {
 	            if (resultSet.next()) {
-	            	// 사용자 정보가 존재할 경우 StudentDTO 객체 생성
-	            	student = new ProfessorDTO();
-	                student.setUserID(resultSet.getString("userID"));
-	                student.setUserPassword(resultSet.getString("userPassword"));
-	                student.setName(resultSet.getString("name"));
-	                student.setPhoneNumber(resultSet.getString("phoneNumber"));
-	                student.setEmail(resultSet.getString("email"));
+	            	// 사용자 정보가 존재할 경우 ProfessorDTO 객체 생성
+	            	professor = new ProfessorDTO();
+	            	professor.setUserID(resultSet.getString("userID"));
+	            	professor.setUserPassword(resultSet.getString("userPassword"));
+	            	professor.setName(resultSet.getString("name"));
+	            	professor.setPhoneNumber(resultSet.getString("phoneNumber"));
+	            	professor.setOfficeNumber(resultSet.getString("officeNumber"));	            	
+	            	professor.setEmail(resultSet.getString("email"));
 	            } else {
 	            	// userID에 해당하는 사용자가 존재하지 않을 경우
 	            	return null;
@@ -52,17 +52,17 @@ public class ProfessorDAO {
 		// PERSONAL_INFO 테이블에서 개인정보, 학사정보 추출
 		try (Connection connection = DatabaseUtil.getConnection();
 			 PreparedStatement personalInfoStatement = connection.prepareStatement(personalInfoSQL)) {
-			// 쿼리(where절 userID = ?)에 학번 포함
+			// 쿼리(where절 userID = ?)에 사번 포함
 	        personalInfoStatement.setString(1, userID);
 	        
 	        try (ResultSet resultSet = personalInfoStatement.executeQuery()) {
 	            if (resultSet.next()) {
 	            	// PERSONAL_INFO가 있을 경우에만 학사 정보 세팅
-	                student.setCollege(resultSet.getString("college"));
-	                student.setMajor(resultSet.getString("major"));
-	                student.setStatus(resultSet.getString("status"));
-	                student.setResidentNumber(resultSet.getString("residentNumber"));	                
-	                student.setAddress(resultSet.getString("address"));
+	            	professor.setCollege(resultSet.getString("college"));
+	            	professor.setMajor(resultSet.getString("major"));
+	            	professor.setStatus(resultSet.getString("status"));
+	            	professor.setResidentNumber(resultSet.getString("residentNumber"));	                
+	            	professor.setAddress(resultSet.getString("address"));
 	            }
 	        }
 			
@@ -71,8 +71,8 @@ public class ProfessorDAO {
 			e.printStackTrace();
 			return null;
 		}
-    	// 학생 데이터 객체 반환
-    	return student;
+    	// 교수 데이터 객체 반환
+    	return professor;
 	}
 
 	public ProfessorDTO updatePhoneNumber(String userID, String phoneNumber) {
@@ -141,13 +141,38 @@ public class ProfessorDAO {
 		return null;
 	}
 	
-	public ProfessorDTO updatePassword(String userID, String newPassword) {
+	public boolean checkCurrentPassword(String userID, String inputPassword) {
+		// 비밀번호 변경 전 현재 비밀번호에 대한 확인용 메서드
+		String checkQuery = "SELECT userPassword FROM USER WHERE userID = ?";
+		
+		try (Connection connection = DatabaseUtil.getConnection();
+			 PreparedStatement statement = connection.prepareStatement(checkQuery)) {
+			// SQL쿼리 조건절에 ID값을 삽입하여 사번 설정
+			statement.setString(1, userID);
+			// 쿼리를 실행하고 결과를 저장
+			ResultSet resultSet = statement.executeQuery();
+			// 현재 비밀번호와 입력된 비밀번호 비교
+			if (resultSet.next()) {
+				// 해당 사번(아이디)에 매칭되는 비밀번호를 변수로 저장
+				String dbPassword = resultSet.getString("userPassword");
+				// 사용자에게 입력받은 비밀번호와 데이터베이스에 저장된 비밀번호 같은지 비교하여 T/F 반환
+				return dbPassword.equals(inputPassword);
+			}
+		} catch (Exception e) {
+			// 예외 발생 시 에러 메시지 반환
+			e.printStackTrace();
+		}
+		// 기본값은 false 반환
+		return false;
+	}	
+	
+	public ProfessorDTO updatePassword(String userID, String userPassword) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 비밀번호를 변경하는 SQL 쿼리
-		String updateQuery = "UPDATE USER SET newPassword = ? WHERE userID = ?";
+		String updateQuery = "UPDATE USER SET userPassword = ? WHERE userID = ?";
 		
 	    try (Connection connection = DatabaseUtil.getConnection();
 	         PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-			statement.setString(1, newPassword);
+			statement.setString(1, userPassword);
 			statement.setString(2, userID);
 			statement.executeUpdate();
 			
@@ -156,42 +181,43 @@ public class ProfessorDAO {
 		}
 		return null;	    
 	}
-	
-    public List<AcademicRecordDTO> getAcademicRecordsByCollege(String professorId) {
-    	// 교수 1명의 동일 단과대학에 해당하는 수강생 1명의 정보에 대한 접근하는 조인 쿼리
-        String recordQuery = """
-            SELECT
-                U.user_id,
-                U.name,
-                P.college,                
-                P.major,
-                R.courseName,
-                R.grade,
-                R.gradePoint,                
-                R.semester,
-            FROM USER U
-            JOIN PERSONAL_INFO P ON U.user_id = P.user_id
-            JOIN ACADEMIC_RECORD R ON U.user_id = R.student_id
-            WHERE P.college = (
-                SELECT college FROM PERSONAL_INFO WHERE user_id = ?
-            )
-            AND U.role = 'student'
-            ORDER BY R.semester DESC, R.name ASC;
-        """;
-        List<AcademicRecordDTO> classRecordsList = new ArrayList<>();        
+    
+    public List<AcademicRecordDTO> getAcademicRecordsByCollege(String professorID, 
+    		String sortColumn, String sortOrder) {
+        // [수정 진행중] 정렬 파리미터인 sortColumn, sortOrder 반영
+    	List<String> sortColumns = List.of("userID", "grade", "gradePoint", "academicYear", "semester");
+    	// 허용되지 않은 컬럼으로 정렬 시에는 기본값으로 수강학기로 필터링되도록 설정
+    	if (!sortColumns.contains(sortColumn)) sortColumn = "semester";
 
+        // 교수 1명의 동일 단과대학에 해당하는 수강생 정보를 가져오는 쿼리    	
+    	String recordQuery = """
+			SELECT
+				U.userID, U.name, P.college, P.major,
+			    R.courseName, R.grade, R.gradePoint, R.academicYear, R.semester
+			FROM USER U
+			JOIN PERSONAL_INFO P ON U.userID = P.userID
+			JOIN ACADEMIC_RECORD R ON U.userID = R.userID
+			WHERE P.college IN (
+				SELECT DISTINCT college FROM PERSONAL_INFO WHERE userID = ?
+			) 
+			ORDER BY R.semester DESC, U.name ASC""";
+        List<AcademicRecordDTO> classRecordsList = new ArrayList<>();
+        
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(recordQuery)) {
-        	preparedStatement.setString(1, professorId);
+            
+            preparedStatement.setString(1, professorID);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 AcademicRecordDTO dto = new AcademicRecordDTO();
-                dto.setUserID(resultSet.getString("user_id"));
+                dto.setUserID(resultSet.getString("userID"));
                 dto.setName(resultSet.getString("name"));
+                dto.setCollege(resultSet.getString("college"));
                 dto.setMajor(resultSet.getString("major"));
                 dto.setCourseName(resultSet.getString("courseName"));
                 dto.setGrade(resultSet.getString("grade"));
+                dto.setAcademicYear(resultSet.getInt("academicYear"));
                 dto.setGradePoint(resultSet.getInt("gradePoint"));
                 dto.setSemester(resultSet.getString("semester"));
                 classRecordsList.add(dto);

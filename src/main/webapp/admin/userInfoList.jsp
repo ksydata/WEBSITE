@@ -16,7 +16,7 @@
 
 <body> 
 <div class="container mt-5">
-	<h2 class="text-center mb-4">👥 회원 리스트</h2>
+	<h2 class="text-center mb-4">회원 리스트</h2>
 	
 	<!-- 회원 관련 메시지 (예: 삭제 완료, 등록 완료 등) -->
 	<c:if test="${not empty sessionScope.flashMessage}">
@@ -25,31 +25,186 @@
 	    </script>
 	    <c:remove var="flashMessage" scope="session" />
 	</c:if>
+	
+	<!-- 검색창 UI -->
+	<form method="get" action="adminUserList" class="row mb-3 justify-content-between align-items-center">
+    <!-- 드롭다운 -->
+    <div class="col-md-3">
+        <select class="form-select" name="searchType">
+            <option value="userID" ${param.searchType == 'userID' ? 'selected' : ''}>회원 ID</option>
+            <option value="name" ${param.searchType == 'name' ? 'selected' : ''}>이름</option>
+            <option value="phone" ${param.searchType == 'phoneNumber' ? 'selected' : ''}>휴대전화번호</option>
+            <option value="email" ${param.searchType == 'email' ? 'selected' : ''}>이메일</option>
+            <option value="address" ${param.searchType == 'address' ? 'selected' : ''}>주소</option>
+            <option value="college" ${param.searchType == 'college' ? 'selected' : ''}>단과대학</option>
+            <option value="major" ${param.searchType == 'major' ? 'selected' : ''}>전공</option>
+            <option value="admissionYear" ${param.searchType == 'admissionYear' ? 'selected' : ''}>입학년도</option>
+            <option value="status" ${param.searchType == 'status' ? 'selected' : ''}>상태</option>
+            <option value="ssn" ${param.searchType == 'residentNumber' ? 'selected' : ''}>주민등록번호</option>
+        </select>
+    </div>
+
+    <!-- 검색어 입력 -->
+    <div class="col-md-6">
+        <input type="text" class="form-control" name="searchKeyword" placeholder="검색어를 입력하세요"
+               value="${param.searchKeyword}">
+    </div>
+
+    <!-- 검색 버튼 -->
+    <div class="col-md-2 text-end">
+        <button type="submit" class="btn btn-primary w-100">검색</button>
+    </div>
+    
+    <!-- 숨겨진 역할 전달 -->
+   <input type="hidden" name="role" value="${selectedRole != null ? selectedRole : '전체'}">
+</form>
+
+	<!-- 역할 필터 라디오 버튼 -->
+	<form method="get" action="adminUserList" class="mb-4 text-center">
+	    <div class="btn-group" role="group" aria-label="역할 필터">
+	        <input type="radio" class="btn-check" name="role" value="전체" id="role-all"
+	            ${selectedRole == null || selectedRole == '전체' ? 'checked' : ''} onchange="this.form.submit()">
+	        <label class="btn btn-outline-primary" for="role-all">전체</label>
+
+	        <input type="radio" class="btn-check" name="role" value="학생" id="role-student"
+	            ${selectedRole == '학생' ? 'checked' : ''} onchange="this.form.submit()">
+	        <label class="btn btn-outline-primary" for="role-student">학생</label>
+
+	        <input type="radio" class="btn-check" name="role" value="교수" id="role-professor"
+	            ${selectedRole == '교수' ? 'checked' : ''} onchange="this.form.submit()">
+	        <label class="btn btn-outline-primary" for="role-professor">교수</label>
+
+	        <input type="radio" class="btn-check" name="role" value="교직원" id="role-staff"
+	            ${selectedRole == '교직원' ? 'checked' : ''} onchange="this.form.submit()">
+	        <label class="btn btn-outline-primary" for="role-staff">교직원</label>
+
+	        <input type="radio" class="btn-check" name="role" value="관리자" id="role-admin"
+	            ${selectedRole == '관리자' ? 'checked' : ''} onchange="this.form.submit()">
+	        <label class="btn btn-outline-primary" for="role-admin">관리자</label>
+	    </div>
+	</form>
+	
+	
+	
 
 	<table class="table table-hover">
 	    <thead class="table-dark">
 	        <tr>
-	            <th>회원 ID</th>
-	            <th>이름</th>
-	            <th>이메일</th>
-	            <th>가입일</th>
+	            <th>
+	            	회원 ID
+	            	<a href="adminUserListSort?role=${selectedRole}&sort=asc&field=userID" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
+				        ▲
+				    </a>
+				    <a href="adminUserListSort?role=${selectedRole}&sort=desc&field=userID" class="btn btn-sm btn-light ms-1" title="내림차순 정렬">
+				        ▼
+				    </a>
+	            </th>
+	            <%-- <th>이름</th> --%>
+	            <th>
+				    이름
+				    <a href="adminUserListSort?role=${selectedRole}&sort=asc&field=name" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
+				        ▲
+				    </a>
+				    <a href="adminUserListSort?role=${selectedRole}&sort=desc&field=name" class="btn btn-sm btn-light ms-1" title="내림차순 정렬">
+				        ▼
+				    </a>
+				</th>
+	            <th>
+	            	이메일
+	            	<a href="adminUserListSort?role=${selectedRole}&sort=asc&field=email" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
+				        ▲
+				    </a>
+				    <a href="adminUserListSort?role=${selectedRole}&sort=desc&field=email" class="btn btn-sm btn-light ms-1" title="내림차순 정렬">
+				        ▼
+				    </a>
+	            </th>
+	             <%-- <th>가입일</th> --%>
 	            <th>권한</th>
 	        </tr>
 	    </thead>
 	    <tbody>
 	        <c:forEach var="user" items="${userList}">
-	            <tr>
+	            <tr onclick="location.href='userInfo?id=${user.userID}'" style="cursor:pointer;">
 	                <td>${user.userID}</td>
 	                <td>${user.name}</td>
 	                <td>${user.email}</td>
-	                <td>
+	                <%-- <td>
 	                    <fmt:formatDate value="${user.registerDate}" pattern="yyyy-MM-dd HH:mm" timeZone="Asia/Seoul" />
-	                </td>
-	                <td>${user.role}</td>
+	                </td> --%>
+	                <td>${user.userRole}</td>
 	            </tr>
 	        </c:forEach>
 	    </tbody>
 	</table>
+	<div class="d-flex justify-content-center mt-4">
+    <nav>
+        <ul class="pagination">
+
+            <!-- 이전 블록 -->
+            <c:if test="${startPage > 1}">
+                <li class="page-item">
+                    <a class="page-link" href="adminUserList?role=${selectedRole}&page=${startPage - 1}">&laquo;</a>
+                </li>
+            </c:if>
+
+            <!-- 페이지 번호 -->
+            <c:forEach var="p" begin="${startPage}" end="${endPage}">
+                <li class="page-item ${p == currentPage ? 'active' : ''}">
+                    <a class="page-link" href="adminUserList?role=${selectedRole}&page=${p}">${p}</a>
+                </li>
+            </c:forEach>
+
+            <!-- 다음 블록 -->
+            <c:if test="${endPage < totalPage}">
+                <li class="page-item">
+                    <a class="page-link" href="adminUserList?role=${selectedRole}&page=${endPage + 1}">&raquo;</a>
+                </li>
+            </c:if>
+
+        </ul>
+    </nav>
+</div>
+
+<!-- 정렬된 리스트에만 표시되는 페이징 -->
+<c:if test="${not empty sortOrder && not empty orderField}">
+<div class="d-flex justify-content-center mt-4">
+    <nav>
+        <ul class="pagination">
+
+            <!-- 이전 블록 -->
+            <c:if test="${startPage > 1}">
+                <li class="page-item">
+                    <a class="page-link"
+                       href="adminUserListSort?role=${role}&field=${orderField}&sort=${sortOrder}&page=${startPage - 1}">
+                        &laquo;
+                    </a>
+                </li>
+            </c:if>
+
+            <!-- 페이지 번호 -->
+            <c:forEach var="p" begin="${startPage}" end="${endPage}">
+                <li class="page-item ${p == currentPage ? 'active' : ''}">
+                    <a class="page-link"
+                       href="adminUserListSort?role=${role}&field=${orderField}&sort=${sortOrder}&page=${p}">
+                        ${p}
+                    </a>
+                </li>
+            </c:forEach>
+
+            <!-- 다음 블록 -->
+            <c:if test="${endPage < totalPage}">
+                <li class="page-item">
+                    <a class="page-link"
+                       href="adminUserListSort?role=${role}&field=${orderField}&sort=${sortOrder}&page=${endPage + 1}">
+                        &raquo;
+                    </a>
+                </li>
+            </c:if>
+
+        </ul>
+    </nav>
+</div>
+</c:if>
 </div>
 </body>
 </html>

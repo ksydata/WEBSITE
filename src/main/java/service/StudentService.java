@@ -65,6 +65,11 @@ public class StudentService {
     	}
     }
     
+    // 비밀번호 검증 메서드 (verify: 과정 중심의 시스템 검증 / validate: 최종 결과물에 대한 검사)
+    public boolean verifyCurrentPassword(String userID, String inputPassword) {
+    	return studentDAO.checkCurrentPassword(userID, inputPassword);
+    }
+    
     // 비밀번호 변경 메서드
     public void updateStudentPW(String userID, String userPassword) {
     	// 데이터접근객체에서 비밀번호 변경 메서드 적용

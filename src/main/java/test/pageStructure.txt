@@ -71,19 +71,50 @@
 	홈에서 미리보기 대시보드 기능 제공
 		
 - 교수
-1. 나의 개인정보 조회/수정(professor/myPersonalInfo.jsp)
-	1) 사번 & (단과대학 전공 상태값) 
-	2) 비밀번호(변경 버튼 > 변경하시겠습니까 팝업 > 공백값 비허용 오류 팝업 > 변경되었습니다 팝업)
-	   보안취약점 심을 것
-	3) 이름
-	4) 생년월일 - 주민등록번호 뒷자리 6자리 마스킹(인증 등을 통한 조회 기능)
-	   보안취약점 심을 것
-	5) 개인 연락처 뒷자리 4자리 마스킹(변경 버튼, 인증 등을 통한 조회 기능)
-	6) 오피스 연락처(변경 버튼)
-	5) 이메일(변경 버튼)
-	6) 주소(변경 버튼)
+1. 메인 페이지를 통해 세부 기능 링크 타고 들어가는 방식으로 구현(professor/main.jsp)
+	1) 디자인 버튼이 아닌 탭 UI로 변경 예정
+	2) 홈에서 미리보기 대시보드 기능 제공(개인정보, 수강생 성적, 공지사항 등)
+	3) 본인이 아닐 경우 오류 팝업(세션값 검증)
+	   로그인 성공 시 session.setAttribute("userRole", "professor")에 따라 리디렉션
 
-2. 수강생 학사정보 조회(professor/classAcademicRecord.jsp)
+2.  나의 개인정보 조회/수정 (공통)
+-3계층 구조, 패턴
+	1) controller/professor/ProfessorInfoServlet.java (서블릿, http 요청/응답 처리)
+	2) service/ProfessorService.java (비즈니스 로직)
+		(1) GET - myPersonalInfo.jsp
+		(2) POST - updateMyInfo.jsp, updateMyPassword.jsp
+	3) dao/ProfessorDAO.java & util/DatabaseUtil.java (데이터베이스 접근)
+	4) dto/ProfessorDTO.java (데이터 전송)
+		↓
+	5) myPersonalInfo.jsp (나의 개인정보 조회 페이지, View)
+		(1) 사번 - USER
+		(2) 단과대학 전공 상태값 - PERSONAL_INFO 
+		(3) 이름 - USER
+		(4) 생년월일 - 주민등록번호 뒷자리 6자리 마스킹(인증 등을 통한 조회 기능) - PERSONAL_INFO 
+	   	    (xxxxxx-2******)
+		(5) 개인 연락처 뒷자리 4자리 마스킹(변경 버튼으로 폼 이동, 인증 등을 통한 조회 기능) - USER
+	   	    (010-xxxx-****)
+		(6) 사무실 연락처 - 변경 버튼으로 폼 이동 - USER
+		(7) 이메일(변경 버튼) - 변경 버튼으로 폼 이동 - USER
+		(8) 주소(변경 버튼) - PERSONAL_INFO
+	   updateMyInfo.jsp(휴대전화번호, 이메일, 주소 수정 페이지, View)
+		(1) 휴대전화번호, 이메일, 주소 중 어느 하나라도 입력 후 제출 시 POST
+	   updateMyPassword.jsp(비밀번호 변경 페이지, View)
+		(1) 하단의 비밀번호 - 변경 버튼 누르면 페이지 전환 - USER
+		(2) 현재 비밀번호 일치 여부 확인
+		(3) 새 비밀번호 입력받기
+		(4) 확인 비밀번호 입력받기
+		(5) 비밀번호 변경 처리: 백엔드(전용서블릿 생성 및 데이터접근 객체 업데이트 쿼리 메서드 추가)
+
+3. 수강생/전공생 학사정보 조회/수정(professor/classAcademicRecord.jsp)
+-3계층 구조, 패턴
+	1) controller/professor/ProfessorInfoServlet.java (서블릿, http 요청/응답 처리)
+	2) service/ProfessorService.java (비즈니스 로직)
+	3) dao/ProfessorDAO.java & util/DatabaseUtil.java (데이터베이스 접근)
+		(1) ACADEMIC_RECORD, USER, PERSONAL_INFO 테이블 조인
+		(2) 학생별 수강과목, 학점, 학기별 성적을 List<AcademicRecordDTO>로 반환
+
+- 수정 기능 및 요약 조회 기능 구현
 
 3. 공지사항(common/postlist.jsp)
 
@@ -146,6 +177,9 @@
 [5] https://doublesprogramming.tistory.com/91
 	자바 스프링 - 회원 상세정보 조회 구현(MVC 패턴 적용) 
 [6] https://kimfk567.tistory.com/54
+[7] https://congsong.tistory.com/27
+	검색 처리(Dynamic SQL), 페이징
+[8] https://samori.tistory.com/40
 
 [GPT Source]
 [1] JSP/Servlet 기반 회원가입/로그인, 권한 관리하는 기본 플로우 설명
