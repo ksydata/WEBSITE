@@ -38,10 +38,10 @@ public class ProfessorPWServlet extends HttpServlet {
         String confirmPassword = request.getParameter("confirmPassword");
         
         // 비즈니스 로직을 정의한 ProfessorService 계층 호출하여 DB 테이블에 사용자에 의해 수정된 개인정보 업데이트
-        ProfessorService ProfessorService = new ProfessorService();
+        ProfessorService professorService = new ProfessorService();
         
         // i. 현재 비밀번호 확인
-        if (!ProfessorService.verifyCurrentPassword(userID, currentPassword)) {
+        if (!professorService.verifyCurrentPassword(userID, currentPassword)) {
         	request.setAttribute("error", "현재 비밀번호와 일치하지 않습니다.");
 		    // JSP 페이지로 포워딩        	
         	request.getRequestDispatcher("/Professor/updateMyPassword.jsp").forward(request, response);
@@ -55,9 +55,11 @@ public class ProfessorPWServlet extends HttpServlet {
         	return ;
         }
         // iii. 변경 비밀번호를 DB에 업데이트
-        ProfessorService.updateProfessorPW(userID, newPassword);   
+        professorService.updateProfessorPW(userID, newPassword);   
         // 비밀번호 변경 완료 후 알림
         request.setAttribute("success", "비밀번호가 성공적으로 변경되었습니다.");
         request.getRequestDispatcher("/Professor/updateMyPassword.jsp").forward(request, response);
 	}
 }
+
+// @GetMapping, @PostMapping 어노테이션이나 @RequestMapping 등 추가 필요

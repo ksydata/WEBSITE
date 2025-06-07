@@ -29,11 +29,11 @@
                 <div class="mb-3">
                     <label for="phoneNumber" class="form-label">휴대전화번호</label>
                     <div class="d-flex gap-2 aligin=items-center">
-	                    <input type="text" class="form-control" id="phoneNum1st" maxlength="3" placeholder="010" required>
+	                    <input type="text" class="form-control" id="phoneNum1st" maxlength="3" placeholder="010">
 	                    <span>-</span>	                    
-	                    <input type="text" class="form-control" id="phoneNum2nd" maxlength="4" placeholder="1234" required>
+	                    <input type="text" class="form-control" id="phoneNum2nd" maxlength="4" placeholder="1234">
 	                    <span>-</span>	                    
-	                    <input type="text" class="form-control" id="phoneNum3rd" maxlength="4" placeholder="5678" required>
+	                    <input type="text" class="form-control" id="phoneNum3rd" maxlength="4" placeholder="5678">
 	                </div>
                     <input type="hidden" id="phoneNumber" name="phoneNumber" 
                      	   value="${professorInfo.phoneNumber}">                     
@@ -42,9 +42,9 @@
                 <div class="mb-3">
                     <label for="officeNumber" class="form-label">사무실 전화번호</label>
                     <div class="d-flex gap-2 aligin=items-center">
-	                    <input type="text" class="form-control" id="officeNum1st" maxlength="3" placeholder="02" required>
+	                    <input type="text" class="form-control" id="officeNum1st" maxlength="3" placeholder="02">
 	                    <span>-</span>	                    
-	                    <input type="text" class="form-control" id="officeNum2nd" maxlength="4" placeholder="1234" required>
+	                    <input type="text" class="form-control" id="officeNum2nd" maxlength="4" placeholder="1234">
 	                    <span>-</span>	                    
 	                    <input type="text" class="form-control" id="officeNum3rd" maxlength="4" placeholder="5678/#NA">
 	                </div>
@@ -55,9 +55,9 @@
                 <div class="mb-3">
                     <label for="email" class="form-label">이메일</label>
 	                <div class="d-flex gap-2 align-items-center">
-	                	<input type="text" class="form-control" id="emailId" placeholder="아이디 (학번/사번)" required>
+	                	<input type="text" class="form-control" id="emailId" placeholder="아이디 (학번/사번)">
 	                    <span>@</span>
-	                    <input type="text" class="form-control" id="emailDomain" placeholder="univ.com" required>
+	                    <input type="text" class="form-control" id="emailDomain" placeholder="univ.com">
 	                </div>
                     <input type="hidden" id="email" name="email"
                            value="${professorInfo.email}" required>
