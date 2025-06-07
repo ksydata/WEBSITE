@@ -182,12 +182,13 @@ public class ProfessorDAO {
 		return null;	    
 	}
     
-    public List<AcademicRecordDTO> getAcademicRecordsByCollege(String professorID, 
-    		String sortColumn, String sortOrder) {
+    public List<AcademicRecordDTO> getAcademicRecordsByCollege(String professorID)
+    	//	, String sortColumn, String sortOrder) {
+    {
         // [수정 진행중] 정렬 파리미터인 sortColumn, sortOrder 반영
-    	List<String> sortColumns = List.of("userID", "grade", "gradePoint", "academicYear", "semester");
+    	// List<String> sortColumns = List.of("userID", "grade", "gradePoint", "academicYear", "semester");
     	// 허용되지 않은 컬럼으로 정렬 시에는 기본값으로 수강학기로 필터링되도록 설정
-    	if (!sortColumns.contains(sortColumn)) sortColumn = "semester";
+    	// if (!sortColumns.contains(sortColumn)) sortColumn = "semester";
 
         // 교수 1명의 동일 단과대학에 해당하는 수강생 정보를 가져오는 쿼리    	
     	String recordQuery = """
