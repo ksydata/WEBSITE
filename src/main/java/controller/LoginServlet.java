@@ -44,28 +44,10 @@ public class LoginServlet extends HttpServlet {
 	    	session.setAttribute("userRole", result.getUserRole());
 	    	// 사용자 이름을 세션에 저장
 	    	session.setAttribute("userName", result.getUserName());
-	    	
-	        // 기존 메인 페이지(index.jsp)의 <c:choose>를 통한 자동 분기처리를 서블릿에서 로그인 성공 시 사용자 권한별로 페이지 이동하도록 설정
-	        String role = result.getUserRole();
-	        String path = "";
 	        
-	        if (role.trim().equals("학생")) {
-	        	path = "student/main.jsp";
-	        } else if (role.trim().equals("교수")) {
-	        	path = "professor/main.jsp";
-	        } else if (role.trim().equals("교직원")) {
-	            path = "employee/main.jsp";
-	        } else if (role.trim().equals("관리자")) {
-	            path = "admin/main.jsp";
-	        } else {
-	        	path = "index.jsp";
-	        }
-	        System.out.println(role);
-	        System.out.println(path);
-	        
-	        request.getRequestDispatcher(path).forward(request, response);
-	        // request.getContextPath()
-	        // response.sendRedirect(request.getContextPath() + "/index");
+            // 역할별 분기는 IndexServlet에서 role에 따라 직접 main.jsp로 redirect하도록 LoginServlet 변경
+	        response.sendRedirect(request.getContextPath() + "/index");
+	        // request.getRequestDispatcher(path).forward(request, response);
 	        // 로그인 서블릿에서 리다이렉션 대상을 index.jsp에서 index(메인 서블릿)으로 변경
 	        // response.sendRedirect(request.getContextPath() + "/index.jsp");
 	        
