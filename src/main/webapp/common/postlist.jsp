@@ -58,34 +58,10 @@
             </c:forEach>
         </tbody>
     </table>
-	
-    
-	
 	</nav>
-	<!-- 페이징 블록 -->
-<div class="text-center mt-4">
-    <nav>
-        <ul class="pagination justify-content-center">
-            <c:if test="${currentPage > 1}">
-                <li class="page-item">
-                    <a class="page-link" href="board?page=${currentPage - 1}">이전</a>
-                </li>
-            </c:if>
 
-            <c:forEach begin="1" end="${totalPages}" var="i">
-                <li class="page-item ${i == currentPage ? 'active' : ''}">
-                    <a class="page-link" href="board?page=${i}">${i}</a>
-                </li>
-            </c:forEach>
-
-            <c:if test="${currentPage < totalPages}">
-                <li class="page-item">
-                    <a class="page-link" href="board?page=${currentPage + 1}">다음</a>
-                </li>
-            </c:if>
-        </ul>
-    </nav>
-</div>
+<!-- 페이징 출력 -->
+<%@ include file="/common/paging.jsp" %>
 </div>
 </body>
 </html>

@@ -20,23 +20,34 @@ public class BoardServlet extends HttpServlet {
 
 	// notice 리스트 조회
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 페이징 파라미터 처리
-        int page = 1;
-        String pageParam = request.getParameter("page");
-        if (pageParam != null && pageParam.matches("\\d+")) {
-            page = Integer.parseInt(pageParam);
-        }
+	    // 페이징 파라미터 처리
+	    int page = 1;
+	    String pageParam = request.getParameter("page");
+	    if (pageParam != null && pageParam.matches("\\d+")) {
+	        page = Integer.parseInt(pageParam);
+	    }
 
-        NoticeService service = new NoticeService();
-        List<NoticeDTO> list = service.getPagedNotices(page);
-        int totalPages = service.getTotalPages();
+	    NoticeService service = new NoticeService();
+	    List<NoticeDTO> list = service.getPagedNotices(page);
+	    int totalPages = service.getTotalPages();
 
-        request.setAttribute("noticeList", list);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
+	    // 페이징 블록 계산
+	    int blockSize = 10;
+	    int startPage = ((page - 1) / blockSize) * blockSize + 1;
+	    int endPage = Math.min(startPage + blockSize - 1, totalPages);
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/common/postlist.jsp");
-        dispatcher.forward(request, response);
+	    // 공통 페이징 관련 attribute 설정
+	    request.setAttribute("noticeList", list);
+	    request.setAttribute("currentPage", page);
+	    request.setAttribute("totalPage", totalPages);   // paging.jsp에서 이 이름 사용
+	    request.setAttribute("startPage", startPage);
+	    request.setAttribute("endPage", endPage);
+
+	    request.setAttribute("pageURL", "board");
+	    request.setAttribute("paramStr", ""); // 추가 파라미터가 없는 경우
+
+	    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/postlist.jsp");
+	    dispatcher.forward(request, response);
 	}
 	
 	// 개별 notice 작성 및 등록
