@@ -228,4 +228,77 @@ public class ProfessorDAO {
         }
         return classRecordsList;
     }
+    
+    public List<AcademicRecordDTO> getAcademicRecordsByCollegeWithPaging(String professorID, int limit, int offset) {
+        String recordQuery = """
+            SELECT
+                U.userID, U.name, P.college, P.major,
+                R.courseName, R.grade, R.gradePoint, R.academicYear, R.semester
+            FROM USER U
+            JOIN PERSONAL_INFO P ON U.userID = P.userID
+            JOIN ACADEMIC_RECORD R ON U.userID = R.userID
+            WHERE P.college IN (
+                SELECT DISTINCT college FROM PERSONAL_INFO WHERE userID = ?
+            )
+            ORDER BY R.semester DESC, U.name ASC
+            LIMIT ? OFFSET ?
+        """;
+
+        List<AcademicRecordDTO> classRecordsList = new ArrayList<>();
+        
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(recordQuery)) {
+            
+            preparedStatement.setString(1, professorID);
+            preparedStatement.setInt(2, limit);
+            preparedStatement.setInt(3, offset);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                AcademicRecordDTO dto = new AcademicRecordDTO();
+                dto.setUserID(resultSet.getString("userID"));
+                dto.setName(resultSet.getString("name"));
+                dto.setCollege(resultSet.getString("college"));
+                dto.setMajor(resultSet.getString("major"));
+                dto.setCourseName(resultSet.getString("courseName"));
+                dto.setGrade(resultSet.getString("grade"));
+                dto.setAcademicYear(resultSet.getInt("academicYear"));
+                dto.setGradePoint(resultSet.getInt("gradePoint"));
+                dto.setSemester(resultSet.getString("semester"));
+                classRecordsList.add(dto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return classRecordsList;
+    }
+    
+    public int getAcademicRecordsCountByCollege(String professorID) {
+        String countQuery = """
+            SELECT COUNT(*) AS total
+            FROM USER U
+            JOIN PERSONAL_INFO P ON U.userID = P.userID
+            JOIN ACADEMIC_RECORD R ON U.userID = R.userID
+            WHERE P.college IN (
+                SELECT DISTINCT college FROM PERSONAL_INFO WHERE userID = ?
+            )
+        """;
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(countQuery)) {
+
+            preparedStatement.setString(1, professorID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt("total");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0; // 기본값
+    }
 }

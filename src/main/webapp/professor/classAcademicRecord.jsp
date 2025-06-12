@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%--HTML 5 문서유형 선언--%>
 <!DOCTYPE html>
@@ -110,6 +110,8 @@
     </tbody>
 </table>
 </div>
+<!-- 페이징 출력 -->
+<%@ include file="/common/paging.jsp" %>
 
 <!-- 하단 영역의 메인 페이지로 돌아가는 링크 -->
 <br>
