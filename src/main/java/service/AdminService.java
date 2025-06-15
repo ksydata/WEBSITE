@@ -59,9 +59,45 @@ public class AdminService {
         return dao.getUserListByRoleWithPagingAndSorting(role, offset, pageSize, sortOrder, orderField);
     }
 
+    // 유저 수 세기
     public int getTotalUserCount(String role) {
     	AdminListDAO dao = new AdminListDAO();
         return dao.countUsersByRole(role);
+    }
+    
+    // 관리자 본인 개인정보 가져오는 서비스 메서드
+    public AdminPersonalInfoDTO getAdminInfo(String userID) {
+    	if (userID == null || userID.isEmpty()) {
+            // userID가 비어있으면 null 반환
+            return null;
+        }
+        // DAO를 통해 DB에서 관리자 정보 조회
+    	AdminPageDAO adminDAO = new AdminPageDAO();
+    	AdminPersonalInfoDTO admin = adminDAO.getMyInfo(userID);
+
+        // 교수 정보가 존재할 경우, 민감 정보 일부를 마스킹 처리
+        if (admin != null) {
+            // 전화번호 뒷 4자리 마스킹 (예: 010-1234-****)
+            // ProfessorDTO.getter method            
+        	String phone = admin.getPhoneNumber();
+            if (phone != null && phone.length() >= 4) {
+                String maskedPhoneNum = phone.substring(0, phone.length() - 4) + "****";
+                // ProfessorDTO.setter method
+                admin.setPhoneNumber(maskedPhoneNum);
+            }
+
+            // 주민등록번호 뒷 6자리 마스킹 (예: 010101-1******)
+            // ProfessorDTO.getter method            
+            String resident = admin.getResidentNumber();
+            if (resident != null && resident.length() >= 7) {
+                String maskedResidentNum = resident.substring(0, 7) + "******";
+                // ProfessorDTO.setter method
+                admin.setResidentNumber(maskedResidentNum);
+            }
+        }
+        
+        // ProfessorDTO의 객체인 학생 1명의 정보를 리턴
+        return admin;
     }
     
 }

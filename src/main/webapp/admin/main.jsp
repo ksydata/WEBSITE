@@ -20,7 +20,7 @@
 <div class="container mt-5 text-center">
 	<h1>${sessionScope.userName}님 (${sessionScope.userID}) 환영합니다.</h1>
 	<div class="mt-4">
-		<a href="admin/myPersonalInfo.jsp" class="btn btn-primary m-2">나의 개인정보 조회/수정</a>
+		<a href="<c:url value='/adminInfo' />" class="btn btn-primary m-2">나의 개인정보 조회/수정</a>
 		<a href="<c:url value='/adminUserList' />" class="btn btn-primary m-2">사용자 개인정보 조회</a>
 		<a href="<c:url value='/studentRecordList' />" class="btn btn-primary m-2">사용자 학사정보 조회</a>
 		<a href="<c:url value='/board' />" class="btn btn-primary m-2">공지사항</a>

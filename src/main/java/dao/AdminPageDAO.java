@@ -126,6 +126,70 @@ public class AdminPageDAO {
 		return recordList;
 	}	
 	
+	// 사용자 자신의 개인정보 가져오기
+	public AdminPersonalInfoDTO getMyInfo(String userID) {
+		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회 또는 수정할 정보 불러오는 SQL 쿼리 
+		String userInfoSQL = "SELECT * FROM USER WHERE userID = ?";
+		String personalInfoSQL = "SELECT * FROM PERSONAL_INFO WHERE userID = ?";
+
+		AdminPersonalInfoDTO admin = null;
+		
+		// USER 테이블에서 로그인 인증 관련 정보 추출
+				try (Connection connection = DatabaseUtil.getConnection();
+					 PreparedStatement userInfoStatement = connection.prepareStatement(userInfoSQL)) {	
+					// 쿼리(where절 userID = ?)에 사번 포함
+					userInfoStatement.setString(1, userID);
+					
+					try (ResultSet resultSet = userInfoStatement.executeQuery()) {
+			            if (resultSet.next()) {
+			            	// 사용자 정보가 존재할 경우 ProfessorDTO 객체 생성
+			            	admin = new AdminPersonalInfoDTO();
+			            	admin.setUserID(resultSet.getString("userID"));
+			            	admin.setUserPassword(resultSet.getString("userPassword"));
+			            	admin.setName(resultSet.getString("name"));
+			            	admin.setPhoneNumber(resultSet.getString("phoneNumber"));
+			            	admin.setOfficeNumber(resultSet.getString("officeNumber"));	            	
+			            	admin.setEmail(resultSet.getString("email"));
+			            } else {
+			            	// userID에 해당하는 사용자가 존재하지 않을 경우
+			            	return null;
+			            }
+			        }				
+
+				} catch (Exception e) {
+					// 데이터베이스 오류 발생			
+					e.printStackTrace();
+					return null;
+				}
+				
+				// PERSONAL_INFO 테이블에서 개인정보, 학사정보 추출
+				try (Connection connection = DatabaseUtil.getConnection();
+					 PreparedStatement personalInfoStatement = connection.prepareStatement(personalInfoSQL)) {
+					// 쿼리(where절 userID = ?)에 사번 포함
+			        personalInfoStatement.setString(1, userID);
+			        
+			        try (ResultSet resultSet = personalInfoStatement.executeQuery()) {
+			            if (resultSet.next()) {
+			            	// PERSONAL_INFO가 있을 경우에만 학사 정보 세팅
+			            	admin.setCollege(resultSet.getString("college"));
+			            	admin.setMajor(resultSet.getString("major"));
+			            	admin.setStatus(resultSet.getString("status"));
+			            	admin.setResidentNumber(resultSet.getString("residentNumber"));	                
+			            	admin.setAddress(resultSet.getString("address"));
+			            }
+			        }
+					
+				} catch (Exception e) {
+					// 데이터베이스 오류 발생			
+					e.printStackTrace();
+					return null;
+				}
+		    	// 관리자 데이터 객체 반환
+		    	return admin;
+		
+		
+	}
+	
 		
 
 }
