@@ -49,4 +49,35 @@ public class AdminInfoServlet extends HttpServlet  {
 			response.sendRedirect(request.getContextPath() + "admin/main.jsp");
 		}
 	}
+	
+	// 개인정보 수정 메서드
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        // 요청 파라미터를 UTF-8로 인코딩 (한글 깨짐 방지)
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+        
+        // 세션값에 저장된 사번 불러오기
+        String userID = (String) request.getSession().getAttribute("userID");
+        // 사번이 없으면 로그인 페이지로 리다이렉트
+        if (userID == null) {
+	        response.sendRedirect(request.getContextPath() + "/index.jsp");
+	        return;
+        }
+		
+        // 수정대상 개인정보(휴대전화번호, 사무실전화번호, 이메일, 주소)
+        String phoneNumber = request.getParameter("phoneNumber");
+        String officeNumber = request.getParameter("officeNumber");        
+        String email = request.getParameter("email");
+        String address = request.getParameter("address");
+        
+        // 비즈니스 로직을 정의한 StudentService 계층 호출하여 DB 테이블에 사용자에 의해 수정된 개인정보 업데이트
+        AdminService adminService = new AdminService();
+        adminService.updateAdminInfo(userID, phoneNumber, officeNumber, email, address);
+        
+        // 개인정보 수정 완료 후 알림
+        request.setAttribute("message", "개인정보가 성공적으로 수정되었습니다.");
+        // 수정된 정보로 HTTP 웹에 다시 GET 메서드 수행 요청(데이터 조회)
+        doGet(request, response);
+	}
 }

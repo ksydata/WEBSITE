@@ -49,8 +49,8 @@
 
     <!-- 버튼 -->
     <div class="text-center">
-        <a href="<c:url value='student/updateMyInfo.jsp' />" class="btn btn-warning">개인정보 수정</a>
-        <a href="<c:url value='student/updateMyPassword.jsp' />" class="btn btn-warning">비밀번호 변경</a>        
+        <a href="<c:url value='admin/updateMyInfo.jsp' />" class="btn btn-warning">개인정보 수정</a>
+        <a href="<c:url value='admin/updateMyPassword.jsp' />" class="btn btn-warning">비밀번호 변경</a>        
     </div>
 </div>
   
