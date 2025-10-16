@@ -84,8 +84,6 @@
 	    </div>
 	</form>
 	
-	
-	
 
 	<table class="table table-hover">
 	    <thead class="table-dark">
@@ -99,7 +97,6 @@
 				        ▼
 				    </a>
 	            </th>
-	            <%-- <th>이름</th> --%>
 	            <th>
 				    이름
 				    <a href="adminUserListSort?role=${selectedRole}&sort=asc&field=name" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
@@ -122,6 +119,37 @@
 	            <th>권한</th>
 	        </tr>
 	    </thead>
+	    
+	   <%-- <thead class="table-dark">
+		    <tr>
+		        <th>
+		            회원 ID
+		            <jsp:include page="/common/sortButtons.jsp">
+		                <jsp:param name="pageURL" value="${pageURL}" />
+		                <jsp:param name="field" value="userID" />
+		                <jsp:param name="paramStr" value="${paramStr}" />
+		            </jsp:include>
+		        </th>
+		        <th>
+		            이름
+		            <jsp:include page="/common/sortButtons.jsp">
+		                <jsp:param name="pageURL" value="${pageURL}" />
+		                <jsp:param name="field" value="name" />
+		                <jsp:param name="paramStr" value="${paramStr}" />
+		            </jsp:include>
+		        </th>
+		        <th>
+		            이메일
+		            <jsp:include page="/common/sortButtons.jsp">
+		                <jsp:param name="pageURL" value="${pageURL}" />
+		                <jsp:param name="field" value="email" />
+		                <jsp:param name="paramStr" value="${paramStr}" />
+		            </jsp:include>
+		        </th>
+		        <th>권한</th>
+    		</tr>
+		</thead> --%>
+	    
 	    <tbody>
 	        <c:forEach var="user" items="${userList}">
 	            <tr onclick="location.href='userInfo?id=${user.userID}'" style="cursor:pointer;">
