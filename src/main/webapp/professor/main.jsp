@@ -23,7 +23,7 @@
 	<div class="mt-4">
 		<a href="<c:url value='/professorInfo' />" class="btn btn-primary m-2">나의 개인정보 조회/수정</a>
 		<a href="<c:url value='/classRecord' />" class="btn btn-primary m-2">전공생 학사정보 조회/수정</a>
-		<a href="common/postlist.jsp" class="btn btn-primary m-2">공지사항</a>	
+		<a href="<c:url value='/board' />" class="btn btn-primary m-2">공지사항</a>	
 	</div>	
 </div>
 

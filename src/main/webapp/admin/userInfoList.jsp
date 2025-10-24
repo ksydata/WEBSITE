@@ -84,8 +84,6 @@
 	    </div>
 	</form>
 	
-	
-	
 
 	<table class="table table-hover">
 	    <thead class="table-dark">
@@ -99,7 +97,6 @@
 				        ▼
 				    </a>
 	            </th>
-	            <%-- <th>이름</th> --%>
 	            <th>
 				    이름
 				    <a href="adminUserListSort?role=${selectedRole}&sort=asc&field=name" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
@@ -122,6 +119,37 @@
 	            <th>권한</th>
 	        </tr>
 	    </thead>
+	    
+	   <%-- <thead class="table-dark">
+		    <tr>
+		        <th>
+		            회원 ID
+		            <jsp:include page="/common/sortButtons.jsp">
+		                <jsp:param name="pageURL" value="${pageURL}" />
+		                <jsp:param name="field" value="userID" />
+		                <jsp:param name="paramStr" value="${paramStr}" />
+		            </jsp:include>
+		        </th>
+		        <th>
+		            이름
+		            <jsp:include page="/common/sortButtons.jsp">
+		                <jsp:param name="pageURL" value="${pageURL}" />
+		                <jsp:param name="field" value="name" />
+		                <jsp:param name="paramStr" value="${paramStr}" />
+		            </jsp:include>
+		        </th>
+		        <th>
+		            이메일
+		            <jsp:include page="/common/sortButtons.jsp">
+		                <jsp:param name="pageURL" value="${pageURL}" />
+		                <jsp:param name="field" value="email" />
+		                <jsp:param name="paramStr" value="${paramStr}" />
+		            </jsp:include>
+		        </th>
+		        <th>권한</th>
+    		</tr>
+		</thead> --%>
+	    
 	    <tbody>
 	        <c:forEach var="user" items="${userList}">
 	            <tr onclick="location.href='userInfo?id=${user.userID}'" style="cursor:pointer;">
@@ -136,37 +164,11 @@
 	        </c:forEach>
 	    </tbody>
 	</table>
-	<div class="d-flex justify-content-center mt-4">
-    <nav>
-        <ul class="pagination">
-
-            <!-- 이전 블록 -->
-            <c:if test="${startPage > 1}">
-                <li class="page-item">
-                    <a class="page-link" href="adminUserList?role=${selectedRole}&page=${startPage - 1}">&laquo;</a>
-                </li>
-            </c:if>
-
-            <!-- 페이지 번호 -->
-            <c:forEach var="p" begin="${startPage}" end="${endPage}">
-                <li class="page-item ${p == currentPage ? 'active' : ''}">
-                    <a class="page-link" href="adminUserList?role=${selectedRole}&page=${p}">${p}</a>
-                </li>
-            </c:forEach>
-
-            <!-- 다음 블록 -->
-            <c:if test="${endPage < totalPage}">
-                <li class="page-item">
-                    <a class="page-link" href="adminUserList?role=${selectedRole}&page=${endPage + 1}">&raquo;</a>
-                </li>
-            </c:if>
-
-        </ul>
-    </nav>
 </div>
+	
 
 <!-- 정렬된 리스트에만 표시되는 페이징 -->
-<c:if test="${not empty sortOrder && not empty orderField}">
+<%-- <c:if test="${not empty sortOrder && not empty orderField}">
 <div class="d-flex justify-content-center mt-4">
     <nav>
         <ul class="pagination">
@@ -205,7 +207,9 @@
     </nav>
 </div>
 </c:if>
-</div>
+</div> --%>
+<!-- 페이징 출력 -->
+<%@ include file="/common/paging.jsp" %>
 </body>
 </html>
 

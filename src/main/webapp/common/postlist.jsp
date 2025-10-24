@@ -67,31 +67,19 @@
 	</nav>
 	
 <!-- 페이징 블록 -->
-<div class="text-center mt-4">
-    <nav>
+<!--<div class="text-center mt-4"> -->
+    <!-- <nav -->
    	<!-- BoardServlet의 doGet()을 활용하여 이동 currentPage(현재 페이지 번호)와 totalPages(마지막 페이지 수) 객체를 게시판 공지글 리스트 하단에 불러오기 -->     
-        <ul class="pagination justify-content-center">
+        <!-- <ul class="pagination justify-content-center">-->
         	<!-- 서비스단으로 이관이 필요한 로직 (페이지 이전/다음으로 가는 조건 분기) -->
-            <c:if test="${currentPage > 1}">
+            <!-- <c:if test="${currentPage > 1}">
                 <li class="page-item">
                     <a class="page-link" href="board?page=${currentPage - 1}">이전</a>
                 </li>
-            </c:if>
+            </c:if> -->
 
-            <c:forEach begin="1" end="${totalPages}" var="i">
-                <li class="page-item ${i == currentPage ? 'active' : ''}">
-                    <a class="page-link" href="board?page=${i}">${i}</a>
-                </li>
-            </c:forEach>
-
-            <c:if test="${currentPage < totalPages}">
-                <li class="page-item">
-                    <a class="page-link" href="board?page=${currentPage + 1}">다음</a>
-                </li>
-            </c:if>
-        </ul>
-    </nav>
-</div>
+<!-- 페이징 출력 -->
+<%@ include file="/common/paging.jsp" %>
 </div>
 </body>
 </html>

@@ -27,8 +27,8 @@ public class UserRecordListSortServlet extends HttpServlet {
 
         // 파라미터 수집
         String pageStr = request.getParameter("page");
-        String sortOrder = request.getParameter("sort");       // asc 또는 desc
-        String orderField = request.getParameter("field");     // userID 또는 name
+        String sortOrder = request.getParameter("sort");
+        String orderField = request.getParameter("field");
 
         int currentPage = 1;
         if (pageStr != null) {
@@ -50,6 +50,17 @@ public class UserRecordListSortServlet extends HttpServlet {
         // 페이징 블록 계산
         int startPage = ((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
         int endPage = Math.min(startPage + BLOCK_SIZE - 1, totalPage);
+
+        // 파라미터 문자열 구성 → &page=1
+        StringBuilder paramBuilder = new StringBuilder();
+        paramBuilder.append("&page=").append(currentPage);
+
+        // 필요한 경우, 추가 필터링 조건 (ex. status, year 등)도 여기 추가 가능
+        String paramStr = paramBuilder.toString();
+
+        // JSP에 전달할 공통 속성
+        request.setAttribute("pageURL", "studentRecordListSort");
+        request.setAttribute("paramStr", paramStr);
 
         // 데이터 설정
         request.setAttribute("studentList", studentList);
