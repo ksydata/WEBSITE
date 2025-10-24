@@ -30,12 +30,9 @@
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">기본 정보</div>
         <div class="card-body">
-            <p><strong>학번:</strong> ${adminInfo.userID}</p>
+            <p><strong>사번:</strong> ${adminInfo.userID}</p>
             <p><strong>이름:</strong> ${adminInfo.name}</p>
             <p><strong>주민등록번호:</strong> ${adminInfo.residentNumber}</p>
-            <p><strong>단과대학:</strong> ${adminInfo.college}</p>
-            <p><strong>전공:</strong> ${adminInfo.major}</p>
-            <p><strong>입학년도:</strong> ${adminInfo.admissionYear}</p>
             <p><strong>상태:</strong> ${adminInfo.status}</p>
         </div>
     </div>
