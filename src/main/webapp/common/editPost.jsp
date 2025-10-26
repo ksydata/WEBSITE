@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/custom.css">
 </head>
 <body class="container mt-5">
-    <h2 class="mb-4">📝 게시글 수정</h2>
+    <h2 class="mb-4">게시글 수정</h2>
     <form action="${pageContext.request.contextPath}/EditServlet" method="post">
         <input type="hidden" name="id" value="${post.noticeID}" />
         <div class="form-group">

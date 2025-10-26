@@ -9,9 +9,10 @@
     <link rel="stylesheet" href="./css/custom.css">
 </head>
 <body class="container mt-5">
-    <h2 class="mb-4">📝 게시글 작성</h2>
+    <h2 class="mb-4">게시글 작성</h2>
 
-    <form action="${pageContext.request.contextPath}/board" method="post">
+    <form action="${pageContext.request.contextPath}/write" method="post">
+	<!-- form action="${pageContext.request.contextPath}/board" method="post" -->    
         <!-- 숨겨진 필드로 userID, permissionRole 전달 -->
         <input type="hidden" name="userID" value="${userID}">
         <input type="hidden" name="permissionRole" value="${permissionRole}">

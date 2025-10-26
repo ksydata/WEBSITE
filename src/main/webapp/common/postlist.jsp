@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ page import="java.util.*, dao.NoticeDAO, dto.NoticeDTO" %>
+<%@ page import="java.util.*,dao.NoticeListDAO, dto.NoticeDTO" %>
 <%@ include file="/common/header.jsp" %>
 <!DOCTYPE html>
 <html>
@@ -18,7 +18,7 @@
 
 <body> 
 <div class="container mt-5">
-	<h2 class="text-center mb-4">📋 게시판 글 목록</h2>
+	<h2 class="text-center mb-4">게시판 글 목록</h2>
 	
 	<!--  삭제 완료 팝업 띄우기 -->
 	<c:if test="${not empty sessionScope.flashMessage}">
