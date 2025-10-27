@@ -36,7 +36,7 @@
    		onclick="event.preventDefault(); document.getElementById('writeForm').submit();">글쓰기</a>
         <!-- <a href="common/writePost.jsp" class="btn btn-primary">글쓰기</a> -->
    		<!-- 글쓰기 버튼을 통해 PostServlet의 doPost()를 활용하여 writePost.jsp 화면으로 이동 -->
-		<form id="writeForm" action="${pageContext.request.contextPath}/post" method="post" style="display: none;"></form>
+		<form id="writeForm" action="${pageContext.request.contextPath}/write" method="post" style="display: none;"></form>
     </div>
     
     <!-- 게시판 글목록 전체 조회 -->
