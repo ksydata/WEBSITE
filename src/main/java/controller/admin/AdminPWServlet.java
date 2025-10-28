@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import service.AdminService;
+import util.ValidatePassword;
 
 @WebServlet("/adminPassword")
 public class AdminPWServlet extends HttpServlet {
@@ -62,6 +63,17 @@ public class AdminPWServlet extends HttpServlet {
         	request.getRequestDispatcher("/admin/updateMyPassword.jsp").forward(request, response);
         	return ;
         }
+        
+        // iiii. 변경 비밀번호가 8자리 이상, 영문 대문자/소문자/숫자/특수문자 중 3종류 이상을 갖췄는지 등 확인
+        boolean isValid = ValidatePassword.validator(newPassword, userID);
+        if (!isValid) {
+        	request.setAttribute("error", "비밀번호는 8자리 이상, 영문 대문자/소문자/숫자/특수문자 중 3종류 이상을 입력해주세요.");
+		    // JSP 페이지로 포워딩        	
+        	request.getRequestDispatcher("/admin/updateMyPassword.jsp").forward(request, response);
+        	return ;
+        }
+        
+        
         // iiii. 변경 비밀번호를 DB에 업데이트
         adminService.updateProfessorPW(userID, newPassword);   
         // 비밀번호 변경 완료 후 알림
