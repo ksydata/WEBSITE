@@ -31,7 +31,7 @@ public class AdminPWServlet extends HttpServlet {
 	        response.sendRedirect(request.getContextPath() + "/index.jsp");
 	        return;
         }
-		
+        		
         // 사용자에게 입력받은 파라미터인 현재 비밀번호, 변경대상 비밀번호, 확인 비밀번호 불러오기
         String currentPassword = request.getParameter("currentPassword");    // 현재 비밀번호    
         String newPassword = request.getParameter("newPassword");	// 변경 비밀번호
@@ -65,16 +65,34 @@ public class AdminPWServlet extends HttpServlet {
         }
         
         // iiii. 변경 비밀번호가 8자리 이상, 영문 대문자/소문자/숫자/특수문자 중 3종류 이상을 갖췄는지 등 확인
-        boolean isValid = ValidatePassword.validator(newPassword, userID);
-        if (!isValid) {
+        boolean isValidByRegex = ValidatePassword.isValidByRegex(newPassword);
+        if (!isValidByRegex) {
         	request.setAttribute("error", "비밀번호는 8자리 이상, 영문 대문자/소문자/숫자/특수문자 중 3종류 이상을 입력해주세요.");
 		    // JSP 페이지로 포워딩        	
         	request.getRequestDispatcher("/admin/updateMyPassword.jsp").forward(request, response);
         	return ;
         }
         
+        // v. 변경 비밀번호가 아이디를 포함하는지 확인 (세션의 userID를 활용)
+        boolean isValidById = ValidatePassword.isValidById(userID, newPassword);
+        if (!isValidById) {
+        	request.setAttribute("error", "아이디를 포함하지 않은 비밀번호를 다시 입력해주세요.");
+        	// JSP 페이지로 포워딩        	
+        	request.getRequestDispatcher("/admin/updateMyPassword.jsp").forward(request, response);
+        	return ;
+        }
         
-        // iiii. 변경 비밀번호를 DB에 업데이트
+        // 비밀번호 검증용 이메일, 전화번호, 생년월일 데이터 호출
+        
+        
+        // vi. 변경 비밀번호가 이메일을 포함하는지 확인 (USER 테이블의 email 데이터를 호출하여 활용)
+        
+        // vii. 변경 비밀번호가 전화번호를 포함하는지 확인 (USER 테이블의 phoneNumber 데이터를 호출하여 활용)
+        
+        // viii. 변경 비밀번호가 생년월일을 포함하는지 확인 (PERSONAL_INFO 테이블의 birthDate 데이터를 호출하여 활용)
+        
+        
+        // 변경 비밀번호를 DB에 업데이트
         adminService.updateProfessorPW(userID, newPassword);   
         // 비밀번호 변경 완료 후 알림
         request.setAttribute("success", "비밀번호가 성공적으로 변경되었습니다.");

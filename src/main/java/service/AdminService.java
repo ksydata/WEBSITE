@@ -123,7 +123,11 @@ public class AdminService {
     	}
     }
     
- // 비밀번호 검증 메서드 (verify: 과정 중심의 시스템 검증)
+    // 비밀번호 검증용 개인정보 호출 메서드 : USER 테이블의 email, USER 테이블의 phoneNumber, PERSONAL_INFO 테이블의 birthDate, PERSONAL_INFO 테이블의 residentNumber
+    
+    // 개인정보 검증용 호출 메서드 : USER 테이블의 email, USER 테이블의 phoneNumber, USER 테이블의 officeNumber, PERSONAL_INFO 테이블의 address
+    
+    // 비밀번호 검증 메서드 (verify: 과정 중심의 시스템 검증)
     public boolean verifyCurrentPassword(String userID, String inputPassword) {
     	AdminInfoDAO dao = new AdminInfoDAO();
 

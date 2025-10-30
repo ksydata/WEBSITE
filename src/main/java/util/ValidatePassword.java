@@ -11,8 +11,7 @@ import org.passay.PasswordValidator;
 import org.passay.RuleResult;
 import org.passay.WhitespaceRule;
 
-// 아래 클래스의 목표 : 타 모듈에서 ValidatePassword.validator(password, userID) 형태로 불러와서 
-// 통과 가능하면 True, 통과 불가하면 False를 return 하도록 만들기
+// 비밀번호가 각 메서드별로 조건을 통과하면 True, 통과 불가하면 False를 return 하도록 만들기
 public class ValidatePassword {
 	/**
      * 정규식으로 비밀번호 정책 검증
@@ -35,11 +34,31 @@ public class ValidatePassword {
         return count >= 3;
     }
 	
+    // 비밀번호에 아이디가 포함되어 있는지 검사하는 유틸 메서드
+    public static boolean isValidById(String userID, String password) {
+        if (userID == null || password == null) return false;
+
+        // 모두 소문자로 변환하여 대소문자 구분 없이 비교
+        String lowerUsername = userID.toLowerCase();
+        String lowerPassword = password.toLowerCase();
+
+        // 비밀번호에 아이디가 포함되어 있으면 실패
+        if (lowerPassword.contains(lowerUsername)) {
+            return false;
+        }
+        return true;
+    }
+    
+    // 비밀번호에 이메일이 포함되어 있는지 검사하는 유틸 메서드
+    
+    // 비밀번호에 전화번호가 포함되어 있는지 검사하는 유틸 메서드
+    
     /**
-     * Passay를 이용한 유추하기 쉬운 비밀번호 방지
+     * Passay를 이용한 유추하기 쉬운 비밀번호 방지 (샘플 코드)
      * 
      * 목표
-     * - 패스워드가 사용자의 다른 속성값(이름, 성, 이메일)등과의 유사도 확인
+     * - 패스워드가 사용자의 다른 속성값(아이디, 이메일, 전화번호, 생년월일)와의 유사도 확인
+     * - 아이디: USER 테이블의 userID / 이메일: USER 테이블의 email / 전화번호: USER 테이블의 phoneNumber / 생년월일: PERSONAL_INFO 테이블의 birthDate
      * - 0000, 1234, password 등 사람들이 가장 많이 사용하는 패스워드 20,000개에 해당하는지 확인
      * 
      */
@@ -65,15 +84,4 @@ public class ValidatePassword {
         return result.isValid();
     }
 	
-    /**
-     * 정규식 + Passay 검증을 모두 수행하는 통합 메서드
-     * - 두 검증 모두 true일 때만 true 반환
-     */
-    public static boolean validator(String password, String username) {
-        boolean regexValid = isValidByRegex(password);
-//        boolean passayValid = isValidByPassay(password, username);
-//        return regexValid && passayValid;
-        return regexValid;
-    }
-
 }
