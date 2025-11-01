@@ -66,7 +66,7 @@ public class NoticeListDAO {
 	        // limit: 
 	    	noticePagingStatement.setInt(2, offset);
 	        // OFFSET: 현재 페이지에서 공지글을 몇번째부터 가져올지 입력값을 통해 결정
-	        // offset:  
+	        // offset: NoticeService.getPagedNotices(
 	        ResultSet resultSet = noticePagingStatement.executeQuery();
 
 	        while (resultSet.next()) {
