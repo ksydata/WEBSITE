@@ -74,7 +74,7 @@ public class AdminPageDAO {
 					
 					try (ResultSet resultSet = userInfoStatement.executeQuery()) {
 			            if (resultSet.next()) {
-			            	// 사용자 정보가 존재할 경우 ProfessorDTO 객체 생성
+			            	// 사용자 정보가 존재할 경우 DTO 객체 생성
 			            	admin = new AdminPersonalInfoDTO();
 			            	admin.setUserID(resultSet.getString("userID"));
 			            	admin.setUserPassword(resultSet.getString("userPassword"));

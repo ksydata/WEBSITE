@@ -12,6 +12,7 @@ public class NoticeDTO {
 	Timestamp updateDate;
 	Timestamp endDate;
 	String permissionRole;
+	
 	public int getNoticeID() {
 		return noticeID;
 	}
