@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dto.AdminPersonalInfoDTO;
 import service.AdminService;
 import util.ValidatePassword;
 
@@ -83,14 +84,34 @@ public class AdminPWServlet extends HttpServlet {
         }
         
         // 비밀번호 검증용 이메일, 전화번호, 생년월일 데이터 호출
-        
+        AdminPersonalInfoDTO validateData = adminService.getDataforValidatePW(userID);
         
         // vi. 변경 비밀번호가 이메일을 포함하는지 확인 (USER 테이블의 email 데이터를 호출하여 활용)
+        boolean isValidByEmail = ValidatePassword.isValidByEmail(validateData.getEmail(), newPassword);
+        if (!isValidByEmail) {
+        	request.setAttribute("error", "이메일을 포함하지 않은 비밀번호를 다시 입력해주세요.");
+        	// JSP 페이지로 포워딩        	
+        	request.getRequestDispatcher("/admin/updateMyPassword.jsp").forward(request, response);
+        	return ;
+        }
         
         // vii. 변경 비밀번호가 전화번호를 포함하는지 확인 (USER 테이블의 phoneNumber 데이터를 호출하여 활용)
+        boolean isValidByPhone = ValidatePassword.isValidByPhone(validateData.getPhoneNumber(), newPassword);
+        if (!isValidByPhone) {
+        	request.setAttribute("error", "전화번호를 포함하지 않은 비밀번호를 다시 입력해주세요.");
+        	// JSP 페이지로 포워딩        	
+        	request.getRequestDispatcher("/admin/updateMyPassword.jsp").forward(request, response);
+        	return ;
+        }
         
         // viii. 변경 비밀번호가 생년월일을 포함하는지 확인 (PERSONAL_INFO 테이블의 birthDate 데이터를 호출하여 활용)
-        
+        boolean isValidByBirthdate = ValidatePassword.isValidByBirthdate(validateData.getResidentNumber(), newPassword);
+        if (!isValidByBirthdate) {
+        	request.setAttribute("error", "생년월일을 포함하지 않은 비밀번호를 다시 입력해주세요.");
+        	// JSP 페이지로 포워딩        	
+        	request.getRequestDispatcher("/admin/updateMyPassword.jsp").forward(request, response);
+        	return ;
+        }
         
         // 변경 비밀번호를 DB에 업데이트
         adminService.updateProfessorPW(userID, newPassword);   

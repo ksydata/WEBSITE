@@ -49,9 +49,121 @@ public class ValidatePassword {
         return true;
     }
     
-    // 비밀번호에 이메일이 포함되어 있는지 검사하는 유틸 메서드
+    /**
+     * 비밀번호에 이메일의 로컬파트(아이디 부분)나 도메인명(회사명 등)이 포함되어 있는지 검사하는 유틸 메서드
+     * 
+     * 예: 이메일이 a30001@univ.com 일 때
+     *  - "a30001" 또는 "univ" 가 비밀번호에 포함되어 있으면 false 반환
+     */
+    public static boolean isValidByEmail(String email, String password) {
+        if (email == null || password == null) return false;
+
+        // 모두 소문자로 변환해 대소문자 구분 없이 비교
+        String lowerEmail = email.toLowerCase();
+        String lowerPassword = password.toLowerCase();
+
+        // 이메일 구조 분석
+        int atIndex = lowerEmail.indexOf("@");
+        int dotIndex = lowerEmail.lastIndexOf(".");
+
+        if (atIndex == -1 || dotIndex == -1 || dotIndex < atIndex) {
+            // 이메일 형식이 아니면 검증 불가 → true 반환 (별도 정책에 따라 조정 가능)
+            return true;
+        }
+
+        // 로컬파트 (예: a30001)
+        String localPart = lowerEmail.substring(0, atIndex);
+
+        // 도메인명 (예: univ)
+        String domain = lowerEmail.substring(atIndex + 1, dotIndex);
+
+        // 비밀번호가 로컬파트나 도메인명을 포함하면 실패
+        if (lowerPassword.contains(localPart) || lowerPassword.contains(domain)) {
+            return false;
+        }
+
+        return true;
+    }
     
-    // 비밀번호에 전화번호가 포함되어 있는지 검사하는 유틸 메서드
+    /**
+     * 비밀번호에 전화번호의 중간번호나 끝번호가 포함되어 있는지 검사하는 유틸 메서드
+     * 
+     * 예: 전화번호가 010-1234-5678 이라면
+     *  - "1234" 또는 "5678" 이 비밀번호에 포함되어 있으면 false 반환
+     */
+    public static boolean isValidByPhone(String phone, String password) {
+        if (phone == null || password == null) return false;
+
+        // 모두 소문자로 변환 (숫자만 있더라도 일관성 유지)
+        String lowerPassword = password.toLowerCase();
+
+        // 숫자만 추출 (010-1234-5678 → 01012345678)
+        String digitsOnly = phone.replaceAll("[^0-9]", "");
+
+        // 전화번호 형식이 정상인지 확인 (길이가 너무 짧으면 true 반환)
+        if (digitsOnly.length() < 8) {
+            // 형식이 이상하면 검증 불가 → true (정책에 따라 조정 가능)
+            return true;
+        }
+
+        // 중간번호와 끝번호 추출
+        // 01012345678 → middle = "1234", last = "5678"
+        String middle = "";
+        String last = "";
+
+        if (digitsOnly.length() >= 11) {
+            // 일반적인 한국 휴대폰 번호 (11자리)
+            middle = digitsOnly.substring(3, 7);
+            last = digitsOnly.substring(7);
+        } else if (digitsOnly.length() == 10) {
+            // 지역번호 포함 일반 전화번호 (10자리)
+            middle = digitsOnly.substring(3, 6);
+            last = digitsOnly.substring(6);
+        }
+
+        // 비밀번호에 중간번호나 끝번호가 포함되어 있으면 실패
+        if (lowerPassword.contains(middle) || lowerPassword.contains(last)) {
+            return false;
+        }
+
+        return true;
+    }
+    
+    /**
+     * 비밀번호에 주민등록번호 앞자리(생년월일)의 일부가 포함되어 있는지 검사하는 메서드
+     * 
+     * 예: 주민등록번호가 990501-7059641 일 때
+     *  - "9905" 또는 "0501" 이 비밀번호에 포함되어 있으면 false 반환
+     */
+    public static boolean isValidByBirthdate(String rrn, String password) {
+        if (rrn == null || password == null) return false;
+
+        // 모두 소문자로 변환해 대소문자 구분 없이 비교
+        String lowerPassword = password.toLowerCase();
+
+        // 주민등록번호에서 숫자만 추출
+        String digitsOnly = rrn.replaceAll("[^0-9]", "");
+
+        // 최소 6자리(생년월일) 이상이어야 함
+        if (digitsOnly.length() < 6) {
+            // 형식이 올바르지 않으면 true 반환 (검증 불가)
+            return true;
+        }
+
+        // 앞 6자리 (예: 990501)
+        String birth = digitsOnly.substring(0, 6);
+
+        // 앞 4자리(연월)와 뒤 4자리(월일) 추출
+        String first4 = birth.substring(0, 4);  // 9905
+        String last4 = birth.substring(2, 6);   // 0501
+
+        // 비밀번호에 생년월일 일부가 포함되어 있으면 실패
+        if (lowerPassword.contains(first4) || lowerPassword.contains(last4)) {
+            return false;
+        }
+
+        return true;
+    }
     
     /**
      * Passay를 이용한 유추하기 쉬운 비밀번호 방지 (샘플 코드)
