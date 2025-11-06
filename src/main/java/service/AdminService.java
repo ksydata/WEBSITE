@@ -102,12 +102,10 @@ public class AdminService {
     }
     
     // 개인정보 수정 페이지에 기존 데이터를 띄우기 위한 목적으로 어떻게 서블릿 - JSP 구조를 활용할 것인가?
-    // updateMyInfo.jsp 를 쏴주기 위한 servlet이 필요하고 그걸 기반으로 수정 전 데이터를 띄워주도록 진행해야 함
+    // updateMyInfo.jsp 를 보여주기 위한 servlet이 필요하고 그걸 기반으로 수정 전 데이터를 띄워주도록 진행해야 함
     // 수정 전 기존 데이터를 가져오기 위한 서비스를 AdminInfoDAO의 getUserInfo를 쪼개는 방식으로 메서드 만들기
     // 비슷한 원리로, getUserInfo를 쪼개서 비밀번호 수정 시 확인에 필요한 데이터를 가져오고 비밀번호 수정에 활용하는 코드도 삽입해야 함
-    
-    // 비밀번호 수정 시 확인에 필요한 데이터 가져오기 - USER 테이블의 email 데이터, USER 테이블의 phoneNumber 데이터, PERSONAL_INFO 테이블의 birthDate 데이터
-    
+        
     
     // 본인 개인정보 수정 메서드
     public void updateAdminInfo(String userID, String phoneNumber, String officeNumber, String email, String address) {
@@ -157,6 +155,31 @@ public class AdminService {
     }
     
     // 개인정보 검증용 호출 메서드 : USER 테이블의 email, USER 테이블의 phoneNumber, USER 테이블의 officeNumber, PERSONAL_INFO 테이블의 address
+    public AdminPersonalInfoDTO getDataforValidateInfo(String userID) {
+        if (userID == null || userID.isEmpty()) {
+            // userID가 비어있으면 null 반환
+            return null;
+        }
+
+        // DAO를 통해 DB에서 전체 관리자 정보 조회
+        AdminPageDAO adminDAO = new AdminPageDAO();
+        AdminPersonalInfoDTO fullInfo = adminDAO.getMyInfo(userID);
+
+        if (fullInfo == null) {
+            return null;
+        }
+
+        // 필요한 필드만 남긴 새 DTO 생성
+        AdminPersonalInfoDTO filteredInfo = new AdminPersonalInfoDTO();
+        filteredInfo.setEmail(fullInfo.getEmail());               // USER 테이블
+        filteredInfo.setPhoneNumber(fullInfo.getPhoneNumber());   // USER 테이블
+        filteredInfo.setOfficeNumber(fullInfo.getOfficeNumber()); // USER 테이블
+        filteredInfo.setAddress(fullInfo.getAddress());           // PERSONAL_INFO 테이블
+
+        // 나머지 필드는 보안을 위해 null 처리
+        return filteredInfo;
+    }
+    
     
     // 비밀번호 검증 메서드 (verify: 과정 중심의 시스템 검증)
     public boolean verifyCurrentPassword(String userID, String inputPassword) {
