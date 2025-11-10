@@ -79,7 +79,7 @@
             </c:if> -->
 
 <!-- 페이징 출력 -->
-<%@ include file="/common/paging.jsp" %>
+<%@ include file="/common/notice/paging.jsp" %>
 </div>
 </body>
 </html>
