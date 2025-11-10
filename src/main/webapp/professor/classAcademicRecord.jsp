@@ -111,7 +111,7 @@
 </table>
 </div>
 <!-- 페이징 출력 -->
-<%@ include file="/common/paging.jsp" %>
+<%@ include file="/common/notice/paging.jsp" %>
 
 <!-- 하단 영역의 메인 페이지로 돌아가는 링크 -->
 <br>
