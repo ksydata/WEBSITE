@@ -2,8 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <%@ page import="java.util.*,dao.NoticeListDAO, dto.NoticeDTO" %>
-<%@ include file="/common/header.jsp" %>
+<%@ include file="/include/header.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,13 +13,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- 부트스트랩 스타일 시트 연결 href="./css/bootstrap.min.css?ver=1" -->
 	<link rel="stylesheet" href="./css/bootstrap.min.css">
-	<!-- 사용자 정의(커스텀) 스타일 시트 연결 -->
+	<!--용자 정의(커스텀) 스타일 시트 연결 -->
 	<link rel="stylesheet" href="./css/custom.css">
 </head>
 
 <body> 
 <div class="container mt-5">
-	<h2 class="text-center mb-4">게시판 글 목록</h2>
+	<h2 class="text-center mb-4">게시판 공지글 목록</h2>
 	
 	<!--  삭제 완료 팝업 띄우기 -->
 	<c:if test="${not empty sessionScope.flashMessage}">
@@ -79,9 +80,9 @@
             </c:if> -->
 
 <!-- 페이징 출력 -->
-<%@ include file="/common/notice/paging.jsp" %>
+<%@ include file="/include/paging.jsp" %>
 </div>
 </body>
 </html>
 
-<%@ include file="/common/footer.jsp" %>
+<%@ include file="/include/footer.jsp" %>

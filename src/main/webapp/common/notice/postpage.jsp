@@ -14,7 +14,7 @@
 	<link rel="stylesheet" href="./css/custom.css">
 </head>
 <body>
-<jsp:include page="/common/header.jsp" />
+<jsp:include page="/include/header.jsp" />
 <div class="container mt-5">
 	<h2 class="mb-3">${post.title}</h2>
     <p><strong>작성자:</strong> ${post.userID}</p>
@@ -46,6 +46,6 @@
    		 </div>
 	</div>
 </div>
-<jsp:include page="/common/footer.jsp" />
+<jsp:include page="/include/footer.jsp" />
 </body>
 </html>

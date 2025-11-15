@@ -11,7 +11,7 @@
 </head>
 
 <body>
-<jsp:include page="../common/header.jsp" />
+<jsp:include page="../include/header.jsp" />
 
 
 <div class="container mt-5">
@@ -81,7 +81,7 @@
 	  }
 </script>
 
-<jsp:include page="../common/footer.jsp" />
+<jsp:include page="../include/footer.jsp" />
 </body>
 
 </html>
