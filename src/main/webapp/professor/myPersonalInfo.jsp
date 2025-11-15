@@ -11,7 +11,7 @@
 
 <body>
 <!-- 공통 상단 메뉴 -->
-<jsp:include page="../common/header.jsp" />
+<jsp:include page="../include/header.jsp" />
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">나의 개인정보</h2>
@@ -61,7 +61,7 @@
 <br>
 <a href="<c:url value='professor/main.jsp' />">메인으로 돌아가기</a>
 <!-- 공통 푸터 -->
-<jsp:include page="../common/footer.jsp" />
+<jsp:include page="../include/footer.jsp" />
 </body>
 
 </html>

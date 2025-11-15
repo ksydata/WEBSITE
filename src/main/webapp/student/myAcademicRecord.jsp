@@ -11,7 +11,7 @@
 
 <body>
 <!-- 공통 상단 메뉴 -->
-<jsp:include page="../common/header.jsp" />
+<jsp:include page="../include/header.jsp" />
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">나의 성적 조회</h2>
@@ -80,7 +80,7 @@
 </div>
 
 <!-- 공통 푸터 -->
-<jsp:include page="../common/footer.jsp" />
+<jsp:include page="../include/footer.jsp" />
 </body>
 
 </html>

@@ -88,26 +88,6 @@ public class NoticeListDAO {
 	    return noticeList;
 	    // 페이징된 공지글 리스트 DTO 반환
 	}
-
-	// 전체 게시글 수 반환
-	public int getTotalNoticeCount() {
-	    String sql = "SELECT COUNT(*) FROM NOTICE";
-		// NOTICE 테이블에서 전체 게시판 공지글 수를 집계한 값을 조회하는 쿼리문	    
-	    try (Connection connection = DatabaseUtil.getConnection();
-	         PreparedStatement noticeCountStatement = connection.prepareStatement(sql)) {
-	        ResultSet resultSet = noticeCountStatement.executeQuery();
-	        if (resultSet.next()) {
-	            return resultSet.getInt(1);
-	            // .getInt(1); 1번째 컬럼의 정수값 반환
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        // 쿼리 실행 관련 예외 발생 시 콘솔 출력
-	    }
-	    return 0;
-	    // 예외 발생 또는 결과값이 없을 경우 0을 반환
-	}
-	
 	
 	// 특정 게시글 조회 - 게시글 표 & 게시글 작성자 조회 (학생/교수/관리자 여부와 함께 조회)
 	public NoticeDTO getNoticeByID(int noticeID) {
@@ -141,3 +121,24 @@ public class NoticeListDAO {
 		// 조회하려는 특정 공지글 DTO 반환(없으면 빈 객체)		
 	}
 }
+
+/*
+ * 	// 전체 게시글 수 반환
+	public int getTotalNoticeCount() {
+	    String sql = "SELECT COUNT(*) FROM NOTICE";
+		// NOTICE 테이블에서 전체 게시판 공지글 수를 집계한 값을 조회하는 쿼리문	    
+	    try (Connection connection = DatabaseUtil.getConnection();
+	         PreparedStatement noticeCountStatement = connection.prepareStatement(sql)) {
+	        ResultSet resultSet = noticeCountStatement.executeQuery();
+	        if (resultSet.next()) {
+	            return resultSet.getInt(1);
+	            // .getInt(1); 1번째 컬럼의 정수값 반환
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        // 쿼리 실행 관련 예외 발생 시 콘솔 출력
+	    }
+	    return 0;
+	    // 예외 발생 또는 결과값이 없을 경우 0을 반환
+	}
+*/	

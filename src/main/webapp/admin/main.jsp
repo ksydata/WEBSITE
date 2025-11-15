@@ -16,7 +16,7 @@
 
 <body>
 <!-- 공통 상단 메뉴 -->
-<jsp:include page="../common/header.jsp" />
+<jsp:include page="../include/header.jsp" />
 
 <div class="container mt-5 text-center">
 	<h1>${sessionScope.userName}님 (${sessionScope.userID}) 환영합니다.</h1>
@@ -29,7 +29,7 @@
 </div>
 
 <!-- 공통 푸터 -->
-<jsp:include page="../common/footer.jsp" />
+<jsp:include page="../include/footer.jsp" />
 <%-- 필수 자바스크립트 라이브러리들 추가 --%>
 <script src="../js/jquery.min.js"></script>
 <script src="../js/popper.min.js"></script>

@@ -12,10 +12,10 @@
 
 <body>
 <!-- 공통 상단 메뉴 -->
-<jsp:include page="../common/header.jsp" />
+<jsp:include page="../include/header.jsp" />
 
 <!-- 공통 검색어 입력창 -->
-<jsp:include page="../common/searchForm.jsp" />
+<jsp:include page="../include/searchForm.jsp" />
 <!-- 필요한 조건 검색 필터 (예: 컬럼 선택) -->
 <form action="/classRecord" method="get" class="row g-2 mb-3">
 	<!-- 선택 필터 컬럼 정의 -->
@@ -111,13 +111,13 @@
 </table>
 </div>
 <!-- 페이징 출력 -->
-<%@ include file="/common/notice/paging.jsp" %>
+<%@ include file="/include/paging.jsp" %>
 
 <!-- 하단 영역의 메인 페이지로 돌아가는 링크 -->
 <br>
 <a href="<c:url value='professor/main.jsp' />" class="btn btn-secondary">메인으로 돌아가기</a>
 <!-- 공통 푸터 -->
-<jsp:include page="../common/footer.jsp" />
+<jsp:include page="../include/footer.jsp" />
 <script src="../js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

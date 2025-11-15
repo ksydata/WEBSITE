@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page import="java.util.*" %>
-<%@ include file="/common/header.jsp" %>
+<%@ include file="/include/header.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -209,8 +209,8 @@
 </c:if>
 </div> --%>
 <!-- 페이징 출력 -->
-<%@ include file="/common/notice/paging.jsp" %>
+<%@ include file="/include/paging.jsp" %>
 </body>
 </html>
 
-<%@ include file="/common/footer.jsp" %>
+<%@ include file="/include/footer.jsp" %>
