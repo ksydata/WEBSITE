@@ -9,6 +9,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
+	<!-- 공지사항 게시글 리스트를 출력하고 paging.jsp include -->	
 	<title>게시글 목록</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- 부트스트랩 스타일 시트 연결 href="./css/bootstrap.min.css?ver=1" -->

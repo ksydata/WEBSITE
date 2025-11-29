@@ -11,6 +11,7 @@
 
 <div class="d-flex justify-content-center mt-4">
     <nav>
+    	<!-- 페이징 UI를 렌터링하는 공통 컴포넌트 -->
         <ul class="pagination">
 
             <!-- 이전 블록 이동 -->

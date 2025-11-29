@@ -10,17 +10,79 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// import dao.NoticeListDAO;
-// import dao.NoticeControlDAO;
+import dao.PagingDAO;
 import dto.NoticeDTO;
+import dto.PagingDTO;
 import service.PagingService;
 
+// @https://wintmoca.tistory.com/42
 
-/* GET요청: 게시판 공지글 전체 조회 (TO-BE: '페이징 기능'과 '전체 리스트 조회 기능' 분리
+/*
+ * GET요청: 게시판 공지글 전체 조회 (AS-IS)
+ * URL 파라미터 page를 기준으로 PagingService.getPage()를 통해
+ * PagingDTO 객체와 해당 페이지의 게시글 목록(noticeList)과 페이징 정보(currentPage, startPage, endPage, totalPage), 
+ * URL 파라미터 정보 (pageURL, paramStr)를 조회해 postlist.jsp로 전달
+
+ */
+@WebServlet("/board")
+public class BoardServlet extends HttpServlet {
+
+    private PagingService pagingService = new PagingService();
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        // 1. 페이지 파라미터 처리
+        int page = 1;
+        // 첫 페이지로 변수 초기화
+        try { 
+        	page = Integer.parseInt(request.getParameter("page"));
+        	// http 요청에서 받은 페이지 파라미터 정수로 반환
+        	// getAttribute();는 object(Data, File 타입)형으로 값 반환하여 추후 활용
+        } catch(Exception ignored) {}
+
+        // 2. RowMapper 정의
+        /* [AS-IS]
+        PagingDAO.RowMapper<NoticeDTO> mapper = resultSet -> new NoticeDTO(
+        		resultSet.getInt("noticeID"),
+        		// 공지사항 게시글 번호
+        		resultSet.getString("title"),
+        		// 글 제목
+        		resultSet.getString("content"),
+        		// 글 내용
+        		resultSet.getString("userID"),
+        		// 작성자 아이디(학번/사번)
+        		resultSet.getInt("createDate")
+        		// 
+        );
+        */
+        int mapper = 1;
+        
+        // 3. 페이징 및 글 목록 조회
+        PagingDTO<NoticeDTO> pagingObject = pagingService.getPage(
+        		"NOTICE",
+        		null,
+        		"noticeID DESC",
+        		page,
+        		mapper
+        		// The method getPage(String, String, String, int, PagingDAO.RowMapper<T>) in the type PagingService is not applicable for the arguments (String, null, String, int, int)
+        );
+        
+        // 4. JSP(View)로 데이터 전달
+        // request.setAttribute("noticeList", paging.getPagingDataList());
+        
+
+        request.getRequestDispatcher("/common/postlist.jsp").forward(request, response);
+    }
+}
+
+/*
+ * GET요청: 게시판 공지글 전체 조회 (TO-BE: '페이징 기능'과 '전체 리스트 조회 기능' 분리
  * URL 파라미터 page를 기준으로 NoticeService를 통해 
  * 해당 페이지의 게시글 목록(noticeList)과 페이징 정보(currentPage, startPage, endPage, totalPage), 
  * URL 파라미터 정보 (pageURL, paramStr)를 조회해 postlist.jsp로 전달
- */
+
 @WebServlet("/board")
 public class BoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -56,3 +118,4 @@ public class BoardServlet extends HttpServlet {
 	    // postlist.jsp로 포워딩
 	}
 }
+*/
