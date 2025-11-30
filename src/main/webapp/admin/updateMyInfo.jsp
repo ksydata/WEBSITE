@@ -13,7 +13,6 @@
 <body>
 <jsp:include page="../include/header.jsp" />
 
-
 <div class="container mt-5">
     <h2 class="text-center mb-4">개인정보 수정</h2>
 

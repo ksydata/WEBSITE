@@ -113,6 +113,7 @@
 <!-- 페이징 출력 -->
 <%@ include file="/include/paging.jsp" %>
 
+
 <!-- 하단 영역의 메인 페이지로 돌아가는 링크 -->
 <br>
 <a href="<c:url value='professor/main.jsp' />" class="btn btn-secondary">메인으로 돌아가기</a>
