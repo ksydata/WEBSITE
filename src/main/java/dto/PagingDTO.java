@@ -1,6 +1,6 @@
 package dto;
 
-public class PageDTO {
+public class PagingDTO {
 
 	private int currentPage;   // 현재 페이지 번호
     private int pageSize;      // 한 페이지당 표시할 항목 수

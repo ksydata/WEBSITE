@@ -16,7 +16,7 @@ import dto.NoticeDTO;
 import service.NoticeService;
 
 
-/* GET요청: 게시판 공지글 전체 조회 (AS-IS: 페이징 기능 분리 전)
+/* GET요청: 게시판 공지글 전체 조회 (TO-BE: '페이징 기능'과 '전체 리스트 조회 기능' 분리
  * URL 파라미터 page를 기준으로 NoticeService를 통해 
  * 해당 페이지의 게시글 목록(noticeList)과 페이징 정보(currentPage, startPage, endPage, totalPage), 
  * URL 파라미터 정보 (pageURL, paramStr)를 조회해 postlist.jsp로 전달
@@ -25,38 +25,30 @@ import service.NoticeService;
 public class BoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	// 자바객체 직렬화
+	private NoticeService noticeService = new NoticeService();
+	// 공지사항 게시판 Notice 관련 비즈니스(페이징) 로직을 처리하는 서비스 객체 선언
 	
 	// notice 리스트 조회
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    // 페이징 파라미터 처리
-	    int page = 1;
 	    String pageParam = request.getParameter("page");
-	    if (pageParam != null && pageParam.matches("\\d+")) {
-	        page = Integer.parseInt(pageParam);
-	    }
+	    int page = (pageParam != null && pageParam.matches("\\d+")) ? Integer.parseInt(pageParam) : 1;
+	    // 요청 파라미터(page) 처리, 기본값은 1로 설정
 
-	    NoticeService service = new NoticeService();
-	    List<NoticeDTO> list = service.getPagedNotices(page);
-	    int totalPages = service.getTotalPages();
+	    List<NoticeDTO> list = noticeService.getPagedNotices(page);
+	    // 현재 한 페이지당 보여줄 공지글 목록 조회
+	    int totalPages = noticeService.getTotalPages();
+	    // 전체 페이지 수 계산
 
-	    // 페이징 블록 계산
-	    int blockSize = 10;
-	    int startPage = ((page - 1) / blockSize) * blockSize + 1;
-	    int endPage = Math.min(startPage + blockSize - 1, totalPages);
-
-	    // 공통 페이징 관련 attribute 설정
+	    // postlist.jsp로 전달할 데이터 설정
 	    request.setAttribute("noticeList", list);
+	    // 현제 페이지의 공지글 리스트
 	    request.setAttribute("currentPage", page);
+	    // 현재 페이지 번호
 	    request.setAttribute("totalPage", totalPages);   
-	    // paging.jsp에서 이 이름 사용
-	    request.setAttribute("startPage", startPage);
-	    request.setAttribute("endPage", endPage);
-
-	    request.setAttribute("pageURL", "board");
-	    request.setAttribute("paramStr", ""); 
-	    // 추가 파라미터가 없는 경우
+	    // 전체 페이지 수
 
 	    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/postlist.jsp");
 	    dispatcher.forward(request, response);
+	    // postlist.jsp로 포워딩
 	}
 }
