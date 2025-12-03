@@ -20,7 +20,8 @@
 	<c:if test="${empty userInfo}">
     	<script>
         	alert("개인정보를 찾을 수 없습니다.");
-        	window.location.href = "<c:url value='student/main.jsp' />";
+        	// window.location.href = "<c:url value='student/main.jsp' />";
+        	window.location.href = "<c:url value='common/main.jsp' />";
     	</script>
 	</c:if>
 
@@ -30,6 +31,38 @@
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">기본 정보</div>
         <div class="card-body">
+            <%-- <p><strong>학번:</strong> ${userInfo.userID}</p>
+            <p><strong>이름:</strong> ${userInfo.name}</p>
+            <p><strong>주민등록번호:</strong> ${userInfo.residentNumber}</p>
+            <p><strong>단과대학:</strong> ${userInfo.college}</p>
+            <p><strong>전공:</strong> ${userInfo.major}</p>
+            <p><strong>입학년도:</strong> ${userInfo.admissionYear}</p>
+            <p><strong>상태:</strong> ${userInfo.status}</p> --%>
+            <!-- 기본 정보 카드(읽기 전용) -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">기본 정보</div>
+    <div class="card-body">
+
+        <!-- ▷ 관리자 권한(admin) -->
+        <c:if test="${sessionScope.userRole eq '관리자'}">
+            <p><strong>사번:</strong> ${userInfo.userID}</p>
+            <p><strong>이름:</strong> ${userInfo.name}</p>
+            <p><strong>주민등록번호:</strong> ${userInfo.residentNumber}</p>
+            <p><strong>상태:</strong> ${userInfo.status}</p>
+        </c:if>
+
+        <!-- ▷ 교수 권한(professor) -->
+        <c:if test="${sessionScope.userRole eq '교수'}">
+            <p><strong>사번:</strong> ${userInfo.userID}</p>
+            <p><strong>이름:</strong> ${userInfo.name}</p>
+            <p><strong>주민등록번호:</strong> ${userInfo.residentNumber}</p>
+            <p><strong>단과대학:</strong> ${userInfo.college}</p>
+            <p><strong>전공:</strong> ${userInfo.major}</p>
+            <p><strong>상태:</strong> ${userInfo.status}</p>
+        </c:if>
+
+        <!-- ▷ 학생 권한(student) -->
+        <c:if test="${sessionScope.userRole eq '학생'}">
             <p><strong>학번:</strong> ${userInfo.userID}</p>
             <p><strong>이름:</strong> ${userInfo.name}</p>
             <p><strong>주민등록번호:</strong> ${userInfo.residentNumber}</p>
@@ -37,6 +70,10 @@
             <p><strong>전공:</strong> ${userInfo.major}</p>
             <p><strong>입학년도:</strong> ${userInfo.admissionYear}</p>
             <p><strong>상태:</strong> ${userInfo.status}</p>
+        </c:if>
+
+    </div>
+</div>
         </div>
     </div>
 
