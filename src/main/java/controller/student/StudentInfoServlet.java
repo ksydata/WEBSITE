@@ -55,7 +55,7 @@ public class StudentInfoServlet extends HttpServlet {
 		    
 		    // JSP 페이지로 포워딩
 //			request.getRequestDispatcher("/student/myPersonalInfo.jsp").forward(request, response);
-			request.getRequestDispatcher("/common/myPersonalInfo.jsp").forward(request, response);
+			request.getRequestDispatcher("/common/info/myPersonalInfo.jsp").forward(request, response);
 			// [또 다시 서블릿을 호출하는 잘못된 경로로 무한 루프 오류 발생] 
 			// request.getRequestDispatcher("student/studentInfo").forward(request, response);
 
