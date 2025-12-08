@@ -28,20 +28,9 @@
 	<!-- 세션에 저장된 StudentDTO 객체인 userInfo를 불러와 만든 나의 개인정보 조회 카드 -->
 
     <!-- 기본 정보 카드(읽기 전용) -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">기본 정보</div>
-        <div class="card-body">
-            <%-- <p><strong>학번:</strong> ${userInfo.userID}</p>
-            <p><strong>이름:</strong> ${userInfo.name}</p>
-            <p><strong>주민등록번호:</strong> ${userInfo.residentNumber}</p>
-            <p><strong>단과대학:</strong> ${userInfo.college}</p>
-            <p><strong>전공:</strong> ${userInfo.major}</p>
-            <p><strong>입학년도:</strong> ${userInfo.admissionYear}</p>
-            <p><strong>상태:</strong> ${userInfo.status}</p> --%>
-            <!-- 기본 정보 카드(읽기 전용) -->
-<div class="card mb-4">
-    <div class="card-header bg-primary text-white">기본 정보</div>
-    <div class="card-body">
+	<div class="card mb-4">
+	    <div class="card-header bg-primary text-white">기본 정보</div>
+	    <div class="card-body">
 
         <!-- ▷ 관리자 권한(admin) -->
         <c:if test="${sessionScope.userRole eq '관리자'}">
@@ -74,8 +63,6 @@
 
     </div>
 </div>
-        </div>
-    </div>
 
     <!-- 수정 가능한 정보 카드 -->
     <div class="card mb-4">

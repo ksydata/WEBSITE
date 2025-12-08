@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ include file="/common/header.jsp" %>
+<%@ include file="/include/header.jsp" %>
 
 <main class="container mt-5">
 	<h1>눈송여자대학교 학사관리 시스템에 오신 것을 환영합니다</h1>
@@ -33,4 +33,4 @@ jsp가 아닌 Servlet에서 포워드(redirect) 방식이 더 적절
 	</c:when>						
 </c:choose>
 
-<%@ include file="/common/footer.jsp" %>
+<%@ include file="/include/footer.jsp" %>
