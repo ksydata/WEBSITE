@@ -152,7 +152,7 @@
 	    
 	    <tbody>
 	        <c:forEach var="user" items="${userList}">
-	            <tr onclick="location.href='userInfo?id=${user.userID}'" style="cursor:pointer;">
+	            <tr onclick="location.href='userInfoAdmin?id=${user.userID}'" style="cursor:pointer;">
 	                <td>${user.userID}</td>
 	                <td>${user.name}</td>
 	                <td>${user.email}</td>

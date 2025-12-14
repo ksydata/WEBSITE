@@ -2,6 +2,9 @@
 	pageEncoding="UTF-8"%>
 <%-- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> --%>
 
+<!-- @https://breakthedays.tistory.com/222 -->
+<!-- @https://shinye-developmentdiary.tistory.com/58 -->\
+<!-- @https://velog.io/@kt_gml/JSP-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B5%AC%EC%A1%B0MVC-%ED%8C%A8%ED%84%B4 -->
 <!-- 처음 진입 시 /index 서블릿으로 연결되게끔 리다이렉트하여 세션 확인 후 main.jsp로 이동 -->
 <%
 response.sendRedirect("index");

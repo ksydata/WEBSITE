@@ -1,9 +1,7 @@
 package controller;
 
 import java.io.IOException;
-import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,7 +25,8 @@ import service.PagingService;
 @WebServlet("/board")
 public class BoardServlet extends HttpServlet {
 
-    private PagingService pagingService = new PagingService();
+    private static final long serialVersionUID = 1L;
+	private PagingService pagingService = new PagingService();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -41,23 +40,24 @@ public class BoardServlet extends HttpServlet {
         	// http 요청에서 받은 페이지 파라미터 정수로 반환
         	// getAttribute();는 object(Data, File 타입)형으로 값 반환하여 추후 활용
         } catch(Exception ignored) {}
+        
 
         // 2. RowMapper 정의
-        /* [AS-IS]
-        PagingDAO.RowMapper<NoticeDTO> mapper = resultSet -> new NoticeDTO(
-        		resultSet.getInt("noticeID"),
-        		// 공지사항 게시글 번호
-        		resultSet.getString("title"),
-        		// 글 제목
-        		resultSet.getString("content"),
-        		// 글 내용
-        		resultSet.getString("userID"),
-        		// 작성자 아이디(학번/사번)
-        		resultSet.getInt("createDate")
-        		// 
-        );
-        */
-        int mapper = 1;
+        // RowMapper 안에 NoticeDTO를 채운다는 아이디어를 살리되, 형태를 약간 바꾸어 resultSet 내부에 NoticeDTO를 정의하고 내용을 채움
+        PagingDAO.RowMapper<NoticeDTO> mapper = resultSet -> {
+            NoticeDTO dto = new NoticeDTO();
+            // 공지사항 게시글 번호
+            dto.setNoticeID(resultSet.getInt("noticeID"));
+            // 글 제목
+            dto.setTitle(resultSet.getString("title"));
+            // 글 내용
+            dto.setContents(resultSet.getString("contents"));
+            // 작성자 아이디(학번/사번)
+            dto.setUserID(resultSet.getString("userID"));
+            // 작성일자
+            dto.setCreateDate(resultSet.getTimestamp("createDate"));
+            return dto;
+        };
         
         // 3. 페이징 및 글 목록 조회
         PagingDTO<NoticeDTO> pagingObject = pagingService.getPage(
@@ -70,12 +70,20 @@ public class BoardServlet extends HttpServlet {
         );
         
         // 4. JSP(View)로 데이터 전달
-        // request.setAttribute("noticeList", paging.getPagingDataList());
+        request.setAttribute("noticeList", pagingObject.getPagingDataList());
         
+        // 개별 페이징 값 JSP로 전달
+        request.setAttribute("currentPage", pagingObject.getCurrentPage());
+        request.setAttribute("startPage", pagingObject.getStartPage());
+        request.setAttribute("endPage", pagingObject.getEndPage());
+        request.setAttribute("totalPage", pagingObject.getTotalPage());
+        request.setAttribute("totalCount", pagingObject.getTotalCount());
+        request.setAttribute("pageSize", pagingObject.getPageSize());
 
-        request.getRequestDispatcher("/common/postlist.jsp").forward(request, response);
+        request.getRequestDispatcher("/common/notice/postlist.jsp").forward(request, response);
     }
 }
+
 
 /*
  * GET요청: 게시판 공지글 전체 조회 (TO-BE: '페이징 기능'과 '전체 리스트 조회 기능' 분리

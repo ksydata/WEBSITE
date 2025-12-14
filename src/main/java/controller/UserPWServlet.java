@@ -15,13 +15,9 @@ public class UserPWServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	
 	// 비밀번호 변경 메서드
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // 요청 파라미터를 UTF-8로 인코딩 (한글 깨짐 방지)
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
         
         // 세션값에 저장된 학번/사번 불러오기
         String userID = (String) request.getSession().getAttribute("userID");

@@ -39,7 +39,7 @@ public class WriteServlet extends HttpServlet {
 	    request.setAttribute("userID", userID);
 	    request.setAttribute("permissionRole", permissionRole);
 
-	    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/writePost.jsp");
+	    RequestDispatcher dispatcher = request.getRequestDispatcher("common/notice/writePost.jsp");
 	    dispatcher.forward(request, response);
 	    // 세션값을 writePost.jsp 히든 필드 <input type="hidden"> 로 전달
 	    // 단, 브라우저 개발자도구(F12)를 통해 누구나 값을 확인하고 수정 가능한 보안 취약점 대비 
@@ -76,7 +76,7 @@ public class WriteServlet extends HttpServlet {
         } else {
         	// 공지글 등록에 실패한 경우
             request.setAttribute("errorMessage", "게시글 등록에 실패했습니다.");
-            request.getRequestDispatcher("common/writePost.jsp").forward(request, response);
+            request.getRequestDispatcher("common/notice/writePost.jsp").forward(request, response);
         }
     }	
 }
