@@ -38,7 +38,7 @@ public class UserInfoService {
             // userInfoDTO.getter method            
             String resident = userInfo.getResidentNumber();
             if (resident != null && resident.length() >= 7) {
-                String maskedResidentNum = resident.substring(0, 8) + "******";
+                String maskedResidentNum = resident.substring(0, 9) + "******";
                 // userInfoDTO.setter method
                 userInfo.setResidentNumber(maskedResidentNum);
             }

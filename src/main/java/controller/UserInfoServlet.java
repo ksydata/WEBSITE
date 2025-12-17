@@ -20,19 +20,20 @@ public class UserInfoServlet extends HttpServlet  {
 	// 개인정보 조회 메서드
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // 요청 파라미터를 UTF-8로 인코딩 (한글 깨짐 방지)
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-        
+		// [TO-BE] UserInfoServlet에서 UserInfoFilter로 이관
+		// UTF-8로 인코딩 설정 (한글 깨짐 방지)
+        // request.setCharacterEncoding("UTF-8");
+        // response.setContentType("text/html;charset=UTF-8");
+		
         // 로그인 시 세션에 저장된 학번/사번 불러오기
         HttpSession session = request.getSession();
         String userID = (String) session.getAttribute("userID");
 		
-        if (userID == null) {
+        // [TO-BE] UserInfoServlet에서 UserInfoFilter로 이관
+        // if (userID == null) {
             // 세션이 없으면 로그인 페이지로 리다이렉트
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
-            return;
-        }
+            // response.sendRedirect(request.getContextPath() + "/login.jsp");
+            // return;}
         
 		// UserInfoDAO를 직접 부르는 게 아니라 UserInfoService 통해 데이터 전송
         UserInfoService userInfoService = new UserInfoService();
@@ -53,17 +54,11 @@ public class UserInfoServlet extends HttpServlet  {
 	// 개인정보 수정 메서드
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // 요청 파라미터를 UTF-8로 인코딩 (한글 깨짐 방지)
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-        
         // 세션값에 저장된 사번 불러오기
         String userID = (String) request.getSession().getAttribute("userID");
+
+        // [TO-BE] UserInfoServlet에서 UserInfoFilter로 이관
         // 사번이 없으면 로그인 페이지로 리다이렉트
-        if (userID == null) {
-	        response.sendRedirect(request.getContextPath() + "/index.jsp");
-	        return;
-        }
 		
         // 수정대상 개인정보(휴대전화번호, 사무실전화번호, 이메일, 주소)
         String phoneNumber = request.getParameter("phoneNumber");

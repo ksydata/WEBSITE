@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import util.DatabaseUtil;
 import java.util.List;
 
-// [TO-BE] 전체 데이터 조회하는 데이터접근객체(공통 모듈)
+//[TO-BE] 전체 데이터 조회하는 데이터접근객체(공통 모듈)
 public class PagingDAO {
 	
 	// 전체 데이터 수 집계하는 메서드	
@@ -85,42 +85,7 @@ public class PagingDAO {
 	    return java.util.Collections.emptyList();
 	}
 	
-	// 인터페이스
-	public interface RowMapper<T> {
-		T mapRow(ResultSet resultSet) throws SQLException;
-	// [AS-IS] 데이터베이스 쿼리 결과(ResultSet)를 사용자가 원하는 자바 객체로 변환
-	
-	/* [AS-IS]
-	public <T> List<T> getPagingDataList(
-			String TABLE_NAME, String WHERE_CLAUSE, String ORDER_BY,
-			int OFFSET, int pageSize, RowMapper<T> Mapper) {
-		StringBuilder sql = new StringBuilder("SELECT * FROM " + TABLE_NAME);
-		
-		if (WHERE_CLAUSE != null && !WHERE_CLAUSE.isEmpty()) {
-			// 조건절이 입력값에 있을 때
-			sql.append(" ORDER BY ").append(ORDER_BY);
-			// 정렬 조건(오름차순/내림차순)도 쿼리에 포함
-		}
-		
-		sql.append(" LIMIT ? OFFSET ?");
-		// offset 행부터 limit 행까지 출력하는 쿼리
-				
-		try(Connection connection = DatabaseUtil.getConnection();
-				PreparedStatement getListStatement = connection.prepareStatement(sql.toString())) {
-			
-			getListStatement.setInt(1, pageSize);
-			getListStatement.setInt(2, OFFSET);
-						
-			ResultSet rs = getListStatement.executeQuery();
-			
-			return null;
-			// [AS-IS] ** 쿼리와 행 매퍼 추가 **
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return java.util.Collections.emptyList();
-	} */
-	
 	
 	}
 }
+

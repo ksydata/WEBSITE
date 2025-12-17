@@ -59,20 +59,6 @@ public class BoardServlet extends HttpServlet {
             return dto;
         };
         
-        /* [AS-IS] 
-        PagingDAO.RowMapper<NoticeDTO> mapper = resultSet -> new NoticeDTO(
-        		resultSet.setNoticeID("noticeID"),
-        		// 공지사항 게시글 번호
-        		resultSet.setTitle("title"),
-        		// 글 제목
-        		resultSet.setContents("content"),
-        		// 글 내용
-        		resultSet.setUserID("userID"),
-        		// 작성자 아이디(학번/사번)
-        		resultSet.setCreateDate("createDate")
-        		// 
-        );*/
-        
         
         // 3. 페이징 및 글 목록 조회
         PagingDTO<NoticeDTO> pagingObject = pagingService.getPage(
@@ -98,6 +84,7 @@ public class BoardServlet extends HttpServlet {
         request.getRequestDispatcher("/common/notice/postlist.jsp").forward(request, response);
     }
 }
+
 
 /*
  * GET요청: 게시판 공지글 전체 조회 (TO-BE: '페이징 기능'과 '전체 리스트 조회 기능' 분리

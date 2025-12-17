@@ -51,7 +51,7 @@ public class PostServlet extends HttpServlet {
 	    request.setAttribute("canDelete", canDelete);
 	    // 권한 관련 플래그를 jsp(자바 서버페이지)로 전달
 	    
-	    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/notice/postpage.jsp");
+	    RequestDispatcher dispatcher = request.getRequestDispatcher("common/notice/postpage.jsp");
 	    dispatcher.forward(request, response);
 	}
 }
