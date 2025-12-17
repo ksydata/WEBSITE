@@ -85,7 +85,12 @@ public class PagingDAO {
 	    return java.util.Collections.emptyList();
 	}
 	
-	
+	// 인터페이스
+	public interface RowMapper<T> {
+		T mapRow(ResultSet resultSet) throws SQLException;
 	}
+	
+	
 }
+
 
