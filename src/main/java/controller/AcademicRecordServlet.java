@@ -14,8 +14,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+//목표 1: UserAcademicRecordServlet, ProfessorRecordServlet, StudentRecordServlet 3개를 1개 Servlet으로 합쳐서 구현하기
+//목표 2: session 가져오기 파트를 AcademicRecordListFilter로 이관하기 (service와 webfilter 맞물려 적용)
+//목표 3: 페이징 로직을 BoardServlet과 유사한 형태로 PagingDAO, pagingService.getPage() 를 활용하여 가져오기
+//목표 4: 현재 student, professor, admin에 분산된 myAcademicRecord.jsp 를 common/info/academicRecord.jsp 로 통합하기
+//목표 5(희망사항): AcademicRecordService에 기존 교수/학생/관리자 권한 외에 정보 접근 권한을 세부적으로 추가해서 다루기
 
-// [AS-IS]
+//중요: 목표 1~4를 달성한 뒤, AcademicRecord의 결과를 Info, Notice 등 다른 기능에 유사하게 적용할 것
+
+
+// [TO-BE]
 @WebServlet("/academicRecord")
 public class AcademicRecordServlet extends HttpServlet {
 	// 역직렬화 시 해당하는 클래스의 버전이 맞는지를 확인하는 장치
@@ -23,10 +31,6 @@ public class AcademicRecordServlet extends HttpServlet {
 	
 	// userID별 성적 리스트 조회
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 요청 파라미터를 UTF-8로 인코딩 (한글 깨짐 방지)
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-        
         // 세션에서 로그인된 학번 가져오기
 		HttpSession session = request.getSession();
 		String userID = (String) session.getAttribute("userID");
@@ -39,13 +43,8 @@ public class AcademicRecordServlet extends HttpServlet {
 		    // 조회된 학사정보를 HTTP 요청에 저장
 		    request.setAttribute("recordList", records);
 		    
-		    // DTO에서 이름을 추출하여 전달
-		    /*AcademicRecordDTO student = dao.getUserID(userID);
-		    if (student != null) request.setAttribute("userName", student.getName());
-		    */
-		    
 		    // 결과값을 표시할 jsp 페이지로 포워딩
-		    RequestDispatcher dispatcher = request.getRequestDispatcher("/student/myAcademicRecord.jsp");
+		    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/info/academicRecord.jsp");
 		    dispatcher.forward(request, response);
 		    
 		} else {

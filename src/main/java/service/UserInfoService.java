@@ -1,5 +1,5 @@
 package service;
-//StudentInfoServlet과 StudentDAO 사이에서 비즈니스 로직
+// UserInfoServlet과 UserInfoDAO 사이에서 비즈니스 로직
 
 import dao.UserInfoDAO;
 import dto.UserInfoDTO;
