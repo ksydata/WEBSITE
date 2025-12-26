@@ -42,8 +42,35 @@ public class AcademicRecordService {
     		 return studentsRecords;    		 
      }
 	return null;
-   }
+ }
+ 
+ 
+ 	// 교수의 단과대학 학생 정보 수정 메서드
+ 	public void updateRecord(String recordID, boolean PF, String grade, float gradePoint, boolean passOrFail) {
+ 		if (recordID == null || recordID.isEmpty()) {
+ 			// recordID가 비어있으면 null 반환
+ 			return;
+ 		}
+ 		
+ 		// DAO를 통해 성적 수정
+ 		AcademicRecordDAO dao = new AcademicRecordDAO();
+ 		
+ 		if (PF) {
+ 			// PF 과목일 경우 PF 과목 성적 수정 로직 사용
+ 			dao.updateRecordPF(passOrFail, recordID);
+ 		} else {
+ 			// 상대평가 과목 성적 수정 로직 사용
+ 			if (recordID != null && grade != null && gradePoint != 0) {
+ 	 			dao.updateRecord(grade, gradePoint, recordID);
+ 	 		}
+ 		}
+ 		
+ 		
+ 	}
+ 
 }
+
+
 
 /*
 // 개인정보 수정 메서드

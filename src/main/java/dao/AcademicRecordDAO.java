@@ -144,6 +144,65 @@ public class AcademicRecordDAO {
     	// 테이블 내 학생별 학사정보 필드 설정
     	return record;
     }
+    
+    
+    // 5. 교수의 단과대학 학생 정보 수정 메서드
+    /*
+     * 성적 정보 수정 예시 쿼리: 
+     * - 일반적인 A~F 판정 과목 : UPDATE academic_record SET grade = 'A', gradePoint = 4.0 WHERE recordID = 12345;
+     * - P/F 과목 : UPDATE academic_record SET pass_or_fail = 'P', grade = NULL, gradePoint = NULL WHERE userID = 'U20230001' AND courseID = 'PE001';
+     * - WHERE userID = 'U20230001' AND courseID = 'PE001' 과 같은 형태로 과목을 분류할 수도 있겠으나 recordID를 가져오는 게 가장 명확함
+     */
+    
+    /*
+     * < 추가 제언 >
+     * 1. DTO에 recordID 넣어서 성적 판정 건별 구별 가능하게 하기
+     * 2. 수정대상 성적인 ACADEMIC_RECORD에서 grade 알파벳 (A, B, B+, C 등)에 따라 gradePoint 숫자가 매겨지는 로직을 매겨야 함. 
+     * - 이를 위해 특정 알파벳에 특정 숫자를 매기는 규칙을 만들어 정해야 함
+     */
+    // 상대평가 과목 (A, B, C 등) 성적 수정 코드
+    public boolean updateRecord(String grade, float gradePoint, String recordID) {
+    	String sql = "UPDATE ACADEMIC_RECORD SET grade = ?, gradePoint = ? where recordID = ?";
+    	
+    	try (Connection conn = DatabaseUtil.getConnection();
+    		 PreparedStatement updateStatement = conn.prepareStatement(sql)) {
+    		updateStatement.setString(1, grade);
+    		updateStatement.setDouble(2, gradePoint);
+    		updateStatement.setString(3, recordID);
+    		
+    	} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return false;
+    }
+    
+    // P/F 과목 성적 수정 코드
+    public boolean updateRecordPF(boolean passOrFail, String recordID) {
+    	String sql = "UPDATE ACADEMIC_RECORD SET pass_or_fail = ? WHERE recordID = ?";
+    	
+    	try (Connection conn = DatabaseUtil.getConnection();
+    		 PreparedStatement updateStatement = conn.prepareStatement(sql)) {
+    		updateStatement.setBoolean(1, passOrFail);
+    		updateStatement.setString(2, recordID);
+    	} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+    			
+    }
+    
+    /* 단과대학 학생 학사정보 페이지에서 조회할 정보 불러오는 SQL 쿼리
+		String viewQuery = """
+				SELECT A.*
+				FROM ACADEMIC_RECORD A 
+				JOIN PERSONAL_INFO P ON A.userID = P.userID
+				WHERE P.college ?
+				ORDER BY A.academicYear DESC, P.semester DESC
+				LIMIT ? OFFSET ?
+		""";
+		*/
 }
 
 /*
