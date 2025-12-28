@@ -51,7 +51,7 @@ public abstract class AcademicRecordListFilter implements Filter {
          * 		String roleString = (String) roleObject;
          * 		role = convertStringToRoleEnum(roleString);
          * }
-         */
+         */ 
         
         // 3. 역할(학생/교수/관리자) 유효성 검증
         if (!isValidRole(role)) {
