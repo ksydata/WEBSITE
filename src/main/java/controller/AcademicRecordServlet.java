@@ -65,6 +65,10 @@ public class AcademicRecordServlet extends HttpServlet {
 		// POST 요청은 GET으로 처리
 		doGet(request, response);
 	}
+	
+	private void handleProfessorRequest() {
+		// 어떻게 하지? 생각을 잘해야 한다.
+	}
 }
 
 /* [AS-IS]
