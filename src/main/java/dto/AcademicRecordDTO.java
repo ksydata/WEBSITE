@@ -17,7 +17,7 @@ public class AcademicRecordDTO {
 	// {재수강연도, 재수강학기, 재수강과목코드, 재수강사유}
 	private int academicYear;
 	private String semester;
-	private String recordID;
+	private String recordID; // [TO-BE]
 	private int courseID;
 	private String courseName;
 	private String courseType;

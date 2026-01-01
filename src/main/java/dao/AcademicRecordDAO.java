@@ -17,14 +17,14 @@ public class AcademicRecordDAO {
 		// 학사정보 객체를 받기 위한 빈 배열 객체 생성 
 		List<AcademicRecordDTO> recordList = new ArrayList<>();
 		String viewQuery = "SELECT * FROM ACADEMIC_RECORD WHERE userID = ?";
-		
+
 		// ACADEMIC_RECORD 테이블에서 학사정보 추출
 		try (Connection connection = DatabaseUtil.getConnection();
 			 PreparedStatement checkStatement = connection.prepareStatement(viewQuery)) {
 			// 쿼리(where절 userID = ?)에 학번 포함
 			checkStatement.setString(1, userID);
 			ResultSet resultSet = checkStatement.executeQuery();
-			
+
 			while (resultSet.next()) {
 			    AcademicRecordDTO record = mapRow(resultSet);
 				// AcademicRecordDTO record = new AcademicRecordDTO();
@@ -32,7 +32,7 @@ public class AcademicRecordDAO {
 			    // recordList.add(record);	
 				// 학사정보 배열에 저장
 			}
-			
+
 		} catch (SQLException e) {
 			// 데이터베이스 오류 발생			
 			e.printStackTrace();
@@ -40,8 +40,8 @@ public class AcademicRecordDAO {
     	// 학사 데이터 배열 객체 반환
 		return recordList;
 	}
-	
-	
+
+
 	// 2. 교수의 단과대학 학생의 학사정보 조회(페이징 적용)
     public List<AcademicRecordDTO> getRecordsByCollege(String college, int limit, int offset) {
 		// 학사정보 객체를 받기 위한 빈 배열 객체 생성 
@@ -55,7 +55,7 @@ public class AcademicRecordDAO {
 				ORDER BY A.academicYear DESC, P.semester DESC
 				LIMIT ? OFFSET ?
 		""";
-		
+
 		// ACADEMIC_RECORD 테이블에서 학사정보 추출
 		try (Connection connection = DatabaseUtil.getConnection();
 			 PreparedStatement checkStatement = connection.prepareStatement(viewQuery)) {
@@ -64,9 +64,9 @@ public class AcademicRecordDAO {
 			// 학사정보 리스트 페이징을 위한 limit(한 페이지에 보여줄 최대 개수), offset(그 개수만큼 건너뛸 행의 수)
 			checkStatement.setInt(2, limit);
 			checkStatement.setInt(3, offset);
-			
+
 			ResultSet resultSet = checkStatement.executeQuery();
-			
+
 			while (resultSet.next()) {
 			    AcademicRecordDTO record = mapRow(resultSet);
 				// AcademicRecordDTO record = new AcademicRecordDTO();
@@ -74,7 +74,7 @@ public class AcademicRecordDAO {
 			    // recordList.add(record);	
 				// 학사정보 배열에 저장
 			}
-			
+
 		} catch (SQLException e) {
 			// 데이터베이스 오류 발생			
 			e.printStackTrace();
@@ -82,8 +82,8 @@ public class AcademicRecordDAO {
     	// 학사 데이터 배열 객체 반환
 		return recordList;
 	}	
-    
-	
+
+
 	// 3. 관리자의 전체 학생의 학사정보 조회(페이징 적용)
     public List<AcademicRecordDTO> getTotalRecords(int limit, int offset) {
 		// 학사정보 객체를 받기 위한 빈 배열 객체 생성 
@@ -95,16 +95,16 @@ public class AcademicRecordDAO {
 				ORDER BY academicYear DESC, semester DESC
 				LIMIT ? OFFSET ?
 		""";
-		
+
 		// ACADEMIC_RECORD 테이블에서 학사정보 추출
 		try (Connection connection = DatabaseUtil.getConnection();
 			 PreparedStatement checkStatement = connection.prepareStatement(viewQuery)) {
 			// 학사정보 리스트 페이징을 위한 limit(한 페이지에 보여줄 최대 개수), offset(그 개수만큼 건너뛸 행의 수)
 			checkStatement.setInt(1, limit);
 			checkStatement.setInt(2, offset);
-			
+
 			ResultSet resultSet = checkStatement.executeQuery();
-			
+
 			while (resultSet.next()) {
 			    AcademicRecordDTO record = mapRow(resultSet);
 				// AcademicRecordDTO record = new AcademicRecordDTO();
@@ -112,7 +112,7 @@ public class AcademicRecordDAO {
 			    // recordList.add(record);	
 				// 학사정보 배열에 저장
 			}
-			
+
 		} catch (SQLException e) {
 			// 데이터베이스 오류 발생			
 			e.printStackTrace();
@@ -120,7 +120,7 @@ public class AcademicRecordDAO {
     	// 학사 데이터 배열 객체 반환
 		return recordList;
 	}
-    
+
 	// 4. Row-to-DTO 매핑을 분리하는 RowMapper 패턴
     private AcademicRecordDTO mapRow(ResultSet resultSet) throws SQLException {
     	AcademicRecordDTO record = new AcademicRecordDTO();
@@ -192,17 +192,6 @@ public class AcademicRecordDAO {
 		return false;
     			
     }
-    
-    /* 단과대학 학생 학사정보 페이지에서 조회할 정보 불러오는 SQL 쿼리
-		String viewQuery = """
-				SELECT A.*
-				FROM ACADEMIC_RECORD A 
-				JOIN PERSONAL_INFO P ON A.userID = P.userID
-				WHERE P.college ?
-				ORDER BY A.academicYear DESC, P.semester DESC
-				LIMIT ? OFFSET ?
-		""";
-		*/
 }
 
 /*
