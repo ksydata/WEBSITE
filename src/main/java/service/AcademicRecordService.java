@@ -53,7 +53,7 @@ public class AcademicRecordService {
     }
  
 	// 교수의 단과대학 학생 정보 수정 메서드
-	public void updateRecord(String recordID, boolean PF, String grade, float gradePoint, boolean passOrFail) {
+	public void updateRecord(String recordID, boolean PF, String grade, boolean passOrFail) {
 		if (recordID == null || recordID.isEmpty()) {
 			// recordID가 비어있으면 null 반환
 			return;
@@ -67,9 +67,41 @@ public class AcademicRecordService {
 			dao.updateRecordPF(passOrFail, recordID);
 		} else {
 			// 상대평가 과목 성적 수정 로직 사용
-			if (recordID != null && grade != null && gradePoint != 0) {
-	 			dao.updateRecord(grade, gradePoint, recordID);
+			if (recordID != null && grade != null) {
+	 			dao.updateRecord(grade, convertRecord(grade), recordID);
 	 		}
 		}	
 	}
+	
+	// 상대평가 과목 알파벳별 평점 숫자 부여 메서드
+	// 상대평가 과목 : A+ = 4.5, A = 4.0, B+ = 3.5, B = 3.0, C+ = 2.5, C = 2.0, D+ = 1.5, D = 1.0, F = 0
+	public float convertRecord(String grade) {
+	    if (grade == null) {
+	        return 0.0f;
+	    }
+
+	    switch (grade.trim().toUpperCase()) {
+	        case "A+":
+	            return 4.5f;
+	        case "A":
+	            return 4.0f;
+	        case "B+":
+	            return 3.5f;
+	        case "B":
+	            return 3.0f;
+	        case "C+":
+	            return 2.5f;
+	        case "C":
+	            return 2.0f;
+	        case "D+":
+	            return 1.5f;
+	        case "D":
+	            return 1.0f;
+	        case "F":
+	            return 0.0f;
+	        default:
+	            return 0.0f; // 알 수 없는 성적 처리
+	    }
+	}
+	
 }

@@ -156,9 +156,11 @@ public class AcademicRecordDAO {
     
     /*
      * < 추가 제언 >
-     * 1. DTO에 recordID 넣어서 성적 판정 건별 구별 가능하게 하기
+     * 1. DTO에 recordID 넣어서 성적 판정 건별 구별 가능하게 하기 (V)
      * 2. 수정대상 성적인 ACADEMIC_RECORD에서 grade 알파벳 (A, B, B+, C 등)에 따라 gradePoint 숫자가 매겨지는 로직을 매겨야 함. 
-     * - 이를 위해 특정 알파벳에 특정 숫자를 매기는 규칙을 만들어 정해야 함
+     * - 이를 위해 특정 알파벳에 특정 숫자를 매기는 규칙을 만들어 정해야 함 
+     * -> 성적 부여를 할 때 버튼으로 A+, A, B+ 등 학점을 선택하게 하고, 그 선택한 결과를 서비스로 받아와서 서비스에서 DAO를 통해 학점 수정을 하도록 함
+     * 
      */
     // 상대평가 과목 (A, B, C 등) 성적 수정 코드
     public boolean updateRecord(String grade, float gradePoint, String recordID) {
