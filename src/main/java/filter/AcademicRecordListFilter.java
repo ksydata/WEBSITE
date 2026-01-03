@@ -80,5 +80,9 @@ public abstract class AcademicRecordListFilter implements Filter {
 				role.equals(RoleEnum.ROLE_002) || 
 				role.equals(RoleEnum.ROLE_004)
 		);		
-	}	
+	}
+	
+	@Override
+	public void destroy() {}
+	// 객체/리소스 불필요하여 종료 시 메서드 호출
 }

@@ -15,13 +15,27 @@ public enum RoleEnum {
 	// 각 역할 문자열을 저장할 필드
 	
 	private RoleEnum(String role) {
-		// 생성자(싱글톤)
+	// 생성자(싱글톤)
 		this.role = role;
 	}
 	
 	public String getRole() {
-		// enum 상수 객체를 반환하는 getter 메서드
+	// enum 상수 객체를 반환하는 getter 메서드
 		return role;		
+	}
+	
+	// Servlet에서 사용할 역할 검증 메서드
+	public boolean isROLE_001() {
+		return this == ROLE_001;
+	}
+	public boolean isROLE_002() {
+		return this == ROLE_002;
+	}
+	public boolean isROLE_003() {
+		return this == ROLE_003;
+	}
+	public boolean isROLE_004() {
+		return this == ROLE_004;
 	}
 }
 

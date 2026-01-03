@@ -16,12 +16,15 @@ import util.RoleEnum;
 // [AS-IS] 개인정보 일부(전화번호, 주민등록번호 뒷자리) 마스킹할 때는 서비스단에서 처리
 public class AcademicRecordService {
 	private AcademicRecordDAO academicRecordDAO;
-	// 개인정보 조회 메서드
-	// 생성자: userInfoDAO 객체를 초기화 (DB 접근을 위해 필요)
+	// AcademicRecord를 CRUD(조회/수정)하기 위한 접근 객체
+	private PagingService pagingService;
+	// Notice와 같이 AcademicRecord 비즈니스 로직 처리 시 페이징 추가 
+	
+	// 생성자: DAO/Service 객체를 초기화 (DB 접근을 위해 필요)
 	public AcademicRecordService() {
 		academicRecordDAO = new AcademicRecordDAO();
+		pagingService = new PagingService();
 	}
-
 	
  // 학번/사번(userID)를 받아 학사정보를 가져오는 서비스 메서드
  public AcademicRecordDTO getAcademicRecord(String userID, RoleEnum role, String college, 
@@ -34,6 +37,7 @@ public class AcademicRecordService {
     // RoleEnum role_001 = RoleEnum.ROLE_001;
  	// String role_001 = Constants.ROLE_001;
  	// 사용자 권한별 역할 상수 불러오기 → ENUM은 독립된 객체로 필요없음
+     
     // DAO를 통해 DB에서 사용자 권한별 학사정보 조회
     switch(role) {
     	case ROLE_001:	 
