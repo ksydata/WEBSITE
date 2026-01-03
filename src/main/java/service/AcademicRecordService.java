@@ -75,7 +75,7 @@ public class AcademicRecordService {
 	
 	// 상대평가 과목 알파벳별 평점 숫자 부여 메서드
 	// 상대평가 과목 : A+ = 4.5, A = 4.0, B+ = 3.5, B = 3.0, C+ = 2.5, C = 2.0, D+ = 1.5, D = 1.0, F = 0
-	public float convertRecord(String grade) {
+	private float convertRecord(String grade) {
 	    if (grade == null) {
 	        return 0.0f;
 	    }

@@ -2,6 +2,7 @@ package controller;
 
 import dao.AcademicRecordDAO;
 import dto.AcademicRecordDTO;
+import service.AcademicRecordService;
 import util.RoleEnum;
 
 import java.util.List;
@@ -59,11 +60,34 @@ public class AcademicRecordServlet extends HttpServlet {
 		request.setAttribute("errorMessage", "학사정보 조회 중 오류가 발생했습니다.");
 		request.getRequestDispatcher("/error.jsp").forward(request, response);
 	}
+
 	
+	// 수정 로직 : 성적 수정 DAO-Service 를 이어서 doPost로 servlet에 적용 시키기
+	// JSP : 학생별 수강과목이 표로 나열되고, 수정화면에 들어가면 드롭다운을 통해 성적을 매길 수 있도록 함
+	// 드롭다운으로 받아온 값을 AcademicRecordService를 통해 전달
 	protected void doPost(doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
-		// POST 요청은 GET으로 처리
-		doGet(request, response);
+		
+		// UTF-8 인코딩을 통해 한글 처리
+		request.setCharacterEncoding("UTF-8");
+		
+		 // JSP에서 전달된 값 (모두 String)
+	    String recordID = request.getParameter("recordID");
+	    String pfParam = request.getParameter("PF");
+	    String grade = request.getParameter("grade");
+	    String passOrFailParam = request.getParameter("passOrFail");
+	    
+	    // String → boolean 변환
+	    boolean PF = Boolean.parseBoolean(pfParam);
+	    boolean passOrFail = Boolean.parseBoolean(passOrFailParam);
+		
+		// 해당 과목별 입력값 가져와서 수정 작업 진행
+		AcademicRecordService service = new AcademicRecordService();
+		service.updateRecord(recordID, PF, grade, passOrFail);
+		
+		// 수정이후 원래 페이지 보여주기
+		response.sendRedirect(request.getContextPath());
+		
 	}
 	
 	private void handleProfessorRequest() {
@@ -91,4 +115,3 @@ public class AcademicRecordServlet extends HttpServlet {
 		}
 	}	
  */
-*/
