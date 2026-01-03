@@ -2,6 +2,7 @@ package service;
 
 import dao.PagingDAO;
 import dao.PagingDAO.RowMapper;
+import dto.AcademicRecordDTO;
 import dto.PagingDTO;
 import java.util.List;
 
