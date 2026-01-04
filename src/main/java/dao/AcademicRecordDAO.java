@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dao.PagingDAO.RowMapper;
 import dto.AcademicRecordDTO;
 import util.DatabaseUtil;
 
@@ -121,7 +122,7 @@ public class AcademicRecordDAO {
 		return recordList;
 	}
 
-	// 4.1. Row-to-DTO 매핑을 분리하는 RowMapper 패턴 (private helper)
+	// 4. Row-to-DTO 매핑을 분리하는 RowMapper 패턴 (private helper)
     // DAO의 구조를 유지하면서 Service(Paging, AcademicRecord)에서 RowMapper 재사용
     public static final RowMapper<AcademicRecordDTO> ROW_MAPPER = resultSet -> {
     // private AcademicRecordDTO mapRow(ResultSet resultSet) throws SQLException {
@@ -148,11 +149,6 @@ public class AcademicRecordDAO {
     	return record;
     };
     
-    // 4.2. 인터페이스 구현 (Row → DTO 매핑 단일화, Service에서 재사용)
-    // Java DataBase Connectivity(JDBC) ResultSet에서 데이터 추출 후 원하는 객체 타입(T)로 변환
-    public interface RowMapper<T> {
-    	T mapRow(ResultSet resultSet) throws SQLException;
-    }
     
     // 5. 교수의 단과대학 학생 정보 수정 메서드
     /*
@@ -203,10 +199,3 @@ public class AcademicRecordDAO {
     			
     }
 }
-
-/*
- * public interface RowMapper<T> {
-	T mapRow(ResultSet resultSet, int rowNum) throws SQLException;
-	// [AS-IS] 데이터베이스 쿼리 결과(ResultSet)를 사용자가 원하는 자바 객체로 변환
-}
- */    

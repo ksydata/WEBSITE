@@ -14,7 +14,7 @@ import util.RoleEnum;
  * 4. 페이징 로직 limit, offset 변수 추가 이후 academicRecordServlet, PagingService와 연계 필요 
  */
 
-// [AS-IS] 개인정보 일부(전화번호, 주민등록번호 뒷자리) 마스킹할 때는 서비스단에서 처리
+// [TO-BE] 개인정보 일부(전화번호, 주민등록번호 뒷자리) 마스킹할 때는 서비스단에서 처리
 public class AcademicRecordService {
 	private AcademicRecordDAO academicRecordDAO;
 	// AcademicRecord를 CRUD(조회/수정)하기 위한 접근 객체
@@ -69,16 +69,14 @@ public class AcademicRecordService {
 			return;
 		}
 		
-		// DAO를 통해 성적 수정
-		AcademicRecordDAO dao = new AcademicRecordDAO();
-		
+		// DAO를 통해 성적 수정		
 		if (PF) {
 			// PF 과목일 경우 PF 과목 성적 수정 로직 사용
-			dao.updateRecordPF(passOrFail, recordID);
+			academicRecordDAO.updateRecordPF(passOrFail, recordID);
 		} else {
 			// 상대평가 과목 성적 수정 로직 사용
 			if (recordID != null && grade != null) {
-	 			dao.updateRecord(grade, convertRecord(grade), recordID);
+				academicRecordDAO.updateRecord(grade, convertRecord(grade), recordID);
 	 		}
 		}	
 	}
