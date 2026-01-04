@@ -26,7 +26,7 @@ public class AcademicRecordDAO {
 			ResultSet resultSet = checkStatement.executeQuery();
 
 			while (resultSet.next()) {
-			    AcademicRecordDTO record = mapRow(resultSet);
+			    AcademicRecordDTO record = ROW_MAPPER.mapRow(resultSet);
 				// AcademicRecordDTO record = new AcademicRecordDTO();
 			    recordList.add(record);				
 			    // recordList.add(record);	
@@ -68,7 +68,7 @@ public class AcademicRecordDAO {
 			ResultSet resultSet = checkStatement.executeQuery();
 
 			while (resultSet.next()) {
-			    AcademicRecordDTO record = mapRow(resultSet);
+			    AcademicRecordDTO record = ROW_MAPPER.mapRow(resultSet);
 				// AcademicRecordDTO record = new AcademicRecordDTO();
 			    recordList.add(record);				
 			    // recordList.add(record);	
@@ -106,7 +106,7 @@ public class AcademicRecordDAO {
 			ResultSet resultSet = checkStatement.executeQuery();
 
 			while (resultSet.next()) {
-			    AcademicRecordDTO record = mapRow(resultSet);
+			    AcademicRecordDTO record = ROW_MAPPER.mapRow(resultSet);
 				// AcademicRecordDTO record = new AcademicRecordDTO();
 			    recordList.add(record);				
 			    // recordList.add(record);	
@@ -121,8 +121,11 @@ public class AcademicRecordDAO {
 		return recordList;
 	}
 
-	// 4. Row-to-DTO 매핑을 분리하는 RowMapper 패턴
-    private AcademicRecordDTO mapRow(ResultSet resultSet) throws SQLException {
+	// 4.1. Row-to-DTO 매핑을 분리하는 RowMapper 패턴 (private helper)
+    // DAO의 구조를 유지하면서 Service(Paging, AcademicRecord)에서 RowMapper 재사용
+    public static final RowMapper<AcademicRecordDTO> ROW_MAPPER = resultSet -> {
+    // private AcademicRecordDTO mapRow(ResultSet resultSet) throws SQLException {
+    	
     	AcademicRecordDTO record = new AcademicRecordDTO();
     	// 학사정보 테이블 연결 객체 생성
 		record.setUserID(resultSet.getString("userID"));
@@ -143,8 +146,13 @@ public class AcademicRecordDAO {
 		record.setEnrollmentReason(resultSet.getString("enrollmentReason"));
     	// 테이블 내 학생별 학사정보 필드 설정
     	return record;
-    }
+    };
     
+    // 4.2. 인터페이스 구현 (Row → DTO 매핑 단일화, Service에서 재사용)
+    // Java DataBase Connectivity(JDBC) ResultSet에서 데이터 추출 후 원하는 객체 타입(T)로 변환
+    public interface RowMapper<T> {
+    	T mapRow(ResultSet resultSet) throws SQLException;
+    }
     
     // 5. 교수의 단과대학 학생 정보 수정 메서드
     /*

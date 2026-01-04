@@ -68,13 +68,11 @@ public class AcademicRecordServlet extends HttpServlet {
 		}
 	}
 
-	// 학생 본인의 학사정보 조회하는 정적 메서드
     // @Override        
 	private void handleStudentRequest(HttpServletRequest request, HttpServletResponse response, 
 			String userID) throws ServletException, IOException {
 	}
 	
-    // 교수의 단과대학 학생의 학사정보 조회하는 정적 메서드(페이징 적용)
     // @Override    
 	private void handleProfessorRequest(HttpServletRequest request, HttpServletResponse response, 
 			HttpSession session) throws ServletException, IOException {
