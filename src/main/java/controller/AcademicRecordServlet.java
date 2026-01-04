@@ -28,9 +28,9 @@ import javax.servlet.http.HttpSession;
 // [TO-BE] 학사정보(성적) 조회 통합 서블릿
 @WebServlet("/academicRecord")
 public class AcademicRecordServlet extends HttpServlet {
-	// 역직렬화 시 해당하는 클래스의 버전이 맞는지를 확인하는 장치
 	private static final long serialVersionUID = 1L;
-	
+	// 역직렬화 시 해당하는 클래스의 버전이 맞는지를 확인하는 장치
+
 	private AcademicRecordDAO academicRecordDAO;
 	@Override
 	public void init() throws ServletException {
@@ -38,33 +38,56 @@ public class AcademicRecordServlet extends HttpServlet {
 		// DAO 객체 초기화
 	}
 	
+	// 역할별 학사정보(성적) 조회 통합 get 메서드	
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
-        // 세션에서 로그인된 학번/사번, 역할 정보 가져오기 (@WebFilter에서 검증완료)
-		HttpSession session = request.getSession();
-		String userID = (String) session.getAttribute("userID");
-		RoleEnum role = (RoleEnum) session.getAttribute("role");
-		
-		// RoleEnum의 메서드를 활용한 분기 처리
-		if (role.isStudent()) {
-			handleStudentRequest(request, response, userID);
-		} else if (role.isProfessor()) {
-			handleProfessorRequest(request, response, session);
-		} else if (role.isAdmin()) {
-			handleAdminRequest(request, response);
-		} else {
-			response.sendError(HttpServletResponse.SC_FORBIDDEN, "접근 권한이 없습니다.");
+        try {
+			// 세션에서 로그인된 학번/사번, 역할 정보 가져오기 (@WebFilter에서 검증완료)
+			HttpSession session = request.getSession();
+			String userID = (String) session.getAttribute("userID");
+			RoleEnum role = (RoleEnum) session.getAttribute("role");
+			
+			// RoleEnum의 메서드를 활용한 분기 처리
+			if (role.isROLE_001()) {
+				handleStudentRequest(request, response, userID);
+			} else if (role.isROLE_002()) {
+				handleProfessorRequest(request, response, session);
+			} else if (role.isROLE_004()) {
+				handleAdminRequest(request, response);
+			} else {
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, "접근 권한이 없습니다.");
+				// Status code (403) indicating the server understood the request, but refused to fulfill it.
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("errorMessage", "학사정보 조회 중 오류가 발생했습니다.");
+			request.getRequestDispatcher("/common/error.jsp").forward(request, response);
+			// [AS-IS] error.jsp 오류 페이지 개요 구성
 		}
-	} catch (Exception e) {
-		e.printStackTrace();
-		request.setAttribute("errorMessage", "학사정보 조회 중 오류가 발생했습니다.");
-		request.getRequestDispatcher("/error.jsp").forward(request, response);
 	}
 
+	// 학생 본인의 학사정보 조회하는 정적 메서드
+    // @Override        
+	private void handleStudentRequest(HttpServletRequest request, HttpServletResponse response, 
+			String userID) throws ServletException, IOException {
+	}
 	
-	// 수정 로직 : 성적 수정 DAO-Service 를 이어서 doPost로 servlet에 적용 시키기
-	// JSP : 학생별 수강과목이 표로 나열되고, 수정화면에 들어가면 드롭다운을 통해 성적을 매길 수 있도록 함
-	// 드롭다운으로 받아온 값을 AcademicRecordService를 통해 전달
+    // 교수의 단과대학 학생의 학사정보 조회하는 정적 메서드(페이징 적용)
+    // @Override    
+	private void handleProfessorRequest(HttpServletRequest request, HttpServletResponse response, 
+			HttpSession session) throws ServletException, IOException {
+	}
+	
+    // @Override    
+	private void handleAdminRequest(HttpServletRequest request, HttpServletResponse response
+		) throws ServletException, IOException {
+	
+	}
+}
+
+	/* 교수 학사정보(성적) 수정 post 메서드	
 	protected void doPost(doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		
@@ -89,11 +112,8 @@ public class AcademicRecordServlet extends HttpServlet {
 		response.sendRedirect(request.getContextPath());
 		
 	}
-	
-	private void handleProfessorRequest() {
-		// 어떻게 하지? 생각을 잘해야 한다.
-	}
-}
+	*/
+
 
 /* [AS-IS]
  * 	// userID별 성적 리스트 조회

@@ -11,7 +11,7 @@ import dto.AcademicRecordDTO;
 import util.DatabaseUtil;
 
 public class AcademicRecordDAO {
-	// 1. 학생 본인의 학사정보 조회
+	// 1. 학생 본인의 학사정보 조회(페이징 없음)
 	public List<AcademicRecordDTO> getRecordByStudent(String userID) {
 		// 학번(userID)으로 나의 학사정보 페이지에서 조회할 정보 불러오는 SQL 쿼리
 		// 학사정보 객체를 받기 위한 빈 배열 객체 생성 
