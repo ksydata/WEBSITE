@@ -23,8 +23,23 @@
 <div class="container mt-5">
 	<h2 class="text-center mb-4">성적 조회</h2>
 	
-	<!-- 사용자 이름, 단과대학, 전공 등 학적 정보 카드 -->
-    <div class="card mb-4">
+	<!-- [TO-BE] 학적 정보 카드 -->
+	<div class="card mb-4">
+	    <div class="card-header bg-primary text-white">
+	        학적 정보
+	    </div>
+	    <div class="card-body">
+	        <c:forEach var="entry" items="${profileViewMap}">
+	            <p>
+	                <strong>${entry.key}:</strong>
+	                ${entry.value}
+	            </p>
+	        </c:forEach>
+	    </div>
+	</div>
+	
+	<!-- [AS-IS] 사용자 이름, 단과대학, 전공 등 학적 정보 카드 -->
+    <%-- <div class="card mb-4">
         <div class="card-header bg-primary text-white">
             학적 정보
         </div>
@@ -33,13 +48,24 @@
             <p><strong>단과대학:</strong> ${recordList[0].college}></p>
             <p><strong>전공:</strong> ${recordList[0].major}</p>
         </div>
-    </div>
+    </div> --%>
+    
     
     <!-- 학기별 성적 정보 카드 -->
     <div class="card">
         <div class="card-header bg-secondary text-white">
             성적 정보
         </div>
+        
+        <!-- 교수 권한(RoleEnum.ROLE_002)일 때만 수정 버튼 노출 -->
+        <c:if test="${sessionScope.role.isROLE_002()}">
+            <a href="editAcademicRecord.jsp"
+               class="btn btn-light btn-sm"
+               onclick="return confirm('성적 수정 페이지로 이동하시겠습니까?');">
+                성적 수정
+            </a>
+        </c:if>
+        
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover text-center align-middle">
@@ -67,8 +93,8 @@
                                 <td>${record.courseType}</td>
                                 <td>${record.grade}</td>
                                 <td>${record.gradePoint}</td>
-                                <td>${record.passOrFail}</td>
                                 <td>${record.coursePF}</td>
+                                <td>${record.passOrFail}</td>
                                 <td>${record.retakeYear}</td>
                                 <td>${record.retakeSemester}</td>
                                 <td>${record.enrollmentReason}</td>
@@ -88,7 +114,7 @@
 </div>
 
 <!-- 공통 푸터 -->
-<jsp:include page="../include/footer.jsp" />
+<jsp:include page="/include/footer.jsp" />
 
 </body>
  
