@@ -59,6 +59,7 @@ public class BoardServlet extends HttpServlet {
             return dto;
         };
         
+        
         // 3. 페이징 및 글 목록 조회
         PagingDTO<NoticeDTO> pagingObject = pagingService.getPage(
         		"NOTICE",
@@ -124,34 +125,6 @@ public class BoardServlet extends HttpServlet {
 	    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/postlist.jsp");
 	    dispatcher.forward(request, response);
 	    // postlist.jsp로 포워딩
-	    // 페이징 파라미터 처리
-	    int page = 1;
-	    String pageParam = request.getParameter("page");
-	    if (pageParam != null && pageParam.matches("\\d+")) {
-	        page = Integer.parseInt(pageParam);
-	    }
-
-	    NoticeService service = new NoticeService();
-	    List<NoticeDTO> list = service.getPagedNotices(page);
-	    int totalPages = service.getTotalPages();
-
-	    // 페이징 블록 계산
-	    int blockSize = 10;
-	    int startPage = ((page - 1) / blockSize) * blockSize + 1;
-	    int endPage = Math.min(startPage + blockSize - 1, totalPages);
-
-	    // 공통 페이징 관련 attribute 설정
-	    request.setAttribute("noticeList", list);
-	    request.setAttribute("currentPage", page);
-	    request.setAttribute("totalPage", totalPages);   // paging.jsp에서 이 이름 사용
-	    request.setAttribute("startPage", startPage);
-	    request.setAttribute("endPage", endPage);
-
-	    request.setAttribute("pageURL", "board");
-	    request.setAttribute("paramStr", ""); // 추가 파라미터가 없는 경우
-
-	    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/postlist.jsp");
-	    dispatcher.forward(request, response);
 	}
 }
 */

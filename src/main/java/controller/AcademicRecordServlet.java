@@ -2,9 +2,13 @@ package controller;
 
 import dao.AcademicRecordDAO;
 import dto.AcademicRecordDTO;
+import dto.PagingDTO;
+import service.AcademicRecordService;
 import util.RoleEnum;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -15,11 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-//목표 1: UserAcademicRecordServlet, ProfessorRecordServlet, StudentRecordServlet 3개를 1개 Servlet으로 합쳐서 구현하기
-//목표 2: session 가져오기 파트를 AcademicRecordListFilter로 이관하기 (service와 webfilter 맞물려 적용)
-//목표 3: 페이징 로직을 BoardServlet과 유사한 형태로 PagingDAO, pagingService.getPage() 를 활용하여 가져오기
-//목표 4: 현재 student, professor, admin에 분산된 myAcademicRecord.jsp 를 common/info/academicRecord.jsp 로 통합하기
-//목표 5(희망사항): AcademicRecordService에 기존 교수/학생/관리자 권한 외에 정보 접근 권한을 세부적으로 추가해서 다루기
+// 목표 1: UserAcademicRecordServlet, ProfessorRecordServlet, StudentRecordServlet 3개를 1개 Servlet으로 합쳐서 구현하기
+// 목표 2: session 가져오기 파트를 AcademicRecordListFilter로 이관하기 (service와 webfilter 맞물려 적용)
+// 목표 3: 페이징 로직을 BoardServlet과 유사한 형태로 PagingDAO, pagingService.getPage() 를 활용하여 가져오기
+// 목표 4: 현재 student, professor, admin에 분산된 myAcademicRecord.jsp 를 common/info/academicRecord.jsp 로 통합하기
+// 목표 5(희망사항): AcademicRecordService에 기존 교수/학생/관리자 권한 외에 정보 접근 권한을 세부적으로 추가해서 다루기
 
 //중요: 목표 1~4를 달성한 뒤, AcademicRecord의 결과를 Info, Notice 등 다른 기능에 유사하게 적용할 것
 
@@ -66,29 +70,197 @@ public class AcademicRecordServlet extends HttpServlet {
 			// [AS-IS] error.jsp 오류 페이지 개요 구성
 		}
 	}
+	
+	// 수정 로직 : 성적 수정 DAO-Service 를 이어서 doPost로 servlet에 적용 시키기
+	// JSP : 학생별 수강과목이 표로 나열되고, 수정화면에 들어가면 드롭다운을 통해 성적을 매길 수 있도록 함
+	// 드롭다운으로 받아온 값을 AcademicRecordService를 통해 전달
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
+		
+		// UTF-8 인코딩을 통해 한글 처리
+		request.setCharacterEncoding("UTF-8");
+		
+		// service 코드 가져오기
+		AcademicRecordService service = new AcademicRecordService();
+		
+		// 모든 파라미터 가져오기
+	    Map<String, String[]> paramMap = request.getParameterMap();
+
+	    for (String paramName : paramMap.keySet()) {
+
+	        // 상대평가 성적 파라미터만 기준으로 순회
+	        if (!paramName.startsWith("grade_")) {
+	            continue;
+	        }
+
+	        // recordID 추출
+	        String recordID = paramName.replace("grade_", "");
+	        String grade = request.getParameter(paramName);
+
+	        // grade 미선택 시 skip
+	        if (grade == null || grade.isBlank()) {
+	            continue;
+	        }
+
+	        // PF 여부
+	        boolean PF = Boolean.parseBoolean(
+	                request.getParameter("pf_" + recordID)
+	        );
+
+	        // pass / fail (PF 과목일 때만 의미 있음)
+	        boolean passOrFail = Boolean.parseBoolean(
+	                request.getParameter("passOrFail_" + recordID)
+	        );
+
+	        // Service 비즈니스 로직 그대로 사용
+	        service.updateRecord(recordID, PF, grade, passOrFail);
+	    }
+
+		
+	    /* [AS-IS] JSP에서 전달된 값 행 1개 수정용 코드 (모두 String)
+	    String recordID = request.getParameter("recordID");
+	    String pfParam = request.getParameter("PF");
+	    String grade = request.getParameter("grade");
+	    String passOrFailParam = request.getParameter("passOrFail");
+	    
+	    // String → boolean 변환
+	    boolean PF = Boolean.parseBoolean(pfParam);
+	    boolean passOrFail = Boolean.parseBoolean(passOrFailParam);
+		
+		// 해당 과목별 입력값 가져와서 수정 작업 진행
+		AcademicRecordService service = new AcademicRecordService();
+		service.updateRecord(recordID, PF, grade, passOrFail);
+		
+		// 수정이후 원래 페이지 보여주기
+		response.sendRedirect(request.getContextPath()); */
+		
+	}
+	
 
     // @Override        
 	private void handleStudentRequest(HttpServletRequest request, HttpServletResponse response, 
 			String userID) throws ServletException, IOException {
+		
+		AcademicRecordService service = new AcademicRecordService();
+
+	    // 1. 프로필용 AcademicRecordDTO (대표 1건)
+	    AcademicRecordDTO recordDTO =
+	            service.getAcademicRecord(userID, RoleEnum.ROLE_001, null, 1);
+
+	    // 2. profileViewMap 구성
+	    Map<String, String> profileViewMap = new LinkedHashMap<>();
+
+	    if (recordDTO != null) {
+	        profileViewMap.put("이름", recordDTO.getName());
+	        profileViewMap.put("소속 단과대", recordDTO.getCollege());
+	        profileViewMap.put("소속 학과", recordDTO.getMajor());
+	    }
+
+	    request.setAttribute("profileViewMap", profileViewMap);
+
+	    // 3. 성적 정보는 기존 구조 유지 (DAO / PagingService 연계)
+	    request.getRequestDispatcher("/common/info/academicRecord.jsp")
+	           .forward(request, response);
 	}
 	
     // @Override    
 	private void handleProfessorRequest(HttpServletRequest request, HttpServletResponse response, 
 			HttpSession session) throws ServletException, IOException {
+		
+		AcademicRecordService service = new AcademicRecordService();
+
+	    String professorID = (String) session.getAttribute("userID");
+	    String college = (String) session.getAttribute("college");
+
+	    int currentPage = 1;
+	    if (request.getParameter("page") != null) {
+	        currentPage = Integer.parseInt(request.getParameter("page"));
+	    }
+
+	    // 1. 프로필용 AcademicRecordDTO
+	    AcademicRecordDTO recordDTO =
+	            service.getAcademicRecord(
+	                    professorID,
+	                    RoleEnum.ROLE_002,
+	                    college,
+	                    currentPage
+	            );
+
+	    // 2. profileViewMap 구성
+	    Map<String, String> profileViewMap = new LinkedHashMap<>();
+	    profileViewMap.put("이름", (String) session.getAttribute("userName"));
+	    profileViewMap.put("소속 단과대", college);
+
+	    request.setAttribute("profileViewMap", profileViewMap);
+
+	    // 3. 성적 정보는 기존 PagingService 흐름 유지
+	    // request.setAttribute("pagingDTO", ...);
+
+	    request.getRequestDispatcher("/common/info/academicRecord.jsp")
+	           .forward(request, response);
 	}
 	
     // @Override    
 	private void handleAdminRequest(HttpServletRequest request, HttpServletResponse response
 		) throws ServletException, IOException {
 	
+		AcademicRecordService service = new AcademicRecordService();
+
+	    HttpSession session = request.getSession();
+	    String adminID = (String) session.getAttribute("userID");
+
+	    int currentPage = 1;
+	    if (request.getParameter("page") != null) {
+	        currentPage = Integer.parseInt(request.getParameter("page"));
+	    }
+
+	    // 1. 프로필용 AcademicRecordDTO
+	    AcademicRecordDTO recordDTO =
+	            service.getAcademicRecord(
+	                    adminID,
+	                    RoleEnum.ROLE_004,
+	                    null,
+	                    currentPage
+	            );
+
+	    // 2. profileViewMap 구성
+	    Map<String, String> profileViewMap = new LinkedHashMap<>();
+	    profileViewMap.put("이름", (String) session.getAttribute("userName"));
+
+	    request.setAttribute("profileViewMap", profileViewMap);
+
+	    // 3. 성적 정보는 기존 전체 조회 + 페이징 구조 유지
+	    // request.setAttribute("pagingDTO", ...);
+
+	    request.getRequestDispatcher("/common/info/academicRecord.jsp")
+	           .forward(request, response);
 	}
 }
 
 	/* 교수 학사정보(성적) 수정 post 메서드	
 	protected void doPost(doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
-		// POST 요청은 GET으로 처리
-		doGet(request, response);
+		
+		// UTF-8 인코딩을 통해 한글 처리
+		request.setCharacterEncoding("UTF-8");
+		
+		 // JSP에서 전달된 값 (모두 String)
+	    String recordID = request.getParameter("recordID");
+	    String pfParam = request.getParameter("PF");
+	    String grade = request.getParameter("grade");
+	    String passOrFailParam = request.getParameter("passOrFail");
+	    
+	    // String → boolean 변환
+	    boolean PF = Boolean.parseBoolean(pfParam);
+	    boolean passOrFail = Boolean.parseBoolean(passOrFailParam);
+		
+		// 해당 과목별 입력값 가져와서 수정 작업 진행
+		AcademicRecordService service = new AcademicRecordService();
+		service.updateRecord(recordID, PF, grade, passOrFail);
+		
+		// 수정이후 원래 페이지 보여주기
+		response.sendRedirect(request.getContextPath());
+		
 	}
 	*/
 
@@ -113,4 +285,3 @@ public class AcademicRecordServlet extends HttpServlet {
 		}
 	}	
  */
-*/

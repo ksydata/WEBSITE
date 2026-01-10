@@ -15,12 +15,13 @@
 </head>
 
 <body>
-<%-- <jsp:include page="../common/header.jsp" /> --%>
+<!-- 공통 상단 메뉴 -->
+<jsp:include page="../include/header.jsp" />
 
 <div class="container mt-5 text-center">
 	<h1>${sessionScope.userName}님 (${sessionScope.userID}) 환영합니다.</h1>
 	<div class="mt-4">
-		<a href="myPersonalInfo.jsp" class="btn btn-primary m-2">나의 개인정보 조회/수정</a>
+		<a href="common/info/myPersonalInfo.jsp" class="btn btn-primary m-2">나의 개인정보 조회/수정</a>
 		<a href="studentPersonalInfo.jsp" class="btn btn-primary m-2">학생 개인정보 조회</a>
 		<a href="<c:url value='/board' />" class="btn btn-primary m-2">공지사항</a>
 	</div>	
@@ -31,6 +32,8 @@
 <script src="../js/jquery.min.js"></script>
 <script src="../js/popper.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
+<!-- 공통 푸터 -->
+<jsp:include page="../include/footer.jsp" />
 </body>
 
 </html>

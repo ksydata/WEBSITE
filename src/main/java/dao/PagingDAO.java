@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import dto.PagingDTO;
 import util.DatabaseUtil;
 import java.util.List;
 
@@ -86,10 +85,13 @@ public class PagingDAO {
 	    return java.util.Collections.emptyList();
 	}
 	
-	// 인터페이스
+	// 인터페이스 구현 (Row → DTO 매핑 단일화, 모든 기능의 Service에서 재사용)
+    // Java DataBase Connectivity(JDBC) ResultSet에서 데이터 추출 후 원하는 객체 타입(T)로 변환
 	public interface RowMapper<T> {
 		T mapRow(ResultSet resultSet) throws SQLException;
-	// [AS-IS] 데이터베이스 쿼리 결과(ResultSet)를 사용자가 원하는 자바 객체로 변환
 	}
+	
+	
 }
+
 

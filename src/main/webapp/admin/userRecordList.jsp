@@ -27,21 +27,21 @@
             <tr>
                 <th>
 				    학생 ID
-				    <a href="studentRecordListSort?sort=asc&field=userID&page=1" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
+				    <!-- <a href="studentRecordListSort?sort=asc&field=userID&page=1" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
 				        ▲
 				    </a>
 				    <a href="studentRecordListSort?sort=desc&field=userID&page=1" class="btn btn-sm btn-light ms-1" title="내림차순 정렬">
 				        ▼
-				    </a>
+				    </a> -->
 				</th>
 				<th>
 				    이름
-				    <a href="studentRecordListSort?sort=asc&field=name&page=1" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
+				    <!-- <a href="studentRecordListSort?sort=asc&field=name&page=1" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
 				        ▲
 				    </a>
 				    <a href="studentRecordListSort?sort=desc&field=name&page=1" class="btn btn-sm btn-light ms-1" title="내림차순 정렬">
 				        ▼
-				    </a>
+				    </a> -->
 				</th>
                 <th>이메일</th>
                 <th>단과대학</th>
@@ -110,7 +110,6 @@
 
 <!-- 페이징 출력 -->
 <%@ include file="/include/paging.jsp" %>
-
 </body>
 
 </body>

@@ -42,13 +42,16 @@ public class ProfessorInfoServlet extends HttpServlet {
 		
 		// 세션이 초기화되어 userID를 받아오지 못하고, professorInfo 객체를 가져오지 못하는 Null 오류 발생
 		if (professorInfo != null) {
-		    request.setAttribute("professorInfo", professorInfo);
+//		    request.setAttribute("professorInfo", professorInfo);
+			request.setAttribute("userInfo", professorInfo);
 		    // JSP 페이지로 포워딩
-			request.getRequestDispatcher("/professor/myPersonalInfo.jsp").forward(request, response);
+//			request.getRequestDispatcher("/professor/myPersonalInfo.jsp").forward(request, response);
+			request.getRequestDispatcher("/common/info/myPersonalInfo.jsp").forward(request, response);
 			
 		} else {
 			// 아이디로 받아 세션에 저장된 사번으로 교수 1명의 정보를 가져오지 못한 경우 메인으로 이동
-			response.sendRedirect(request.getContextPath() + "/professor/main.jsp");
+//			response.sendRedirect(request.getContextPath() + "/professor/main.jsp");
+			response.sendRedirect(request.getContextPath() + "/common/main.jsp");
 		}
 	}
 	

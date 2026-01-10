@@ -50,16 +50,20 @@ public class StudentInfoServlet extends HttpServlet {
 		// System.out.println("studentInfo: " + studentInfo);
 		if (studentInfo != null) {
 		    // [TEST-CODE] System.out.println("학생 정보가 존재합니다: " + studentInfo.getName());			
-		    request.setAttribute("studentInfo", studentInfo);
+//		    request.setAttribute("studentInfo", studentInfo);
+			request.setAttribute("userInfo", studentInfo);
 		    
 		    // JSP 페이지로 포워딩
-			request.getRequestDispatcher("/student/myPersonalInfo.jsp").forward(request, response);
-		    // [또 다시 서블릿을 호출하는 잘못된 경로로 무한 루프 오류 발생] 
+//			request.getRequestDispatcher("/student/myPersonalInfo.jsp").forward(request, response);
+			request.getRequestDispatcher("/common/info/myPersonalInfo.jsp").forward(request, response);
+			// [또 다시 서블릿을 호출하는 잘못된 경로로 무한 루프 오류 발생] 
 			// request.getRequestDispatcher("student/studentInfo").forward(request, response);
 
 		} else {
 			// 아이디로 받아 세션에 저장된 학번으로 학생 1명의 정보를 가져오지 못한 경우 메인으로 이동
-			response.sendRedirect(request.getContextPath() + "/student/main.jsp");
+//			response.sendRedirect(request.getContextPath() + "/student/main.jsp");
+			response.sendRedirect(request.getContextPath() + "/common/main.jsp");
+
 		}
 	}
 	

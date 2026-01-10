@@ -1,0 +1,122 @@
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html lang="ko">
+
+<!-- 
+	학생 : 본인 userID로 성적 묶어서 제공, 페이징 없음
+	교수 : 동일한 단과대에 소속된 학생들의 성적을 묶어서 제공, 페이징 있음
+		- 수정 기능에서는 성적 부문에서 P/F 여부, A+ ~ F까지 성적 적용 버튼을 드롭다운 버튼 형태로 제공하기
+	관리자 : 모든 학생들의 성적을 제공, 페이징 있음
+ -->
+ 
+ <head>
+    <meta charset="UTF-8">
+    <title>학사정보</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+
+<body>
+<!-- 공통 상단 메뉴 -->
+<jsp:include page="/include/header.jsp" />
+
+<div class="container mt-5">
+	<h2 class="text-center mb-4">성적 조회</h2>
+	
+	<!-- [TO-BE] 학적 정보 카드 -->
+	<div class="card mb-4">
+	    <div class="card-header bg-primary text-white">
+	        학적 정보
+	    </div>
+	    <div class="card-body">
+	        <c:forEach var="entry" items="${profileViewMap}">
+	            <p>
+	                <strong>${entry.key}:</strong>
+	                ${entry.value}
+	            </p>
+	        </c:forEach>
+	    </div>
+	</div>
+	
+	<!-- [AS-IS] 사용자 이름, 단과대학, 전공 등 학적 정보 카드 -->
+    <%-- <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            학적 정보
+        </div>
+        <div class="card-body">
+            <p><strong>이름:</strong> ${userName}</p>
+            <p><strong>단과대학:</strong> ${recordList[0].college}></p>
+            <p><strong>전공:</strong> ${recordList[0].major}</p>
+        </div>
+    </div> --%>
+    
+    
+    <!-- 학기별 성적 정보 카드 -->
+    <div class="card">
+        <div class="card-header bg-secondary text-white">
+            성적 정보
+        </div>
+        
+        <!-- 교수 권한(RoleEnum.ROLE_002)일 때만 수정 버튼 노출 -->
+        <c:if test="${sessionScope.role.isROLE_002()}">
+            <a href="editAcademicRecord.jsp"
+               class="btn btn-light btn-sm"
+               onclick="return confirm('성적 수정 페이지로 이동하시겠습니까?');">
+                성적 수정
+            </a>
+        </c:if>
+        
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center align-middle">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>수강연도</th>
+                            <th>학기</th>
+                            <th>과목명</th>
+                            <th>이수구분</th>
+                            <th>성적(등급)</th>
+                            <th>성적(평점)</th>
+                            <th>P/F 여부</th>
+                            <th>P/F</th>
+                            <th>재수강 년도</th>
+                            <th>재수강 학기</th>
+                            <th>재수강 사유</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="record" items="${recordList}">
+                            <tr>
+                                <td>${record.academicYear}</td>
+                                <td>${record.semester}</td>
+                                <td>${record.courseName}</td>
+                                <td>${record.courseType}</td>
+                                <td>${record.grade}</td>
+                                <td>${record.gradePoint}</td>
+                                <td>${record.coursePF}</td>
+                                <td>${record.passOrFail}</td>
+                                <td>${record.retakeYear}</td>
+                                <td>${record.retakeSemester}</td>
+                                <td>${record.enrollmentReason}</td>
+                            </tr>
+                        </c:forEach>
+                        <c:if test="${empty recordList}">
+                            <tr>
+                                <td colspan="13">성적 정보가 없습니다.</td>
+                            </tr>
+                        </c:if>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 공통 푸터 -->
+<jsp:include page="/include/footer.jsp" />
+
+</body>
+ 
+
+</html>

@@ -15,11 +15,11 @@
 <jsp:include page="../include/header.jsp" />
 
 <!-- 공통 검색어 입력창 -->
-<jsp:include page="../include/searchForm.jsp" />
-<!-- 필요한 조건 검색 필터 (예: 컬럼 선택) -->
+<%-- <jsp:include page="../include/searchForm.jsp" />
+ --%><!-- 필요한 조건 검색 필터 (예: 컬럼 선택) -->
 <form action="/classRecord" method="get" class="row g-2 mb-3">
 	<!-- 선택 필터 컬럼 정의 -->
-    <div class="col-md-3">
+    <!-- <div class="col-md-3">
         <label for="searchColumn" class="form-label">검색 기준</label>
         <select name="searchColumn" id="searchColumn" class="form-select">
             <option value="userID">학번</option>
@@ -29,7 +29,7 @@
             <option value="academicYear">수강연도</option>
             <option value="semester">학기</option>
         </select>
-    </div>
+    </div> -->
 </form>
 
 <!-- 교수의 소속 단과대학 전공생 학점 테이블 -->
@@ -44,49 +44,56 @@
     	<c:set var="nextOrder" value="${currentOrder == 'asc' ? 'desc' : 'asc'}" />
     	
     	<!-- 오름차순 또는 내림차순 정렬 토글 및 아이콘 표시 : 학번, 등급, 평점, 수강연도, 학기 -->
-	    <th>
+	    <%-- <th>
 	        <a href="?sortColumn=userID&sortOrder=${currentSort eq 'userID' ? nextOrder : 'asc'}">학번
 	            <c:if test="${currentSort eq 'userID'}">
 	                <span class="ms-1">${currentOrder eq 'asc' ? "▲" : "▼"}</span>
 	            </c:if>
 	        </a>
-	    </th>
-	    
+	    </th> --%>
+	    <th>학번</th>
         <th>이름</th>
         <th>단과대학</th>        
         <th>전공</th>
         <th>과목</th>
+        <th>등급</th>
+        <th>평점</th>
+        <th>수강연도</th>
+        <th>학기</th>
         
     	<!-- 오름차순 또는 내림차순 정렬 토글 및 아이콘 표시 : 학번, 등급, 평점, 수강연도, 학기 -->        
-	    <th>
+	    <%-- <th>
 	        <a href="?sortColumn=grade&sortOrder=${currentSort eq 'grade' ? nextOrder : 'asc'}">등급
 	            <c:if test="${currentSort eq 'grade'}">
 	                <span class="ms-1">${currentOrder eq 'asc' ? "▲" : "▼"}</span>
 	            </c:if>
 	        </a>
-	    </th>
-	    <th>
+	    </th> --%>
+	    
+	    <%-- <th>
 	        <a href="?sortColumn=gradePoint&sortOrder=${currentSort eq 'gradePoint' ? nextOrder : 'asc'}">평점
 	            <c:if test="${currentSort eq 'gradePoint'}">
 	                <span class="ms-1">${currentOrder eq 'asc' ? "▲" : "▼"}</span>
 	            </c:if>
 	        </a>
-	    </th>
-	    <th>
+	    </th> --%>
+	    
+	    <%-- <th>
 	        <a href="?sortColumn=academicYear&sortOrder=${currentSort eq 'academicYear' ? nextOrder : 'asc'}">수강연도
 	            <c:if test="${currentSort eq 'academicYear'}">
 	                <span class="ms-1">${currentOrder eq 'asc' ? "▲" : "▼"}</span>
 	            </c:if>
 	        </a>
-	    </th>
+	    </th> --%>
+	    
 	
-	    <th>
+	    <%-- <th>
 	        <a href="?sortColumn=semester&sortOrder=${currentSort eq 'semester' ? nextOrder : 'asc'}">학기
 	            <c:if test="${currentSort eq 'semester'}">
 	                <span class="ms-1">${currentOrder eq 'asc' ? "▲" : "▼"}</span>
 	            </c:if>
 	        </a>
-	    </th>
+	    </th> --%>
     </tr>
     </thead>
     <tbody>
@@ -112,7 +119,6 @@
 </div>
 <!-- 페이징 출력 -->
 <%@ include file="/include/paging.jsp" %>
-
 
 <!-- 하단 영역의 메인 페이지로 돌아가는 링크 -->
 <br>

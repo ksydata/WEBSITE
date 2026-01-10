@@ -34,19 +34,22 @@ public class AdminInfoServlet extends HttpServlet  {
             return;
         }
         
-		// ProfessorDAO를 직접 부르는 게 아니라 ProfessorService 통해 데이터 전송
+		// AdminDAO를 직접 부르는 게 아니라 AdminService 통해 데이터 전송
         AdminService adminService = new AdminService();
         AdminPersonalInfoDTO adminInfo = adminService.getAdminInfo(userID);
 		
-		// 세션이 초기화되어 userID를 받아오지 못하고, professorInfo 객체를 가져오지 못하는 Null 오류 발생
+		// 세션이 초기화되어 userID를 받아오지 못하고, adminInfo 객체를 가져오지 못하는 Null 오류 발생
 		if (adminInfo != null) {
-		    request.setAttribute("adminInfo", adminInfo);
+		    // request.setAttribute("adminInfo", adminInfo);
+		    request.setAttribute("userInfo", adminInfo);
 		    // JSP 페이지로 포워딩
-			request.getRequestDispatcher("admin/myPersonalInfo.jsp").forward(request, response);
-			
+			// request.getRequestDispatcher("admin/myPersonalInfo.jsp").forward(request, response);
+			request.getRequestDispatcher("common/info/myPersonalInfo.jsp").forward(request, response);
+
 		} else {
 			// 아이디로 받아 세션에 저장된 사번으로 교수 1명의 정보를 가져오지 못한 경우 메인으로 이동
-			response.sendRedirect(request.getContextPath() + "admin/main.jsp");
+			// response.sendRedirect(request.getContextPath() + "admin/main.jsp");
+			response.sendRedirect(request.getContextPath() + "common/main.jsp");
 		}
 	}
 	
