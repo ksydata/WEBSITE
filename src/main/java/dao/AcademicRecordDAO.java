@@ -121,11 +121,11 @@ public class AcademicRecordDAO {
 		return recordList;
 	}
 
-	// 4.1. Row-to-DTO 매핑을 분리하는 RowMapper 패턴 (private helper)
+	// 4.1. Row-to-DTO 매핑을 분리하는 RowMapper 패턴 
     // DAO의 구조를 유지하면서 Service(Paging, AcademicRecord)에서 RowMapper 재사용
     public static final RowMapper<AcademicRecordDTO> ROW_MAPPER = resultSet -> {
     // private AcademicRecordDTO mapRow(ResultSet resultSet) throws SQLException {
-    	
+    // (private helper)	
     	AcademicRecordDTO record = new AcademicRecordDTO();
     	// 학사정보 테이블 연결 객체 생성
 		record.setUserID(resultSet.getString("userID"));
