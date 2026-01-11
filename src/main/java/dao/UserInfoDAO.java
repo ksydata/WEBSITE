@@ -7,73 +7,74 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dao.PagingDAO.RowMapper;
 import dto.UserInfoDTO;
 import dto.AcademicRecordDTO;
 import util.DatabaseUtil;
 
-// 사용자 로그인 시 아이디로 받아온 학번/사번(userID)으로 DB에 접근하여 사용자 1명의 정보를 UserInfoDTO에 담아 반환
+// [AS-IS] 사용자 로그인 시 아이디로 받아온 학번/사번(userID)으로 DB에 접근하여 사용자 1명의 정보를 UserInfoDTO에 담아 반환
 public class UserInfoDAO {
-	public UserInfoDTO getMyInfo(String userID) {
+	public List<UserInfoDTO> getMyInfo(String userID) {
+		List<UserInfoDTO> userInfoList = new ArrayList<>();
+		// 로그인 성공했을 때 사용자 개인정보를 받기 위한 빈 배열 객체 생성(초기화)		
+		// UserInfoDTO userInfo = null;
+		
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회 또는 수정할 정보 불러오는 SQL 쿼리 
-		String userInfoSQL = "SELECT * FROM USER WHERE userID = ?";
-		String personalInfoSQL = "SELECT * FROM PERSONAL_INFO WHERE userID = ?";
-
-		// 로그인 성공했을 때 사용자 정보 활용
-		UserInfoDTO userInfo = null;
+		String userInfoSQL = """
+				SELECT 
+					U.userID, U.userPassword, U.name, U.phoneNumber, U.officeNumber, U.email,
+					P.college, P.major, P.status, P.residentNumber, P.address
+				FROW USER U 
+				LEFT JOIN PERSONAL_INFO P
+				ON U.userID = P.userID 
+				WHERE U.userID = ?
+		""";
+		// String userInfoSQL = "SELECT * FROM USER WHERE userID = ?";
+		// String personalInfoSQL = "SELECT * FROM PERSONAL_INFO WHERE userID = ?";
     	
-    	// USER 테이블에서 로그인 인증 관련 정보 추출
+    	// 1. USER 테이블에서 로그인 인증 관련 정보 추출 & PERSONAL_INFO 테이블에서 개인정보, 학사정보 추출
 		try (Connection connection = DatabaseUtil.getConnection();
 			 PreparedStatement userInfoStatement = connection.prepareStatement(userInfoSQL)) {	
-			// 쿼리(where절 userID = ?)에 사번 포함
 			userInfoStatement.setString(1, userID);
+			ResultSet resultSet = userInfoStatement.executeQuery();
+			// 쿼리(where절 userID = ?)에 사번 포함하여 쿼리 실행결과 담을 객체 생성
 			
-			try (ResultSet resultSet = userInfoStatement.executeQuery()) {
-	            if (resultSet.next()) {
-	            	// 사용자 정보가 존재할 경우 UserInfoDTO 객체 생성
-	            	userInfo = new UserInfoDTO();
-	            	userInfo.setUserID(resultSet.getString("userID"));
-	            	userInfo.setUserPassword(resultSet.getString("userPassword"));
-	            	userInfo.setName(resultSet.getString("name"));
-	            	userInfo.setPhoneNumber(resultSet.getString("phoneNumber"));
-	            	userInfo.setOfficeNumber(resultSet.getString("officeNumber"));	            	
-	            	userInfo.setEmail(resultSet.getString("email"));
-	            } else {
-	            	// userID에 해당하는 사용자가 존재하지 않을 경우
-	            	return null;
-	            }
-	        }				
-
+			if (resultSet.next()) {
+				UserInfoDTO userInfo = ROW_MAPPER.mapRow(resultSet);
+				userInfoList.add(userInfo);
+	        } 	
 		} catch (Exception e) {
 			// 데이터베이스 오류 발생			
 			e.printStackTrace();
-			return null;
 		}
-		
-		// PERSONAL_INFO 테이블에서 개인정보, 학사정보 추출
-		try (Connection connection = DatabaseUtil.getConnection();
-			 PreparedStatement personalInfoStatement = connection.prepareStatement(personalInfoSQL)) {
-			// 쿼리(where절 userID = ?)에 사번 포함
-	        personalInfoStatement.setString(1, userID);
-	        
-	        try (ResultSet resultSet = personalInfoStatement.executeQuery()) {
-	            if (resultSet.next()) {
-	            	// PERSONAL_INFO가 있을 경우에만 학사 정보 세팅
-	            	userInfo.setCollege(resultSet.getString("college"));
-	            	userInfo.setMajor(resultSet.getString("major"));
-	            	userInfo.setStatus(resultSet.getString("status"));
-	            	userInfo.setResidentNumber(resultSet.getString("residentNumber"));	                
-	            	userInfo.setAddress(resultSet.getString("address"));
-	            }
-	        }
-			
-		} catch (Exception e) {
-			// 데이터베이스 오류 발생			
-			e.printStackTrace();
-			return null;
-		}
-    	// 사용자 데이터 객체 반환
-    	return userInfo;
+    	// userID에 해당하는 사용자가 존재하지 않을 경우
+    	return null;
 	}
+	
+	// 2. Row-to-DTO 매핑을 분리하는 RowMapper 패턴
+    // DAO의 구조를 유지하면서 Service(Paging, UserInfo)에서 RowMapper 재사용	
+	public static final RowMapper<UserInfoDTO> ROW_MAPPER = resultSet -> {
+		UserInfoDTO userInfo = new UserInfoDTO();
+		// 개인정보 테이블 연결 객체 생성
+		    	
+    	userInfo.setUserID(resultSet.getString("userID"));
+    	userInfo.setUserPassword(resultSet.getString("userPassword"));
+    	userInfo.setName(resultSet.getString("name"));
+    	userInfo.setPhoneNumber(resultSet.getString("phoneNumber"));
+    	userInfo.setOfficeNumber(resultSet.getString("officeNumber"));	            	
+    	userInfo.setEmail(resultSet.getString("email"));		
+    	// User 테이블 필드(개인정보)
+    	
+    	userInfo.setCollege(resultSet.getString("college"));
+    	userInfo.setMajor(resultSet.getString("major"));
+    	userInfo.setStatus(resultSet.getString("status"));
+    	userInfo.setResidentNumber(resultSet.getString("residentNumber"));	                
+    	userInfo.setAddress(resultSet.getString("address"));
+    	// PERSONAL_INFO 테이블 필드(학사정보)
+    	
+    	return userInfo;
+    	// 개인정보 배열 객체 반환    	
+	};
 
 	public UserInfoDTO updatePhoneNumber(String userID, String phoneNumber) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보(휴대전화번호)를 수정하는 SQL 쿼리
@@ -181,7 +182,10 @@ public class UserInfoDAO {
 		}
 		return null;	    
 	}
-    
+}
+
+/*
+ *     
     public List<AcademicRecordDTO> getAcademicRecordsByCollege(String userInfoID)
     	//	, String sortColumn, String sortOrder) {
     {
@@ -301,4 +305,5 @@ public class UserInfoDAO {
 
         return 0; // 기본값
     }
-}
+ * 
+ */

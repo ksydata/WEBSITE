@@ -9,9 +9,9 @@ import util.RoleEnum;
 
 /*
  * 1. 기본 권한별 정보 조회기능 3가지 분기 외에 [v]
- * 2. 교수의 단과대학 학생 성적정보(상대평가/PF과목) 수정 기능
- * 3. 검증 기능 필요
- * 4. 페이징 로직 limit, offset 변수 추가 이후 academicRecordServlet, PagingService와 연계 필요 
+ * 2. 교수의 단과대학 학생 성적정보(상대평가/PF과목) 수정 기능 [v]
+ * 3. 검증 기능 필요 [v]
+ * 4. 페이징 로직 limit, offset 변수 추가 이후 academicRecordServlet, PagingService와 연계 필요 [v]
  */
 
 // [TO-BE] 개인정보 일부(전화번호, 주민등록번호 뒷자리) 마스킹할 때는 서비스단에서 처리

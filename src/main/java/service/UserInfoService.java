@@ -3,23 +3,31 @@ package service;
 
 import dao.UserInfoDAO;
 import dto.UserInfoDTO;
+import dto.PagingDTO;
+import util.RoleEnum;
+
+// @https://kimsaemjava.tistory.com/240
 
 // 개인정보 일부(전화번호, 주민등록번호 뒷자리) 마스킹할 때는 서비스단에서 처리
 public class UserInfoService {
 	private UserInfoDAO userInfoDAO;
-    
-	// 개인정보 조회 메서드
-	// 생성자: userInfoDAO 객체를 초기화 (DB 접근을 위해 필요)
+	// UserInformation(USER/PERSONAL_INFO 테이블)을 CRUD(조회/수정)하기 위한 접근 객체	
+	private PagingService pagingService;
+	// Notice, AcademicRecord와 같이 비즈니스 로직 처리 시 페이징 추가
+	
+	// 생성자: userInfoDAO/PagingService 객체를 초기화 (DB 접근을 위해 필요)
 	public UserInfoService() {
 		userInfoDAO = new UserInfoDAO();
+		pagingService = new PagingService();
 	}
 	
 	// 학번/사번(userID)를 받아 개인정보를 가져오는 서비스 메서드
-    public UserInfoDTO getUserInfo(String userID) {
+    public UserInfoDTO getUserInfo(String userID, RoleEnum role, int currentPage) {
         if (userID == null || userID.isEmpty()) {
-            // userID가 비어있으면 null 반환
+            //  userID(사용자 인증을 위한 아이디_학번/사번)가 비어있으면 null 반환
             return null;
         }
+        
         // DAO를 통해 DB에서 사용자 정보 조회
         UserInfoDTO userInfo = userInfoDAO.getMyInfo(userID);
 
@@ -47,6 +55,8 @@ public class UserInfoService {
         // userInfoDTO의 객체인 사용자 1명의 정보를 리턴
         return userInfo;
     }
+    
+    // 개인정보 조회 메서드
     
     // 개인정보 수정 메서드
     public void updateUserInfo(String userID, String phoneNumber, String officeNumber, String email, String address) {
@@ -79,5 +89,17 @@ public class UserInfoService {
     	if (userPassword != null && !userPassword.trim().isEmpty()) {
     		userInfoDAO.updatePassword(userID, userPassword);
     	}
+    }
+    
+    private PagingDTO<UserInfoDTO> getTotalInfo(String userID, int currentPage) {
+    	String TABLE = "";
+		// DB 테이블(조인)    	
+    	String WHERE = "";
+		// SELECT 쿼리 조건절    	
+    	String ORDER = "";
+    	// 정렬
+    	
+    	return pagingService.getPage(
+    			TABLE, WHERE, ORDER, currentPage, UserInfoDAO.ROW_MAPPER);
     }
 }

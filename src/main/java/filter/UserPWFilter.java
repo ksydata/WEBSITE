@@ -5,8 +5,14 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.*;
 
+// @https://drg2524.tistory.com/206
+
 @WebFilter("/userPassword")
 public abstract class UserPWFilter implements Filter {
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {}
+	// 필터 초기화
+	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, 
 			FilterChain filterChain) throws IOException, ServletException {
@@ -17,7 +23,7 @@ public abstract class UserPWFilter implements Filter {
 		HttpServletRequest loginRequest = (HttpServletRequest) request;
 		HttpServletResponse accessResponse = (HttpServletResponse) response;
 		HttpSession session = loginRequest.getSession(false);
-		//기존 세션값만 사용하며, 없으면 Null 반환
+		// 기존 세션값만 사용하며, 없으면 Null 반환
 		
 		// 2. 로그인 인증 확인
         if (session == null || session.getAttribute("userID") == null) {
@@ -29,5 +35,4 @@ public abstract class UserPWFilter implements Filter {
         // 3. 요청 → Servlet
         filterChain.doFilter(request,response);
 	}
-	
 }

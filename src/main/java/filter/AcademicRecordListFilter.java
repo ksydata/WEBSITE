@@ -33,7 +33,7 @@ public abstract class AcademicRecordListFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		HttpSession session = httpRequest.getSession(false);
-		//기존 세션값만 사용하며, 세션에서 사용자 정보 확인하고 없으면 Null 반환
+		// 기존 세션값만 사용하며, 세션에서 사용자 정보 확인하고 없으면 Null 반환
 		
 		// 2. 로그인 인증 확인
         if (session == null || session.getAttribute("userID") == null) {
@@ -73,7 +73,7 @@ public abstract class AcademicRecordListFilter implements Filter {
         filterChain.doFilter(request,response);
 	}
 	
-	// 4. 유효한 역할인지 검증하는 메서드
+	// 3. 유효한 역할인지 검증하는 메서드
 	private boolean isValidRole(RoleEnum role) {
 		return role != null && (
 				role.equals(RoleEnum.ROLE_001) || 
