@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 // import dao.NoticeListDAO;
 import dao.NoticeControlDAO;
 // import dto.NoticeDTO;
+import dao.NoticeDAO;
 
 /* 공지글을 작성하고 등록하는 WriteServlet.java 컨트롤러 생성
  * BoardServlet.java에서 공지사항 전체 리스트 보여주기와 개별 공지 포스트 등록하기 기능이 1개 서블릿에 doGet(), doPost() 메서드로 묶여 있음
@@ -60,12 +61,18 @@ public class WriteServlet extends HttpServlet {
         String permissionRole = request.getParameter("permissionRole");
         // 공지글 작성폼(writePost.jsp)에서 받은 데이터 추출
         
-	    NoticeControlDAO controldao = new NoticeControlDAO();
+        
+        // [TO-BE]
+        NoticeDAO noticeDAO = new NoticeDAO();
+        int newNoticeID = noticeDAO.uploadNotice(userID, title, contents, endDate, permissionRole);
+        
+        // [AS-IS]
+//	    NoticeControlDAO controldao = new NoticeControlDAO();
 	    // 공지 작성을 위한 DAO 객체 생성
 	    // INSERT INTO NOTICE (userID, title, contents, createDate, updateDate, endDate, permissionRole) VALUES (?, ?, ?, ?, ?, ?, ?);
 	    // NoticeListDAO listdao = new NoticeListDAO();
 
-        int newNoticeID = controldao.uploadNotice(userID, title, contents, endDate, permissionRole);
+//        int newNoticeID = controldao.uploadNotice(userID, title, contents, endDate, permissionRole);
         // 공지글 작성자(현 사용자) 아이디, 제목, 내용, 종료일자, 권한정보를 NOTICE 테이블에 삽입
         // DB에 저장한 결과로 PK(noticeID, auto increment) 반환
 

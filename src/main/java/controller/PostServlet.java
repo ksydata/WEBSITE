@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import dao.NoticeListDAO;
 // import dao.NoticeControlDAO;
 import dto.NoticeDTO;
+import service.NoticeService;
 
 /* GET요청: 특정 공지글 상세 조회
  * 요청 파라미터 id로 NoticeListDAO에서 게시글(NoticeDTO)을 조회하고,
@@ -32,9 +33,14 @@ public class PostServlet extends HttpServlet {
 	    String loginUserRole = (String) session.getAttribute("userRole"); 
 	    // userRole: 학생, 교수, 교직원, 관리자 
 	    
-	    NoticeListDAO listdao = new NoticeListDAO();
-	    // NoticeControlDAO controldao = new NoticeControlDAO();
-	    NoticeDTO post = listdao.getNoticeByID(id);
+	    NoticeService noticeService = new NoticeService();
+	    NoticeDTO post = noticeService.getNotice(id);
+	    
+	    // [AS-IS]
+	    // 아래 로직을 webfilter 적용할 방법 찾아보기
+//	    NoticeListDAO listdao = new NoticeListDAO();
+//	    // NoticeControlDAO controldao = new NoticeControlDAO();
+//	    NoticeDTO post = listdao.getNoticeByID(id);
 	    // 글쓴이 아이디에 따라 특정 게시판 공지글 관련 데이터를 조회하는 post 객체
 	    // SELECT * FROM NOTICE WHERE noticeID = ?;
 	    request.setAttribute("post", post);

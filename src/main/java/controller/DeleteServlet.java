@@ -7,6 +7,7 @@ import javax.servlet.http.*;
 
 import dao.NoticeListDAO;
 import dao.NoticeControlDAO;
+import dao.NoticeDAO;
 import dto.NoticeDTO;
 
 /* POST요청: 공지글 삭제 처리
@@ -28,9 +29,14 @@ public class DeleteServlet extends HttpServlet {
 	    String loginUserRole = (String) session.getAttribute("userRole");
 	    // userRole: 학생, 교수, 교직원, 관리자 
 
-	    NoticeListDAO listdao = new NoticeListDAO();
-	    NoticeControlDAO controldao = new NoticeControlDAO();	    
-	    NoticeDTO post = listdao.getNoticeByID(id);
+	    // [TO-BE]
+	    NoticeDAO noticeDAO = new NoticeDAO();
+	    NoticeDTO post = noticeDAO.getNoticeByID(id);
+	    
+	    // [AS-IS]
+//	    NoticeListDAO listdao = new NoticeListDAO();
+//	    NoticeControlDAO controldao = new NoticeControlDAO();	    
+//	    NoticeDTO post = listdao.getNoticeByID(id);
 	    // 글쓴이 아이디에 따라 특정 게시판 공지글 관련 데이터를 조회하는 post 객체
 	    // post.getUserID();를 통해 글쓴이 아이디 가져올 때 활용
 	    // UPDATE NOTICE SET title = ?, contents = ?, updateDate = NOW() WHERE noticeID = ?;
@@ -49,7 +55,8 @@ public class DeleteServlet extends HttpServlet {
 	        return;
 	    }
 
-	    boolean result = controldao.deleteNotice(id);
+	    boolean result = noticeDAO.deleteNotice(id);
+//	    [AS-IS] boolean result = controldao.deleteNotice(id);
 	    // 작성자이거나 관리자라면, 게시판 내 특정 공지글 삭제
 	    // DELETE FROM NOTICE WHERE noticeID = ?;
 	    
