@@ -7,7 +7,7 @@ import dto.NoticeDTO;
 import dto.PagingDTO;
 
 public class NoticeService {
-//	private final NoticeDAO noticeDAO = new NoticeDAO();
+	private final NoticeDAO noticeDAO = new NoticeDAO();
 	
 	/*
 	 * 지금 Notice 조회는 PagingService를 BoardServlet에 바로 불러와서 처리하고 있고,
@@ -56,7 +56,6 @@ public class NoticeService {
 	
 	// 개별 공지 조회
 	public NoticeDTO getNotice(int id) {
-		NoticeDAO noticeDAO = new NoticeDAO();
 		NoticeDTO notice = noticeDAO.getNoticeByID(id);
 		return notice;
 	}
@@ -64,14 +63,12 @@ public class NoticeService {
 	
 	// 공지 편집
 	public void updatePost(int id, String title, String contents) {
-		NoticeDAO noticeDAO = new NoticeDAO();
 		noticeDAO.updateNotice(id, title, contents);
 	}
 	
 	
 	// 공지 작성
 	public int uploadPost(String userID, String title, String contents, String endDate, String permissionRole) {
-		NoticeDAO noticeDAO = new NoticeDAO();
 		int noticeID = noticeDAO.uploadNotice(userID, title, contents, endDate, permissionRole);
 		return noticeID;
 	}
@@ -79,7 +76,6 @@ public class NoticeService {
 	
 	// 공지 삭제
 	public boolean deletePost(int id) {
-		NoticeDAO noticeDAO = new NoticeDAO();
 		if (noticeDAO.deleteNotice(id)) {
 			return true;
 		}

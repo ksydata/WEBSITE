@@ -5,8 +5,6 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
-import dao.NoticeListDAO;
-import dao.NoticeControlDAO;
 import dao.NoticeDAO;
 import dto.NoticeDTO;
 

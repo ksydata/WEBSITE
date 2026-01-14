@@ -10,9 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-// import dao.NoticeListDAO;
-import dao.NoticeControlDAO;
-// import dto.NoticeDTO;
 import dao.NoticeDAO;
 
 /* 공지글을 작성하고 등록하는 WriteServlet.java 컨트롤러 생성
