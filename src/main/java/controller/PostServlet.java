@@ -28,31 +28,33 @@ public class PostServlet extends HttpServlet {
 		
 		int id = Integer.parseInt(request.getParameter("id"));
 		String loginUserID = (String) session.getAttribute("userID");
-	    String loginUserRole = (String) session.getAttribute("userRole"); 
+//	    String loginUserRole = (String) session.getAttribute("userRole"); 
 	    // userRole: 학생, 교수, 교직원, 관리자 
 	    
 	    NoticeService noticeService = new NoticeService();
 	    NoticeDTO post = noticeService.getNotice(id);
+	    request.setAttribute("post", post);
 	    
-	    // [AS-IS]
-	    // 아래 로직을 webfilter 적용할 방법 찾아보기
+	    // [AS-IS] 구 NoticeListDAO 활용
 //	    NoticeListDAO listdao = new NoticeListDAO();
 //	    // NoticeControlDAO controldao = new NoticeControlDAO();
 //	    NoticeDTO post = listdao.getNoticeByID(id);
 	    // 글쓴이 아이디에 따라 특정 게시판 공지글 관련 데이터를 조회하는 post 객체
 	    // SELECT * FROM NOTICE WHERE noticeID = ?;
-	    request.setAttribute("post", post);
+	    
 	    
 	    boolean isAuthor = loginUserID != null && loginUserID.equals(post.getUserID());
+	    request.setAttribute("isAuthor", isAuthor);
 	    // 논리곱 연산자를 통해 사용자 아이디가 공백값이 아니면서 + 현재 접속한 사용자 아이디와 작성자 아이디가 일치할 경우 true
-	    boolean isAdmin = loginUserRole != null && loginUserRole.equals("관리자");
+
+	    // [AS-IS] PostFilter에 정리된 권한 관리 내용
+//	    boolean isAdmin = loginUserRole != null && loginUserRole.equals("관리자");
 	    // 논리곱 연산자를 통해 사용자 아이디가 공백값이 아니면서 + 권한이 관리자일 경우 true
-	    boolean canDelete = isAuthor || isAdmin;
+//	    boolean canDelete = isAuthor || isAdmin;
 	    // 해당 공지글 작성자이거나 관리자 계정일 경우를 조건으로 하는 플래그 생성 
 	    
-	    request.setAttribute("isAuthor", isAuthor);
-	    request.setAttribute("isAdmin", isAdmin);
-	    request.setAttribute("canDelete", canDelete);
+//	    request.setAttribute("isAdmin", isAdmin);
+//	    request.setAttribute("canDelete", canDelete);
 	    // 권한 관련 플래그를 jsp(자바 서버페이지)로 전달
 	    
 	    RequestDispatcher dispatcher = request.getRequestDispatcher("common/notice/postpage.jsp");

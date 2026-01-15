@@ -37,7 +37,8 @@
 			</c:if>
 	
 	        <%-- 삭제 버튼: 작성자 또는 관리자 --%>
-			<c:if test="${canDelete}">
+	        <c:if test="${isAuthor or isAdmin}">
+			<%-- [AS-IS] <c:if test="${canDelete}">  --%>
 			    <form action="<c:url value='/DeleteServlet' />" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');" style="margin: 0;">
 			        <input type="hidden" name="id" value="${post.noticeID}">
 			        <button type="submit" class="btn btn-warning">삭제</button>
