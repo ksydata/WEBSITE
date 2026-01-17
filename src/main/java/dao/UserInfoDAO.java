@@ -51,6 +51,44 @@ public class UserInfoDAO {
     	return null;
 	}
 	
+	public List<UserInfoDTO> getTotalInfo(String userID) {
+		List<UserInfoDTO> userInfoList = new ArrayList<>();
+		// 로그인 성공했을 때 사용자 개인정보를 받기 위한 빈 배열 객체 생성(초기화)		
+		// UserInfoDTO userInfo = null;
+		
+		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회 또는 수정할 정보 불러오는 SQL 쿼리 
+		String userInfoSQL = """
+				SELECT 
+					U.userID, U.userPassword, U.name, U.phoneNumber, U.officeNumber, U.email,
+					P.college, P.major, P.status, P.residentNumber, P.address
+				FROM USER U 
+				LEFT JOIN PERSONAL_INFO P
+				ON U.userID = P.userID 
+				WHERE U.userID = ?
+		""";
+		// String userInfoSQL = "SELECT * FROM USER WHERE userID = ?";
+		// String personalInfoSQL = "SELECT * FROM PERSONAL_INFO WHERE userID = ?";
+    	
+    	// 1. USER 테이블에서 로그인 인증 관련 정보 추출 & PERSONAL_INFO 테이블에서 개인정보, 학사정보 추출
+		try (Connection connection = DatabaseUtil.getConnection();
+			 PreparedStatement userInfoStatement = connection.prepareStatement(userInfoSQL)) {	
+			userInfoStatement.setString(1, userID);
+			ResultSet resultSet = userInfoStatement.executeQuery();
+			// 쿼리(where절 userID = ?)에 사번 포함하여 쿼리 실행결과 담을 객체 생성
+			
+			if (resultSet.next()) {
+				UserInfoDTO userInfo = ROW_MAPPER.mapRow(resultSet);
+				userInfoList.add(userInfo);
+	        } 	
+		} catch (Exception e) {
+			// 데이터베이스 오류 발생			
+			e.printStackTrace();
+		}
+    	// userID에 해당하는 사용자가 존재하지 않을 경우
+    	return null;
+	}
+	
+	
 	// 2. Row-to-DTO 매핑을 분리하는 RowMapper 패턴
     // DAO의 구조를 유지하면서 Service(Paging, UserInfo)에서 RowMapper 재사용	
 	public static final RowMapper<UserInfoDTO> ROW_MAPPER = resultSet -> {
@@ -93,13 +131,14 @@ public class UserInfoDAO {
 			// 수정대상 개인정보별 update 쿼리 형식 자체는 동일함
 			// UPDATE TABLE SET {parameters} = ? WHERE userID = ?
 			List<Object> parameters = new ArrayList<>();
-			// 수정대상 개인정보 파라미터 빈 배열 리스트 생성
+			// 파라미터 빈 배열 리스트 생성
 			
 			// USER 테이블: 나의 개인정보 페이지에서 조회되는 정보(휴대전화 번호, 사무실 내선번호, 이메일)
 			if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
 				setClauses.add("phoneNumber = ?");
 				parameters.add(phoneNumber);
 			}
+			// 각 변경대상 입력값이 유효하면 SET절에 추가
 			
 			if (officeNumber != null && !officeNumber.trim().isEmpty()) {
 				setClauses.add("officeNumber = ?");
@@ -116,14 +155,37 @@ public class UserInfoDAO {
 				    // new UserUpdateField("officeNumber", officeNumber),
 				    // new UserUpdateField("email", email) );
 			
-			// [AS-IS] USER 테이블에서 해당 학번/사번(userID) 사용자 개인정보 수정하는 동적 쿼리 실행
-			// for문 활용하여 파라미터 바인딩 필요
+			if (!setClauses.isEmpty()) {
+				// USER 테이블에서 수정한 컬럼이 있는 경우
+				String userInfoUpdateSQL = "UPDATE USER SET " + String.join(", ", setClauses) + "WHERE userID = ?";
+				// 해당 학번/사번(userID) 사용자 개인정보 수정하는 동적 쿼리 실행
+				
+				parameters.add(userID);
+				// WHERE절 바인딩 파라미터 추가
+				
+				try (PreparedStatement updateStatement = connection.prepareStatement(userInfoUpdateSQL)) {
+					for (int i = 0; i < parameters.size(); i++) {
+						// for문 활용하여 파라미터 바인딩
+						updateStatement.setObject(
+								i+1, 
+						// ["010-1234-5678", "123", "user@univ.com", "2025001"]
+								parameters.get(i));
+						// UPDATE USER SET phoneNumber = ?, officeNumber = ?, email = ? WHERE userID = ?
+					} 
 
+					
+
+
+					updateStatement.executeUpdate();
+					// 쿼리 실행
+				}
+			}
+			
 			// PERSONAL_INFO 테이블: 나의 개인정보 페이지에서 조회되는 정보(휴대전화 번호, 사무실 내선번호, 이메일)
 			if (address != null && !address.trim().isEmpty()) {
 				String addressUpadteSQL = "UPDATE PERSONAL_INFO SET address = ? WHERE userID = ?";
 				
-				try (PreparedStatement updateStatement = connection.prepareStatement(addressUpdateSQL)) {
+				try (PreparedStatement updateStatement = connection.prepareStatement(addressUpadteSQL)) {
 					updateStatement.setString(1, address);
 					updateStatement.setString(2, userID);
 					updateStatement.executeUpdate();
@@ -132,11 +194,12 @@ public class UserInfoDAO {
 			
 			
 			connection.commit();
-			// 쿼리 업데이트
-	        return true;
+			// 모든 DML 쿼리 업데이트
+	        // return true;
 		} catch(Exception e) {
 			// 예외 발생 시 트랜잭션 롤백
-	        return false;
+			e.printStackTrace();
+	        // return false;
 		} finally {
 			// 트랜잭션 종료 후 자원 해제
 			return null;
