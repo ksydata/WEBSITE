@@ -24,7 +24,7 @@ public class UserInfoDAO {
 				SELECT 
 					U.userID, U.userPassword, U.name, U.phoneNumber, U.officeNumber, U.email,
 					P.college, P.major, P.status, P.residentNumber, P.address
-				FROW USER U 
+				FROM USER U 
 				LEFT JOIN PERSONAL_INFO P
 				ON U.userID = P.userID 
 				WHERE U.userID = ?
@@ -76,6 +76,74 @@ public class UserInfoDAO {
     	// 개인정보 배열 객체 반환    	
 	};
 
+	
+	// [TO-BE] 하나의 동적 쿼리로 변경된 필드만 업데이트(Java Persistence API [X] → Eclipse + JDBC)
+	public UserInfoDTO updateUserInfo(String userID, String phoneNumber, String officeNumber, 
+            String email, String address) {
+		Connection connection = null;
+		// DB 연결 객체 초기화
+		
+		// 두 테이블 업데이트를 단일 트랜잭션으로 처리
+		try {
+			connection = DatabaseUtil.getConnection();
+			connection.setAutoCommit(false);
+			// 트랜잭션 시작하여 자동 커밋 비활성화(같은 연결 객체로 실행되는 모든 DML문 커밋 또는 롤백 대상)
+			
+			List<String> setClauses = new ArrayList<>();
+			// 수정대상 개인정보별 update 쿼리 형식 자체는 동일함
+			// UPDATE TABLE SET {parameters} = ? WHERE userID = ?
+			List<Object> parameters = new ArrayList<>();
+			// 수정대상 개인정보 파라미터 빈 배열 리스트 생성
+			
+			// USER 테이블: 나의 개인정보 페이지에서 조회되는 정보(휴대전화 번호, 사무실 내선번호, 이메일)
+			if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
+				setClauses.add("phoneNumber = ?");
+				parameters.add(phoneNumber);
+			}
+			
+			if (officeNumber != null && !officeNumber.trim().isEmpty()) {
+				setClauses.add("officeNumber = ?");
+				parameters.add(officeNumber);
+			}
+			
+			if (email != null && !email.trim().isEmpty()) {
+				setClauses.add("email = ?");
+				parameters.add(email);
+			}
+			// 프로젝트 규모가 확대되면, UserUpdateField 클래스 신규 생성하고 List에 각 컬럼명을 조건절 리스트 및 파라미터 리스트에 추가하는 반복문 필요
+			// List<UserUpdateField> fields = List.of(
+				    // new UserUpdateField("phoneNumber", phoneNumber),
+				    // new UserUpdateField("officeNumber", officeNumber),
+				    // new UserUpdateField("email", email) );
+			
+			// [AS-IS] USER 테이블에서 해당 학번/사번(userID) 사용자 개인정보 수정하는 동적 쿼리 실행
+			// for문 활용하여 파라미터 바인딩 필요
+
+			// PERSONAL_INFO 테이블: 나의 개인정보 페이지에서 조회되는 정보(휴대전화 번호, 사무실 내선번호, 이메일)
+			if (address != null && !address.trim().isEmpty()) {
+				String addressUpadteSQL = "UPDATE PERSONAL_INFO SET address = ? WHERE userID = ?";
+				
+				try (PreparedStatement updateStatement = connection.prepareStatement(addressUpdateSQL)) {
+					updateStatement.setString(1, address);
+					updateStatement.setString(2, userID);
+					updateStatement.executeUpdate();
+				}
+			}
+			
+			
+			connection.commit();
+			// 쿼리 업데이트
+	        return true;
+		} catch(Exception e) {
+			// 예외 발생 시 트랜잭션 롤백
+	        return false;
+		} finally {
+			// 트랜잭션 종료 후 자원 해제
+			return null;
+		}
+	}	
+	
+	/* [AS-IS]
 	public UserInfoDTO updatePhoneNumber(String userID, String phoneNumber) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보(휴대전화번호)를 수정하는 SQL 쿼리
 		String updateQuery = "UPDATE USER SET phoneNumber = ? WHERE userID = ?";
@@ -91,56 +159,7 @@ public class UserInfoDAO {
 		}
 		return null;	    
 	}
-
-	
-	public UserInfoDTO updateOfficeNumber(String userID, String officeNumber) {
-		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보(사무실 호실번호)를 수정하는 SQL 쿼리
-		String updateQuery = "UPDATE USER SET officeNumber = ? WHERE userID = ?";
-		
-	    try (Connection connection = DatabaseUtil.getConnection();
-	         PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-			statement.setString(1, officeNumber);
-			statement.setString(2, userID);
-			statement.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;	    
-	}
-	
-	
-	public UserInfoDTO updateEmail(String userID, String email) {
-		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보(이메일 주소)를 수정하는 SQL 쿼리
-		String updateQuery = "UPDATE USER SET email = ? WHERE userID = ?";
-		
-	    try (Connection connection = DatabaseUtil.getConnection();
-		     PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-			statement.setString(1, email);
-			statement.setString(2, userID);
-			statement.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;	    
-	}
-	
-	public UserInfoDTO updateAddress(String userID, String address) {
-		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 정보(주소)를 수정하는 SQL 쿼리
-		String updateQuery = "UPDATE USER SET address = ? WHERE userID = ?";
-		
-	    try (Connection connection = DatabaseUtil.getConnection();
-		     PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-			statement.setString(1, address);
-			statement.setString(2, userID);
-			statement.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	*/
 	
 	public boolean checkCurrentPassword(String userID, String inputPassword) {
 		// 비밀번호 변경 전 현재 비밀번호에 대한 확인용 메서드
@@ -185,7 +204,7 @@ public class UserInfoDAO {
 }
 
 /*
- *     
+ * [AS-IS] 정렬
     public List<AcademicRecordDTO> getAcademicRecordsByCollege(String userInfoID)
     	//	, String sortColumn, String sortOrder) {
     {
@@ -214,96 +233,13 @@ public class UserInfoDAO {
             preparedStatement.setString(1, userInfoID);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                AcademicRecordDTO dto = new AcademicRecordDTO();
-                dto.setUserID(resultSet.getString("userID"));
-                dto.setName(resultSet.getString("name"));
-                dto.setCollege(resultSet.getString("college"));
-                dto.setMajor(resultSet.getString("major"));
-                dto.setCourseName(resultSet.getString("courseName"));
-                dto.setGrade(resultSet.getString("grade"));
-                dto.setAcademicYear(resultSet.getInt("academicYear"));
-                dto.setGradePoint(resultSet.getInt("gradePoint"));
-                dto.setSemester(resultSet.getString("semester"));
-                classRecordsList.add(dto);
+			while (resultSet.next()) {
+				AcademicRecordDTO academicRecord = ROW_MAPPER.mapRow(resultSet);
+				classRecordsList.add(academicRecord);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return classRecordsList;
     }
-    
-    public List<AcademicRecordDTO> getAcademicRecordsByCollegeWithPaging(String userInfoID, int limit, int offset) {
-        String recordQuery = """
-            SELECT
-                U.userID, U.name, P.college, P.major,
-                R.courseName, R.grade, R.gradePoint, R.academicYear, R.semester
-            FROM USER U
-            JOIN PERSONAL_INFO P ON U.userID = P.userID
-            JOIN ACADEMIC_RECORD R ON U.userID = R.userID
-            WHERE P.college IN (
-                SELECT DISTINCT college FROM PERSONAL_INFO WHERE userID = ?
-            )
-            ORDER BY R.semester DESC, U.name ASC
-            LIMIT ? OFFSET ?
-        """;
-
-        List<AcademicRecordDTO> classRecordsList = new ArrayList<>();
-        
-        try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(recordQuery)) {
-            
-            preparedStatement.setString(1, userInfoID);
-            preparedStatement.setInt(2, limit);
-            preparedStatement.setInt(3, offset);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                AcademicRecordDTO dto = new AcademicRecordDTO();
-                dto.setUserID(resultSet.getString("userID"));
-                dto.setName(resultSet.getString("name"));
-                dto.setCollege(resultSet.getString("college"));
-                dto.setMajor(resultSet.getString("major"));
-                dto.setCourseName(resultSet.getString("courseName"));
-                dto.setGrade(resultSet.getString("grade"));
-                dto.setAcademicYear(resultSet.getInt("academicYear"));
-                dto.setGradePoint(resultSet.getInt("gradePoint"));
-                dto.setSemester(resultSet.getString("semester"));
-                classRecordsList.add(dto);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return classRecordsList;
-    }
-    
-    public int getAcademicRecordsCountByCollege(String userInfoID) {
-        String countQuery = """
-            SELECT COUNT(*) AS total
-            FROM USER U
-            JOIN PERSONAL_INFO P ON U.userID = P.userID
-            JOIN ACADEMIC_RECORD R ON U.userID = R.userID
-            WHERE P.college IN (
-                SELECT DISTINCT college FROM PERSONAL_INFO WHERE userID = ?
-            )
-        """;
-
-        try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(countQuery)) {
-
-            preparedStatement.setString(1, userInfoID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return resultSet.getInt("total");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return 0; // 기본값
-    }
- * 
  */
