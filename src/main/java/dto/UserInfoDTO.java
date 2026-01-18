@@ -13,8 +13,8 @@ public class UserInfoDTO {
 	private String address; // PERSONAL_INFO table
 	
 	// 수강생 학사정보 조회 화면 구성요소: 사번, 단과대학, 전공, 상태값
-	private String college; // PERSONAL_INFO table 
-	private String major; // PERSONAL_INFO table 
+	private String college; // PERSONAL_INFO table
+	private String major; // PERSONAL_INFO table
 	private String status; // PERSONAL_INFO table
 	
 	public String getUserID() {

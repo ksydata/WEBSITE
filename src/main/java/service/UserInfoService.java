@@ -73,7 +73,7 @@ public class UserInfoService {
 		userInfoDAO.updateUserInfo(userID, phoneNumber, officeNumber, email, address);
 	}
 		
-    /*
+    /* [AS-IS] 개인정보 수정 메서드
     public void updateUserInfo(String userID, String phoneNumber, String officeNumber, String email, String address) {
     	// 휴대전화번호 수정
     	if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
