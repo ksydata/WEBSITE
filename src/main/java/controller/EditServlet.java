@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.NoticeListDAO;
-import dao.NoticeControlDAO;
+import dao.NoticeDAO;
 import dto.NoticeDTO;
 
 @WebServlet("/EditServlet")
@@ -35,8 +34,13 @@ public class EditServlet extends HttpServlet {
         String sessionUserID = (String) session.getAttribute("userID");
         // 세션에서 로그인된 사용자 아이디 가져오기
         
-        NoticeListDAO listdao = new NoticeListDAO();
-        NoticeDTO post = listdao.getNoticeByID(id);
+        // [TO-BE]
+        NoticeDAO noticeDAO = new NoticeDAO();
+        NoticeDTO post = noticeDAO.getNoticeByID(id);
+        
+        // [AS-IS]
+//        NoticeListDAO listdao = new NoticeListDAO();
+//        NoticeDTO post = listdao.getNoticeByID(id);
         // SELECT * FROM NOTICE WHERE noticeID = ?;
 
         if (sessionUserID == null || !sessionUserID.equals(post.getUserID())) {
@@ -73,10 +77,15 @@ public class EditServlet extends HttpServlet {
         
         HttpSession session = request.getSession();
         String sessionUserID = (String) session.getAttribute("userID");
+        
+        // [TO-BE]
+        NoticeDAO noticeDAO = new NoticeDAO();
+        NoticeDTO originalPost = noticeDAO.getNoticeByID(id);
 
-        NoticeListDAO listdao = new NoticeListDAO();
-        NoticeControlDAO controldao = new NoticeControlDAO();        
-        NoticeDTO originalPost = listdao.getNoticeByID(id);
+        // [AS-IS]
+//        NoticeListDAO listdao = new NoticeListDAO();
+//        NoticeControlDAO controldao = new NoticeControlDAO();        
+//        NoticeDTO originalPost = listdao.getNoticeByID(id);
         // SELECT * FROM NOTICE WHERE noticeID = ?;
         
         if (sessionUserID == null || !sessionUserID.equals(originalPost.getUserID())) {
@@ -87,7 +96,8 @@ public class EditServlet extends HttpServlet {
             return;
         }
         
-        controldao.updateNotice(id, title, contents);
+        noticeDAO.updateNotice(id, title, contents);
+//      [TO-BE]  controldao.updateNotice(id, title, contents);
         // UPDATE NOTICE SET title = ?, contents = ?, updateDate = NOW() WHERE noticeID = ?;
         response.sendRedirect(request.getContextPath() + "/post?id=" + id);
         // 수정 후 수정된 공지글 조회(상세) 페이지인 postpage.jsp로 이동

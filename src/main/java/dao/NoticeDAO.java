@@ -6,14 +6,46 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-// import dto.NoticeDTO;
-// SELECT문이 없어 DTO가 필요하지 않음
+import dto.NoticeDTO;
 import util.DatabaseUtil;
 
-// NoticeDAO의 “SELECT” 기능과 “UPDATE, INSERT, DELETE” 기능을 분리
-// 공지 등록/수정/삭제 기능
-public class NoticeControlDAO {
+// 개별 공지 조회, 등록, 수정, 삭제 기능 구현
+// 구 NoticeListDAO의 개별 공지 조회 로직과, 구 NoticeControlDAO의 등록, 수정, 삭제 로직을 합침
+// 구 NoticeListDAO의 공지 리스트 조회 및 페이징 기능은 DAO가 아닌 PagingService로 구현함
+public class NoticeDAO {
+	
+	// 특정 게시글 조회 - 게시글 표 & 게시글 작성자 조회 (학생/교수/관리자 여부와 함께 조회)
+	public NoticeDTO getNoticeByID(int noticeID) {
+		NoticeDTO notice = new NoticeDTO();
+		// NOTICE 테이블 데이터통신객체를 통해 데이터에 접근하기 위한 배열리스트 객체 notice 생성 		
+		String sql = "SELECT * FROM NOTICE WHERE noticeID = ?";
+		// NOTICE 테이블에서 글쓴이 아이디에 따라 특정 게시판 공지글 관련 데이터를 조회하는 쿼리문    		
 
+		try (Connection connection = DatabaseUtil.getConnection();
+			PreparedStatement noticeCheckStatement = connection.prepareStatement(sql)) {
+			noticeCheckStatement.setInt(1, noticeID);
+	        // noticeID: 어떤 공지사항 글 일련번호를 입력값을 통해 결정		
+			// noticeID: 
+			ResultSet resultSet = noticeCheckStatement.executeQuery();
+			
+			if (resultSet.next()) {
+				notice.setNoticeID(resultSet.getInt("noticeID"));
+				notice.setUserID(resultSet.getString("userID"));
+				notice.setTitle(resultSet.getString("title"));
+				notice.setContents(resultSet.getString("contents"));
+				notice.setCreateDate(resultSet.getTimestamp("createDate"));
+				notice.setUpdateDate(resultSet.getTimestamp("updateDate"));
+				notice.setEndDate(resultSet.getTimestamp("endDate"));
+				notice.setPermissionRole(resultSet.getString("permissionRole"));
+				// 공지글 일련번호, 사용자 로그인 계정 아이디, 게시판 공지글 제목, 내용, 작성일자, 수정일자, 종료일자, 공지권한정보				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return notice;
+		// 조회하려는 특정 공지글 DTO 반환(없으면 빈 객체)		
+	}
+	
 	// 게시판 공지 등록 및 등록된 PK 반환
 	public int uploadNotice(String userID, String title, String contents, String endDate, String permissionRole) {
 		String sql = "INSERT INTO NOTICE (userID, title, contents, createDate, updateDate, endDate, permissionRole) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -105,5 +137,5 @@ public class NoticeControlDAO {
 	    return false;
 	    // 실패 시 false 반환
 	}
-	
+
 }
