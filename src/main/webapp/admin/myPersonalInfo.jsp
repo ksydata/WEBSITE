@@ -16,7 +16,7 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">나의 개인정보</h2>
     
-	<!-- StudentDTO 객체인 studentInfo가 공백일 경우 알림 호출 -->
+	<!-- AdminDTO 객체인 adminInfo가 공백일 경우 알림 호출 -->
 	<c:if test="${empty adminInfo}">
     	<script>
         	alert("개인정보를 찾을 수 없습니다.");
@@ -24,7 +24,7 @@
     	</script>
 	</c:if>
 
-	<!-- 세션에 저장된 StudentDTO 객체인 studentInfo를 불러와 만든 나의 개인정보 조회 카드 -->
+	<!-- 세션에 저장된 AdminDTO 객체인 adminInfo를 불러와 만든 나의 개인정보 조회 카드 -->
 
     <!-- 기본 정보 카드(읽기 전용) -->
     <div class="card mb-4">
