@@ -14,11 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import util.RoleEnum;
 
-@WebFilter(urlPatterns = {
-	    "/post",
-	    "/EditServlet",
-	    "/DeleteServlet"
-	})
+@WebFilter("/post/*")
 public class PostFilter implements Filter {
 	
 	@Override
@@ -36,6 +32,7 @@ public class PostFilter implements Filter {
         String userID = null;
         RoleEnum roleEnum = null;
 
+        // session에 userRole 있는지 확인
         if (session != null) {
             userID = (String) session.getAttribute("userID");
             String userRole = (String) session.getAttribute("userRole"); // "student", "admin" 등
@@ -45,21 +42,15 @@ public class PostFilter implements Filter {
             }
         }
 
+        // 로그인 여부, 관리자 권한 여부 확인
         boolean isLogin = userID != null;
         boolean isAdmin = roleEnum != null && roleEnum.isROLE_004();
-        boolean isProfessor = roleEnum != null && roleEnum.isROLE_002();
-        boolean isEmployee = roleEnum != null && roleEnum.isROLE_003();
-        boolean isStudent = roleEnum != null && roleEnum.isROLE_001();
 
-        // JSP / Servlet 공통 사용 속성
-//        req.setAttribute("loginUserID", userID);
+
+        // JSP / Servlet 공통 사용 속성 규정하여 전달
         req.setAttribute("roleEnum", roleEnum);
-
         req.setAttribute("isLogin", isLogin);
         req.setAttribute("isAdmin", isAdmin);
-        req.setAttribute("isProfessor", isProfessor);
-        req.setAttribute("isEmployee", isEmployee);
-        req.setAttribute("isStudent", isStudent);
 
         chain.doFilter(request, response);
     }

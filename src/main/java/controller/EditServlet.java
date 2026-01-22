@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.NoticeDAO;
 import dto.NoticeDTO;
+import service.NoticeService;
 
 @WebServlet("/EditServlet")
 public class EditServlet extends HttpServlet {
@@ -34,14 +34,10 @@ public class EditServlet extends HttpServlet {
         String sessionUserID = (String) session.getAttribute("userID");
         // 세션에서 로그인된 사용자 아이디 가져오기
         
-        // [TO-BE]
-        NoticeDAO noticeDAO = new NoticeDAO();
-        NoticeDTO post = noticeDAO.getNoticeByID(id);
+        // [TO-BE] 글쓴이 아이디에 따라 특정 게시판 공지글 관련 데이터를 조회하는 post 객체
+        NoticeService noticeService = new NoticeService();
+	    NoticeDTO post = noticeService.getNotice(id);
         
-        // [AS-IS]
-//        NoticeListDAO listdao = new NoticeListDAO();
-//        NoticeDTO post = listdao.getNoticeByID(id);
-        // SELECT * FROM NOTICE WHERE noticeID = ?;
 
         if (sessionUserID == null || !sessionUserID.equals(post.getUserID())) {
             // 사용자 아이디가 공백값이거나 해당 공지글 작성자가 아닌 경우
@@ -79,14 +75,8 @@ public class EditServlet extends HttpServlet {
         String sessionUserID = (String) session.getAttribute("userID");
         
         // [TO-BE]
-        NoticeDAO noticeDAO = new NoticeDAO();
-        NoticeDTO originalPost = noticeDAO.getNoticeByID(id);
-
-        // [AS-IS]
-//        NoticeListDAO listdao = new NoticeListDAO();
-//        NoticeControlDAO controldao = new NoticeControlDAO();        
-//        NoticeDTO originalPost = listdao.getNoticeByID(id);
-        // SELECT * FROM NOTICE WHERE noticeID = ?;
+        NoticeService noticeService = new NoticeService();
+	    NoticeDTO originalPost = noticeService.getNotice(id);
         
         if (sessionUserID == null || !sessionUserID.equals(originalPost.getUserID())) {
             // 사용자 아이디가 공백값이거나 해당 공지글 작성자가 아닌 경우 (Refactoring Point: doGet()과 중복)
@@ -96,9 +86,7 @@ public class EditServlet extends HttpServlet {
             return;
         }
         
-        noticeDAO.updateNotice(id, title, contents);
-//      [TO-BE]  controldao.updateNotice(id, title, contents);
-        // UPDATE NOTICE SET title = ?, contents = ?, updateDate = NOW() WHERE noticeID = ?;
+        noticeService.updatePost(id, title, contents);
         response.sendRedirect(request.getContextPath() + "/post?id=" + id);
         // 수정 후 수정된 공지글 조회(상세) 페이지인 postpage.jsp로 이동
     }
