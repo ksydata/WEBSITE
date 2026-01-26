@@ -27,6 +27,9 @@ response.sendRedirect("index");
 역할에 따라 완전히 다른 메인 페이지로 이동시키고 싶다면 
 jsp가 아닌 Servlet에서 포워드(redirect) 방식이 더 적절
  -->
+<jsp:include page="/common/main.jsp"/>
+
+<%-- [AS-IS]
 <c:choose>
 	<c:when test="${sessionScope.userRole eq '학생'}">
 		<jsp:include page="/student/main.jsp" />
@@ -40,6 +43,6 @@ jsp가 아닌 Servlet에서 포워드(redirect) 방식이 더 적절
 	<c:when test="${sessionScope.userRole eq '관리자'}">
 		<jsp:include page="/admin/main.jsp" />
 	</c:when>						
-</c:choose>
+</c:choose> --%>
 
 <%@ include file="/include/footer.jsp" %>
