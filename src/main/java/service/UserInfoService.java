@@ -30,7 +30,7 @@ public class UserInfoService {
 	
 	// 학번/사번(userID)를 받아 개인정보를 가져오는 서비스 메서드
     // [AS-IS] 개인정보 조회 메서드(Role 분기)
-    public UserInfoDTO getUserInfo(String userID, RoleEnum role, int currentPage) {
+    public void getUserInfo(String userID, RoleEnum role, int currentPage) {
 		if (userID == null || userID.isEmpty()) {
 			// @WebFilter(gate keeper)에서 접근 가능성 검증하지만, Service에서 또 쓰이는 이유는 
 			// Service는 권한별 비즈니스 로직 실행에 대해 다른 Servlet 등에서도 호출될 수 있기 때문에 의도적으로 중복			
@@ -46,6 +46,8 @@ public class UserInfoService {
             // 전화번호 뒷 4자리 마스킹 (예: 010-1234-****)
             // userInfoDTO.getter method            
         	String phone = userInfo.getPhoneNumber();
+        	// userInfo.getPhoneNumber().replaceAll("(\\d{3}-\\d{4})-\\d{4}", "$1-****")
+
             if (phone != null && phone.length() >= 4) {
                 String maskedPhoneNum = phone.substring(0, phone.length() - 4) + "****";
                 // userInfoDTO.setter method
@@ -60,10 +62,21 @@ public class UserInfoService {
                 // userInfoDTO.setter method
                 userInfo.setResidentNumber(maskedResidentNum);
             }
-        }
-        
-        // userInfoDTO의 객체인 사용자 1명의 정보를 리턴
-        return userInfo;
+            
+    	    // DAO를 통해 DB에서 사용자 권한별 학사정보 조회
+    	    switch(role) {
+    	    	case ROLE_001:	 
+    	     	// case "student":
+    	    		getUserInfo(userID);
+    	            // userInfoDTO의 객체인 사용자 1명의 정보를 리턴
+    	    	case ROLE_002:
+    	    		getUserInfo(userID);
+    	    	case ROLE_004:
+    	    		getTotalUserInfo(currentPage);
+    	    	default:
+    	    		break;    		 
+    	     }
+        }        
     }
     
     // 개인정보 수정 메서드

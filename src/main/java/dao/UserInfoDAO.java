@@ -13,6 +13,7 @@ import dto.AcademicRecordDTO;
 import util.DatabaseUtil;
 
 // [AS-IS] 사용자 로그인 시 아이디로 받아온 학번/사번(userID)으로 DB에 접근하여 사용자 1명의 정보를 UserInfoDTO에 담아 반환
+// [TO-BE] DAO는 단일 책임 원칙 유지하면서 역할과 목적 차이에 따라 쿼리와 매핑 전략으로 분리
 public class UserInfoDAO {
 	// 1. 사용자의 본인 개인정보 조회(페이징 없음)
 	public List<UserInfoDTO> getMyInfo(String userID) {
@@ -87,7 +88,8 @@ public class UserInfoDAO {
 	
 	
 	// 3. Row-to-DTO 매핑을 분리하는 RowMapper 패턴
-    // DAO의 구조를 유지하면서 Service(Paging, UserInfo)에서 RowMapper 재사용	
+    // DAO의 구조를 유지하면서 Service(Paging, UserInfo)에서 RowMapper 재사용
+	/* [AS-IS] 확장 불가 RowMapper 패턴
 	public static final RowMapper<UserInfoDTO> ROW_MAPPER = resultSet -> {
 		UserInfoDTO userInfo = new UserInfoDTO();
 		// 개인정보 테이블 연결 객체 생성
@@ -110,10 +112,12 @@ public class UserInfoDAO {
     	return userInfo;
     	// 개인정보 배열 객체 반환    	
 	};
+	*/
 
 	
 	// 4. 사용자의 본인 개인정보 수정
 	// [TO-BE] 하나의 동적 쿼리로 변경된 필드만 업데이트(Java Persistence API [X] → Eclipse + JDBC)
+	@SuppressWarnings("finally")
 	public UserInfoDTO updateUserInfo(String userID, String phoneNumber, String officeNumber, 
             String email, String address) {
 		Connection connection = null;
@@ -185,8 +189,6 @@ public class UserInfoDAO {
 					updateStatement.executeUpdate();
 				}
 			}
-			
-			
 			connection.commit();
 			// 모든 DML 쿼리 업데이트
 	        // return true;
@@ -261,44 +263,3 @@ public class UserInfoDAO {
 		return null;	    
 	}
 }
-
-/*
- * [AS-IS] 정렬
-    public List<AcademicRecordDTO> getAcademicRecordsByCollege(String userInfoID)
-    	//	, String sortColumn, String sortOrder) {
-    {
-        // [수정 진행중] 정렬 파리미터인 sortColumn, sortOrder 반영
-    	// List<String> sortColumns = List.of("userID", "grade", "gradePoint", "academicYear", "semester");
-    	// 허용되지 않은 컬럼으로 정렬 시에는 기본값으로 수강학기로 필터링되도록 설정
-    	// if (!sortColumns.contains(sortColumn)) sortColumn = "semester";
-
-        // 동일 단과대학에 해당하는 수강생 정보를 가져오는 쿼리    	
-    	String recordQuery = """
-			SELECT
-				U.userID, U.name, P.college, P.major,
-			    R.courseName, R.grade, R.gradePoint, R.academicYear, R.semester
-			FROM USER U
-			JOIN PERSONAL_INFO P ON U.userID = P.userID
-			JOIN ACADEMIC_RECORD R ON U.userID = R.userID
-			WHERE P.college IN (
-				SELECT DISTINCT college FROM PERSONAL_INFO WHERE userID = ?
-			) 
-			ORDER BY R.semester DESC, U.name ASC""";
-        List<AcademicRecordDTO> classRecordsList = new ArrayList<>();
-        
-        try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(recordQuery)) {
-            
-            preparedStatement.setString(1, userInfoID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next()) {
-				AcademicRecordDTO academicRecord = ROW_MAPPER.mapRow(resultSet);
-				classRecordsList.add(academicRecord);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return classRecordsList;
-    }
- */
