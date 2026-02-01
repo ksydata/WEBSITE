@@ -49,46 +49,11 @@ public class UserInfoService {
     	if (role.isROLE_004()) { getTotalUserInfo(currentPage, UserInfoDAO.FULL_ROW_MAPPER); }
     	
         // 본인일 경우
-		// [AS-IS] TYPE ERROR + MASKING
-		UserInfoDTO myInfo = userInfoDAO.getMyInfo(userID, UserInfoDAO.COMMON_ROW_MAPPER);
-		maskSensitiveInfo(myInfo);
+    	userInfoDAO.getMyInfo(userID, UserInfoDAO.COMMON_ROW_MAPPER);
+		// [TO-BE] TYPE ERROR + MASKING    	
+		// UserInfoDTO myInfo = userInfoDAO.getMyInfo(userID, UserInfoDAO.COMMON_ROW_MAPPER);
+		// maskSensitiveInfo(myInfo);
 		// return myInfo;     
-    }
-    
-    // 마스킹 메서드
-    private void maskSensitiveInfo(UserInfoDTO userInfoDTO) {
-    	// 사용자 정보가 존재할 경우, 민감 정보 일부를 마스킹 처리
-    	if (userInfoDTO.getPhoneNumber() != null) {
-    		String phone = userInfoDTO.getPhoneNumber();
-            // userInfoDTO.getter method    
-    		
-            if (phone != null && phone.length() >= 4) {
-            	String maskedPhoneNumber = phone.replaceAll("(\\d{3}-\\d{4})-\\d{4}", "$1-****");
-            // 전화번호 뒷 4자리 마스킹 (예: 010-1234-****)
-            // (\\d{3}): 연속된 전화번호 앞 3자리 숫자
-            // (\\d{4}): 연속된 전화번호 가운데, 끝 4자리 숫자
-            
-    		userInfoDTO.setPhoneNumber(maskedPhoneNumber);
-            // userInfoDTO.setter method
-            }
-    	}
-    	
-    	if (userInfoDTO.getResidentNumber() != null) {            
-            String resident = userInfoDTO.getResidentNumber();
-            // userInfoDTO.getter method       
-            
-            if (resident != null && resident.length() >= 7) {
-                String maskedResidentNumber = resident.replaceAll("(\\d{6})-([1-4]{1})([0-9]{6})", "$1-$2******");
-                // 주민등록번호 뒷 6자리 마스킹 (예: 010101-1******)
-                // (\\d{6}): 연속된 주민등록번호 앞 6자리 숫자
-                // ([1-4]{1}): 주민번호 뒷자리 중 맨 앞자리 1~4 중 하나의 숫자
-                // ([0-9]{6}): 마스킹할 주민등록번호 뒷자리 7자리 중 끝 6자리
-                // String maskedResidentNumber = resident.substring(0, 9) + "******";
-
-                userInfoDTO.setResidentNumber(maskedResidentNumber);
-             // userInfoDTO.setter method
-            }	
-    	}
     }
     
     // 개인정보 수정 메서드

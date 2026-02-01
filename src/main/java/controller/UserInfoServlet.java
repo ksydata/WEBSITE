@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import dto.UserInfoDTO;
 import service.UserInfoService;
+import util.RoleEnum;
 
 @WebServlet("/userInfo")
 public class UserInfoServlet extends HttpServlet  {
@@ -22,30 +23,36 @@ public class UserInfoServlet extends HttpServlet  {
             throws ServletException, IOException {
 		// [TO-BE] UserInfoServlet에서 UserInfoFilter로 이관
 		// UTF-8로 인코딩 설정 (한글 깨짐 방지)
-        // request.setCharacterEncoding("UTF-8");
-        // response.setContentType("text/html;charset=UTF-8");
 		
         // 로그인 시 세션에 저장된 학번/사번 불러오기
         HttpSession session = request.getSession();
         String userID = (String) session.getAttribute("userID");
+        RoleEnum role = (RoleEnum) session.getAttribute("role");
 		
         // [TO-BE] UserInfoServlet에서 UserInfoFilter로 이관
-        // if (userID == null) {
-            // 세션이 없으면 로그인 페이지로 리다이렉트
-            // response.sendRedirect(request.getContextPath() + "/login.jsp");
-            // return;}
+        // 세션이 없으면 로그인 페이지로 리다이렉트
         
 		// UserInfoDAO를 직접 부르는 게 아니라 UserInfoService 통해 데이터 전송
         UserInfoService userInfoService = new UserInfoService();
-        UserInfoDTO userInfo = userInfoService.getUserInfo(userID);
 		
-		// 세션이 초기화되어 userID를 받아오지 못하고, userInfo 객체를 가져오지 못하는 Null 오류 발생
-		if (userInfo != null) {
-		    request.setAttribute("userInfo", userInfo);
-		    // JSP 페이지로 포워딩
-			request.getRequestDispatcher("/common/info/myPersonalInfo.jsp").forward(request, response);
+        // UserInfo 쪽에서는 AcademicRecord과 달리 ProfileViewMap 필요하지 않음
+        // 역할별로 보여줄 항목이 다르기 때문
+		try {
+			if (role.isROLE_001() || role.isROLE_002()) {
+				UserInfoDTO myInfo = userInfoService.getUserInfo(userID, role, 1);
+				// Type mismatch: cannot convert from void to UserInfoDTO
+			    request.setAttribute("userInfo", myInfo);
+			    // JSP 페이지로 포워딩
+
+			} else if (role.isROLE_003() || role.isROLE_004()) {
+				// [AS-IS] PagingDTO, PagingService
+				// request.setAttribute("pagingDTO", pagingDTO);
+			}
 			
-		} else {
+			request.getRequestDispatcher("/common/info/myPersonalInfo.jsp")
+				.forward(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
 			// [AS-IS] 아이디로 받아 세션에 저장된 사번으로 사용자 1명의 정보를 가져오지 못한 경우 메인으로 이동
 			response.sendRedirect(request.getContextPath() + "/main.jsp");
 		}
@@ -74,5 +81,6 @@ public class UserInfoServlet extends HttpServlet  {
         request.setAttribute("message", "개인정보가 성공적으로 수정되었습니다.");
         // 수정된 정보로 HTTP 웹에 다시 GET 메서드 수행 요청(데이터 조회)
         doGet(request, response);
+        // response.sendRedirect(request.getContextPath() + "/userInfo");
 	}
 }

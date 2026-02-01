@@ -19,10 +19,9 @@ import util.DatabaseUtil;
 // [TO-BE] DAO는 단일 책임 원칙 유지하면서 역할과 목적 차이에 따라 쿼리와 매핑 전략으로 분리
 public class UserInfoDAO {
 	// 1. 사용자의 본인 개인정보 조회(페이징 없음)
-	public List<UserInfoDTO> getMyInfo(String userID) {
-		List<UserInfoDTO> userInfoList = new ArrayList<>();
+	public UserInfoDTO getMyInfo(String userID, RowMapper<UserInfoDTO> mapper) {
+		// List<UserInfoDTO> userInfoList = new ArrayList<>();
 		// 로그인 성공했을 때 사용자 개인정보를 받기 위한 빈 배열 객체 생성(초기화)		
-		// UserInfoDTO userInfo = null;
 		
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회 또는 수정할 정보 불러오는 SQL 쿼리 
 		String userInfoSQL = """
@@ -43,51 +42,18 @@ public class UserInfoDAO {
 			// 쿼리(where절 userID = ?)에 사번 포함하여 쿼리 실행결과 담을 객체 생성
 			
 			if (resultSet.next()) {
-				UserInfoDTO userInfo = COMMON_ROW_MAPPER.mapRow(resultSet);
-				userInfoList.add(userInfo);
+				return mapper.mapRow(resultSet);
 	        } 	
 		} catch (Exception e) {
 			// 데이터베이스 오류 발생			
-			e.printStackTrace();
+			throw new RuntimeException("사용자 정보를 조회할 수 없습니다.", e);
 		}
     	// userID에 해당하는 사용자가 존재하지 않을 경우
     	return null;
 	}
 	
 	// 2. 관리자의 전체 사용자 개인정보 조회(페이징 적용)
-	public List<UserInfoDTO> getTotalInfo(int limit, int offset) {
-		List<UserInfoDTO> totalInfoList = new ArrayList<>();
-		// 로그인 성공했을 때 전체 개인정보를 받기 위한 빈 배열 객체 생성(초기화)		
-		
-		// 전체 개인정보 페이지에서 조회 또는 수정할 정보 불러오는 SQL 쿼리 
-		String totalInfoSQL = """
-				SELECT U.*, P.*
-				FROM USER U 
-				LEFT JOIN PERSONAL_INFO P
-				ON U.userID = P.userID
-				ORDER BY userID ASC
-				LIMIT ? OFFSET ?
-		""";
-		
-    	// USER 테이블에서 로그인 인증 관련 정보 추출 & PERSONAL_INFO 테이블에서 개인정보, 학사정보 추출
-		try (Connection connection = DatabaseUtil.getConnection();
-			 PreparedStatement totalInfoStatement = connection.prepareStatement(totalInfoSQL)) {	
-			totalInfoStatement.setInt(1, limit);
-			totalInfoStatement.setInt(2, offset);
-			ResultSet resultSet = totalInfoStatement.executeQuery();
-			// 쿼리(where절 userID = ?)에 사번 포함하여 쿼리 실행결과 담을 객체 생성
-			
-			if (resultSet.next()) {
-				UserInfoDTO userInfo = FULL_ROW_MAPPER.mapRow(resultSet);
-				totalInfoList.add(userInfo);
-	        } 	
-		} catch (Exception e) {
-			// 데이터베이스 오류 발생			
-			e.printStackTrace();
-		}
-    	// 사용자 개인정보가 존재하지 않을 경우
-    	return null;
-	}
+	// DAO와 Service 중복으로 삭제
 	
 	// 3. Row-to-DTO 매핑을 분리하는 RowMapper 패턴
 	// DAO의 구조를 유지하면서 Service(Paging, UserInfo)에서 RowMapper 재사용
