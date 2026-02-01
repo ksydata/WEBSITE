@@ -16,5 +16,8 @@ public class HandleAffairsMapper {
 		dto.setStatus(resultSet.getString("status"));
 		dto.setAddress(resultSet.getString("address"));
 		// PERSONAL_INFO 테이블 필드(학사정보)
+		
+		dto.setResidentNumber(resultSet.getString("residentNumber"));	                
+		// PERSONAL_INFO 테이블 필드(학사정보): 마스킹
 	};
 }

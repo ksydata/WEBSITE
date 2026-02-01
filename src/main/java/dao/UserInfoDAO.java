@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dao.PagingDAO.RowMapper;
+import dao.mapper.UserInfoRowMapper;
+import dao.mapper.HandleAffairsMapper;
+import dao.mapper.AdminViewMapper;
+
 import dto.UserInfoDTO;
-import dto.AcademicRecordDTO;
 import util.DatabaseUtil;
 
 // [AS-IS] 사용자 로그인 시 아이디로 받아온 학번/사번(userID)으로 DB에 접근하여 사용자 1명의 정보를 UserInfoDTO에 담아 반환
@@ -40,7 +43,7 @@ public class UserInfoDAO {
 			// 쿼리(where절 userID = ?)에 사번 포함하여 쿼리 실행결과 담을 객체 생성
 			
 			if (resultSet.next()) {
-				UserInfoDTO userInfo = ROW_MAPPER.mapRow(resultSet);
+				UserInfoDTO userInfo = COMMON_ROW_MAPPER.mapRow(resultSet);
 				userInfoList.add(userInfo);
 	        } 	
 		} catch (Exception e) {
@@ -75,7 +78,7 @@ public class UserInfoDAO {
 			// 쿼리(where절 userID = ?)에 사번 포함하여 쿼리 실행결과 담을 객체 생성
 			
 			if (resultSet.next()) {
-				UserInfoDTO userInfo = ROW_MAPPER.mapRow(resultSet);
+				UserInfoDTO userInfo = FULL_ROW_MAPPER.mapRow(resultSet);
 				totalInfoList.add(userInfo);
 	        } 	
 		} catch (Exception e) {
@@ -86,9 +89,19 @@ public class UserInfoDAO {
     	return null;
 	}
 	
-	
 	// 3. Row-to-DTO 매핑을 분리하는 RowMapper 패턴
-    // DAO의 구조를 유지하면서 Service(Paging, UserInfo)에서 RowMapper 재사용
+	// DAO의 구조를 유지하면서 Service(Paging, UserInfo)에서 RowMapper 재사용
+	public static final RowMapper<UserInfoDTO> COMMON_ROW_MAPPER = 
+			new UserInfoRowMapper(List.of(
+					HandleAffairsMapper.HANDLE_AFFAIRS)
+	);
+	
+	public static final RowMapper<UserInfoDTO> FULL_ROW_MAPPER = 
+			new UserInfoRowMapper(List.of(
+					HandleAffairsMapper.HANDLE_AFFAIRS,
+				    AdminViewMapper.ADMIN_VIEW)
+	);
+    
 	/* [AS-IS] 확장 불가 RowMapper 패턴
 	public static final RowMapper<UserInfoDTO> ROW_MAPPER = resultSet -> {
 		UserInfoDTO userInfo = new UserInfoDTO();
@@ -117,8 +130,8 @@ public class UserInfoDAO {
 	
 	// 4. 사용자의 본인 개인정보 수정
 	// [TO-BE] 하나의 동적 쿼리로 변경된 필드만 업데이트(Java Persistence API [X] → Eclipse + JDBC)
-	@SuppressWarnings("finally")
-	public UserInfoDTO updateUserInfo(String userID, String phoneNumber, String officeNumber, 
+	// @SuppressWarnings("finally")
+	public void updateUserInfo(String userID, String phoneNumber, String officeNumber, 
             String email, String address) {
 		Connection connection = null;
 		// DB 연결 객체 초기화
@@ -191,14 +204,17 @@ public class UserInfoDAO {
 			}
 			connection.commit();
 			// 모든 DML 쿼리 업데이트
-	        // return true;
+
 		} catch(Exception e) {
+			try { if (connection != null) connection.rollback(); }
+			catch (SQLException ignore) {}
 			// 예외 발생 시 트랜잭션 롤백
-			e.printStackTrace();
-	        // return false;
+			throw new RuntimeException("개인정보 수정에 실패하였습니다.", e);
+
 		} finally {
+			try { if (connection != null) connection.close(); }
+			catch (SQLException ignore) {}
 			// 트랜잭션 종료 후 자원 해제
-			return null;
 		}
 	}	
 	
