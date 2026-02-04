@@ -79,7 +79,7 @@
 
 			<!-- 교직원 권한 -->
 			<c:when test="${sessionScope.userRole.isROLE_003()}">
-				<a href="<c:url value='/studentPersonalInfo' />" class="btn btn-dark m-2">
+				<a href="studentPersonalInfo.jsp" class="btn btn-dark m-2">
 					학생 개인정보 조회
 				</a>
 			</c:when>

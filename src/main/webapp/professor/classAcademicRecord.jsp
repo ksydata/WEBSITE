@@ -122,7 +122,7 @@
 
 <!-- 하단 영역의 메인 페이지로 돌아가는 링크 -->
 <br>
-<a href="<c:url value='professor/main.jsp' />" class="btn btn-secondary">메인으로 돌아가기</a>
+<a href="<c:url value='common/main.jsp' />" class="btn btn-secondary">메인으로 돌아가기</a>
 <!-- 공통 푸터 -->
 <jsp:include page="../include/footer.jsp" />
 <script src="../js/bootstrap.bundle.min.js"></script>

@@ -28,8 +28,8 @@ public class AcademicRecordService {
 		pagingService = new PagingService();
 	}
 	
-	// 학번/사번(userID)를 받아 학사정보를 가져오는 서비스 메서드
-	public AcademicRecordDTO getAcademicRecord(String userID, RoleEnum role, String college, 
+	// 학번/사번(userID)를 받아 학사정보 페이지를 가져오는 서비스 메서드
+	public PagingDTO<AcademicRecordDTO> getAcademicRecord(String userID, RoleEnum role, String college, 
 			int currentPage) { 
 			// int limit, int offset
 		

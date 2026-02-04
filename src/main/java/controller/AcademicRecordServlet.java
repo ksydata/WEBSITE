@@ -144,8 +144,14 @@ public class AcademicRecordServlet extends HttpServlet {
 		AcademicRecordService service = new AcademicRecordService();
 
 	    // 1. 프로필용 AcademicRecordDTO (대표 1건)
-	    AcademicRecordDTO recordDTO =
+		PagingDTO<AcademicRecordDTO> recordPage =
 	            service.getAcademicRecord(userID, RoleEnum.ROLE_001, null, 1);
+		List<AcademicRecordDTO> recordList = recordPage.getPagingDataList();
+		
+		AcademicRecordDTO recordDTO = null;
+		if (recordList != null && !recordList.isEmpty()) {
+		    recordDTO = recordList.get(0); // 대표 1건
+		}
 
 	    // 2. profileViewMap 구성
 	    Map<String, String> profileViewMap = new LinkedHashMap<>();
@@ -178,13 +184,13 @@ public class AcademicRecordServlet extends HttpServlet {
 	    }
 
 	    // 1. 프로필용 AcademicRecordDTO
-	    AcademicRecordDTO recordDTO =
-	            service.getAcademicRecord(
-	                    professorID,
-	                    RoleEnum.ROLE_002,
-	                    college,
-	                    currentPage
-	            );
+//	    PagingDTO<AcademicRecordDTO> recordDTO =
+//	            service.getAcademicRecord(
+//	                    professorID,
+//	                    RoleEnum.ROLE_002,
+//	                    college,
+//	                    currentPage
+//	            );
 
 	    // 2. profileViewMap 구성
 	    Map<String, String> profileViewMap = new LinkedHashMap<>();
@@ -215,13 +221,13 @@ public class AcademicRecordServlet extends HttpServlet {
 	    }
 
 	    // 1. 프로필용 AcademicRecordDTO
-	    AcademicRecordDTO recordDTO =
-	            service.getAcademicRecord(
-	                    adminID,
-	                    RoleEnum.ROLE_004,
-	                    null,
-	                    currentPage
-	            );
+//	    PagingDTO<AcademicRecordDTO> recordDTO =
+//	            service.getAcademicRecord(
+//	                    adminID,
+//	                    RoleEnum.ROLE_004,
+//	                    null,
+//	                    currentPage
+//	            );
 
 	    // 2. profileViewMap 구성
 	    Map<String, String> profileViewMap = new LinkedHashMap<>();
