@@ -1,7 +1,5 @@
 package controller.professor;
 
-import dao.ProfessorDAO;
-import dto.ProfessorDTO;
 import dto.UserInfoDTO;
 import service.AcademicRecordService;
 import service.UserInfoService;
@@ -9,7 +7,6 @@ import util.RoleEnum;
 import dto.AcademicRecordDTO;
 import dto.PagingDTO;
 
-import java.util.List;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
