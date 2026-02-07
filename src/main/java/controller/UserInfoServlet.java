@@ -72,7 +72,8 @@ public class UserInfoServlet extends HttpServlet  {
         	userInfoService.updateUserInfo(userID, phoneNumber, officeNumber, email, address);
             request.setAttribute("message", "개인정보가 성공적으로 수정되었습니다.");
             // 개인정보 수정 완료 후 알림
-            doGet(request, response);
+            response.sendRedirect(request.getContextPath() + "/userInfo?updated=true");
+            // [Post-Redirect-Get 패턴] doGet(request, response);
             // 수정된 정보로 HTTP 웹에 다시 GET 메서드 수행 요청(데이터 조회)
         } catch (Exception e) {
 			e.printStackTrace();

@@ -18,7 +18,7 @@
     
 	<!-- 개인정보 수정완료 메시지 출력 -->
 	<c:if test="${not empty message}">
-		<div class="alert alert-sucess">${message}></div>
+		<div class="alert alert-success">${message}</div>
 	</c:if>    
 	<!-- UserInfoDTO 객체인 userInfo가 공백일 경우 경고 메시지 표시 -->
 	<c:if test="${empty userInfo}">
@@ -27,6 +27,7 @@
 
 
 	<!-- 세션에 저장된 UserInfoDTO 객체인 userInfo를 불러와 만든 나의 개인정보 조회 카드 -->
+	<!-- [AS-IS] c:choose 태그를 쓰거나 공통 필드를 먼저 출력하고, 권한별로 추가 필드만 조건부로 출력 -->
 
     <!-- 기본 정보 카드(읽기 전용) -->
 	<div class="card mb-4">
@@ -34,7 +35,7 @@
 	    <div class="card-body">
 
         <!-- ▷ 관리자 권한(admin) -->
-        <c:if test="${sessionScope.userRole eq 'ROLE_004'}">
+        <c:if test="${sessionScope.role eq 'ROLE_004'}">
             <p><strong>사번:</strong> ${userInfo.userID}</p>
             <p><strong>이름:</strong> ${userInfo.name}</p>
             <p><strong>생년월일:</strong> ${userInfo.residentNumber}</p>
@@ -45,7 +46,7 @@
         </c:if>
 
         <!-- ▷ 교직원 권한(employee) -->
-        <c:if test="${sessionScope.userRole eq 'ROLE_003'}">
+        <c:if test="${sessionScope.role eq 'ROLE_003'}">
             <p><strong>사번:</strong> ${userInfo.userID}</p>
             <p><strong>이름:</strong> ${userInfo.name}</p>
             <p><strong>생년월일:</strong> ${userInfo.residentNumber}</p>
@@ -56,7 +57,7 @@
         </c:if>
         
         <!-- ▷ 교수 권한(professor) -->
-        <c:if test="${sessionScope.userRole eq 'ROLE_002'}">
+        <c:if test="${sessionScope.role eq 'ROLE_002'}">
             <p><strong>사번:</strong> ${userInfo.userID}</p>
             <p><strong>이름:</strong> ${userInfo.name}</p>
             <p><strong>생년월일:</strong> ${userInfo.residentNumber}</p>
@@ -64,12 +65,13 @@
             <p><strong>전공:</strong> ${userInfo.major}</p>
             <p><strong>상태:</strong> ${userInfo.status}</p>
             <p><strong>휴대전화번호:</strong> ${userInfo.phoneNumber}</p>
+            <p><strong>휴대전화번호:</strong> ${userInfo.officeNumber}</p>            
             <p><strong>이메일:</strong> ${userInfo.email}</p> 
             <p><strong>주소:</strong> ${userInfo.address}</p>   
         </c:if>
 
         <!-- ▷ 학생 권한(student) -->
-        <c:if test="${sessionScope.userRole eq 'ROLE_001'}">
+        <c:if test="${sessionScope.role eq 'ROLE_001'}">
             <p><strong>학번:</strong> ${userInfo.userID}</p>
             <p><strong>이름:</strong> ${userInfo.name}</p>
             <p><strong>생년월일:</strong> ${userInfo.residentNumber}</p>
