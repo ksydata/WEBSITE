@@ -35,26 +35,18 @@ public class UserInfoServlet extends HttpServlet  {
 		// UserInfoDAO를 직접 부르는 게 아니라 UserInfoService 통해 데이터 전송
         UserInfoService userInfoService = new UserInfoService();
 		
-        // UserInfo 쪽에서는 AcademicRecord과 달리 ProfileViewMap 필요하지 않음
+        // [TO-BE] UserInfo 쪽에서는 AcademicRecord과 달리 ProfileViewMap 필요하지 않음
         // 역할별로 보여줄 항목이 다르기 때문
 		try {
-			if (role.isROLE_001() || role.isROLE_002()) {
-				UserInfoDTO myInfo = userInfoService.getUserInfo(userID, role, 1);
-				// Type mismatch: cannot convert from void to UserInfoDTO
-			    request.setAttribute("userInfo", myInfo);
-			    // JSP 페이지로 포워딩
-
-			} else if (role.isROLE_003() || role.isROLE_004()) {
-				// [AS-IS] PagingDTO, PagingService
-				// request.setAttribute("pagingDTO", pagingDTO);
-			}
+			UserInfoDTO userInfo = userInfoService.getUserInfo(userID, role, 1);
+			request.setAttribute("userInfo", userInfo);
+			request.getRequestDispatcher("/common/info/myPersonalInfo.jsp").forward(request, response);
+			// jsp 페이지로 포워딩
 			
-			request.getRequestDispatcher("/common/info/myPersonalInfo.jsp")
-				.forward(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
-			// [AS-IS] 아이디로 받아 세션에 저장된 사번으로 사용자 1명의 정보를 가져오지 못한 경우 메인으로 이동
 			response.sendRedirect(request.getContextPath() + "/main.jsp");
+			// 아이디로 받아 세션에 저장된 사번으로 사용자 1명의 정보를 가져오지 못한 경우 메인으로 이동
 		}
 	}
 	
@@ -75,12 +67,17 @@ public class UserInfoServlet extends HttpServlet  {
         
         // 비즈니스 로직을 정의한 Service 계층 호출하여 DB 테이블에 사용자에 의해 수정된 개인정보 업데이트
         UserInfoService userInfoService = new UserInfoService();
-        userInfoService.updateUserInfo(userID, phoneNumber, officeNumber, email, address);
         
-        // 개인정보 수정 완료 후 알림
-        request.setAttribute("message", "개인정보가 성공적으로 수정되었습니다.");
-        // 수정된 정보로 HTTP 웹에 다시 GET 메서드 수행 요청(데이터 조회)
-        doGet(request, response);
-        // response.sendRedirect(request.getContextPath() + "/userInfo");
+        try {
+        	userInfoService.updateUserInfo(userID, phoneNumber, officeNumber, email, address);
+            request.setAttribute("message", "개인정보가 성공적으로 수정되었습니다.");
+            // 개인정보 수정 완료 후 알림
+            doGet(request, response);
+            // 수정된 정보로 HTTP 웹에 다시 GET 메서드 수행 요청(데이터 조회)
+        } catch (Exception e) {
+			e.printStackTrace();
+			response.sendRedirect(request.getContextPath() + "/main.jsp");
+			// 아이디로 받아 세션에 저장된 사번으로 사용자 1명의 정보를 변경하지 못한 경우 메인으로 이동
+        }
 	}
 }

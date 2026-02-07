@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import dao.PagingDAO.RowMapper;
 import dao.mapper.UserInfoRowMapper;
@@ -43,13 +44,14 @@ public class UserInfoDAO {
 			
 			if (resultSet.next()) {
 				return mapper.mapRow(resultSet);
-	        } 	
+	        } else {
+	        	throw new NoSuchElementException("해당 사용자가 존재하지 않습니다.");
+	        	// userID에 해당하는 사용자가 존재하지 않을 경우
+	        }
 		} catch (Exception e) {
 			// 데이터베이스 오류 발생			
 			throw new RuntimeException("사용자 정보를 조회할 수 없습니다.", e);
 		}
-    	// userID에 해당하는 사용자가 존재하지 않을 경우
-    	return null;
 	}
 	
 	// 2. 관리자의 전체 사용자 개인정보 조회(페이징 적용)
