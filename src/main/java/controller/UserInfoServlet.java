@@ -9,8 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import dto.PagingDTO;
 import dto.UserInfoDTO;
 import service.UserInfoService;
+import util.RoleEnum;
 
 @WebServlet("/userInfo")
 public class UserInfoServlet extends HttpServlet  {
@@ -22,32 +24,43 @@ public class UserInfoServlet extends HttpServlet  {
             throws ServletException, IOException {
 		// [TO-BE] UserInfoServlet에서 UserInfoFilter로 이관
 		// UTF-8로 인코딩 설정 (한글 깨짐 방지)
-        // request.setCharacterEncoding("UTF-8");
-        // response.setContentType("text/html;charset=UTF-8");
 		
         // 로그인 시 세션에 저장된 학번/사번 불러오기
         HttpSession session = request.getSession();
         String userID = (String) session.getAttribute("userID");
+        RoleEnum role = (RoleEnum) session.getAttribute("role");
 		
         // [TO-BE] UserInfoServlet에서 UserInfoFilter로 이관
-        // if (userID == null) {
-            // 세션이 없으면 로그인 페이지로 리다이렉트
-            // response.sendRedirect(request.getContextPath() + "/login.jsp");
-            // return;}
+        // 세션이 없으면 로그인 페이지로 리다이렉트
         
 		// UserInfoDAO를 직접 부르는 게 아니라 UserInfoService 통해 데이터 전송
         UserInfoService userInfoService = new UserInfoService();
-        UserInfoDTO userInfo = userInfoService.getUserInfo(userID);
 		
-		// 세션이 초기화되어 userID를 받아오지 못하고, userInfo 객체를 가져오지 못하는 Null 오류 발생
-		if (userInfo != null) {
-		    request.setAttribute("userInfo", userInfo);
-		    // JSP 페이지로 포워딩
-			request.getRequestDispatcher("/common/info/myPersonalInfo.jsp").forward(request, response);
+        // [TO-BE] UserInfo 쪽에서는 AcademicRecord과 달리 ProfileViewMap 필요하지 않음
+        // 역할별로 보여줄 항목이 다르기 때문
+		try {			
+			if (role.isROLE_003() || role.isROLE_004()) {
+			    // 현재 페이지 번호 가져오기
+			    int currentPage = 1;
+			    if (request.getParameter("page") != null) {
+			        currentPage = Integer.parseInt(request.getParameter("page"));
+			    }		
+				// 교직원/관리자가 전체 사용자 개인정보 리스트 조회 요청하는 경우 
+	            PagingDTO<UserInfoDTO> userList = userInfoService.getAllUsersInfo(role, currentPage);
+	            request.setAttribute("userList", userList);
+	            request.getRequestDispatcher("/common/info/userPersonalInfoList.jsp").forward(request, response);
 			
-		} else {
-			// [AS-IS] 아이디로 받아 세션에 저장된 사번으로 사용자 1명의 정보를 가져오지 못한 경우 메인으로 이동
+			} else {
+				// 사용자가 본인의 개인정보를 조회 요청하는 경우 
+				UserInfoDTO userInfo = userInfoService.getUserInfo(userID);
+				request.setAttribute("userInfo", userInfo);
+				request.getRequestDispatcher("/common/info/myPersonalInfo.jsp").forward(request, response);
+				// jsp 페이지로 포워딩
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 			response.sendRedirect(request.getContextPath() + "/main.jsp");
+			// 아이디로 받아 세션에 저장된 사번으로 사용자 1명의 정보를 가져오지 못한 경우 메인으로 이동
 		}
 	}
 	
@@ -68,11 +81,18 @@ public class UserInfoServlet extends HttpServlet  {
         
         // 비즈니스 로직을 정의한 Service 계층 호출하여 DB 테이블에 사용자에 의해 수정된 개인정보 업데이트
         UserInfoService userInfoService = new UserInfoService();
-        userInfoService.updateUserInfo(userID, phoneNumber, officeNumber, email, address);
         
-        // 개인정보 수정 완료 후 알림
-        request.setAttribute("message", "개인정보가 성공적으로 수정되었습니다.");
-        // 수정된 정보로 HTTP 웹에 다시 GET 메서드 수행 요청(데이터 조회)
-        doGet(request, response);
+        try {
+        	userInfoService.updateUserInfo(userID, phoneNumber, officeNumber, email, address);
+            request.setAttribute("message", "개인정보가 성공적으로 수정되었습니다.");
+            // 개인정보 수정 완료 후 알림
+            response.sendRedirect(request.getContextPath() + "/userInfo?updated=true");
+            // [Post-Redirect-Get 패턴] doGet(request, response);
+            // 수정된 정보로 HTTP 웹에 다시 GET 메서드 수행 요청(데이터 조회)
+        } catch (Exception e) {
+			e.printStackTrace();
+			response.sendRedirect(request.getContextPath() + "/main.jsp");
+			// 아이디로 받아 세션에 저장된 사번으로 사용자 1명의 정보를 변경하지 못한 경우 메인으로 이동
+        }
 	}
 }

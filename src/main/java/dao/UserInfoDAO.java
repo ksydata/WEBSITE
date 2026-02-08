@@ -6,19 +6,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import dao.PagingDAO.RowMapper;
+import dao.mapper.UserInfoRowMapper;
+import dao.mapper.HandleAffairsMapper;
+import dao.mapper.AdminViewMapper;
+
 import dto.UserInfoDTO;
-import dto.AcademicRecordDTO;
 import util.DatabaseUtil;
 
 // [AS-IS] 사용자 로그인 시 아이디로 받아온 학번/사번(userID)으로 DB에 접근하여 사용자 1명의 정보를 UserInfoDTO에 담아 반환
+// [TO-BE] DAO는 단일 책임 원칙 유지하면서 역할과 목적 차이에 따라 쿼리와 매핑 전략으로 분리
 public class UserInfoDAO {
 	// 1. 사용자의 본인 개인정보 조회(페이징 없음)
-	public List<UserInfoDTO> getMyInfo(String userID) {
-		List<UserInfoDTO> userInfoList = new ArrayList<>();
+	public UserInfoDTO getMyInfo(String userID, RowMapper<UserInfoDTO> mapper) {
+		// List<UserInfoDTO> userInfoList = new ArrayList<>();
 		// 로그인 성공했을 때 사용자 개인정보를 받기 위한 빈 배열 객체 생성(초기화)		
-		// UserInfoDTO userInfo = null;
 		
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회 또는 수정할 정보 불러오는 SQL 쿼리 
 		String userInfoSQL = """
@@ -39,55 +43,34 @@ public class UserInfoDAO {
 			// 쿼리(where절 userID = ?)에 사번 포함하여 쿼리 실행결과 담을 객체 생성
 			
 			if (resultSet.next()) {
-				UserInfoDTO userInfo = ROW_MAPPER.mapRow(resultSet);
-				userInfoList.add(userInfo);
-	        } 	
+				return mapper.mapRow(resultSet);
+	        } else {
+	        	throw new NoSuchElementException("해당 사용자가 존재하지 않습니다.");
+	        	// userID에 해당하는 사용자가 존재하지 않을 경우
+	        }
 		} catch (Exception e) {
 			// 데이터베이스 오류 발생			
-			e.printStackTrace();
+			throw new RuntimeException("사용자 정보를 조회할 수 없습니다.", e);
 		}
-    	// userID에 해당하는 사용자가 존재하지 않을 경우
-    	return null;
 	}
 	
 	// 2. 관리자의 전체 사용자 개인정보 조회(페이징 적용)
-	public List<UserInfoDTO> getTotalInfo(int limit, int offset) {
-		List<UserInfoDTO> totalInfoList = new ArrayList<>();
-		// 로그인 성공했을 때 전체 개인정보를 받기 위한 빈 배열 객체 생성(초기화)		
-		
-		// 전체 개인정보 페이지에서 조회 또는 수정할 정보 불러오는 SQL 쿼리 
-		String totalInfoSQL = """
-				SELECT U.*, P.*
-				FROM USER U 
-				LEFT JOIN PERSONAL_INFO P
-				ON U.userID = P.userID
-				ORDER BY userID ASC
-				LIMIT ? OFFSET ?
-		""";
-		
-    	// USER 테이블에서 로그인 인증 관련 정보 추출 & PERSONAL_INFO 테이블에서 개인정보, 학사정보 추출
-		try (Connection connection = DatabaseUtil.getConnection();
-			 PreparedStatement totalInfoStatement = connection.prepareStatement(totalInfoSQL)) {	
-			totalInfoStatement.setInt(1, limit);
-			totalInfoStatement.setInt(2, offset);
-			ResultSet resultSet = totalInfoStatement.executeQuery();
-			// 쿼리(where절 userID = ?)에 사번 포함하여 쿼리 실행결과 담을 객체 생성
-			
-			if (resultSet.next()) {
-				UserInfoDTO userInfo = ROW_MAPPER.mapRow(resultSet);
-				totalInfoList.add(userInfo);
-	        } 	
-		} catch (Exception e) {
-			// 데이터베이스 오류 발생			
-			e.printStackTrace();
-		}
-    	// 사용자 개인정보가 존재하지 않을 경우
-    	return null;
-	}
-	
+	// DAO와 Service 중복으로 삭제
 	
 	// 3. Row-to-DTO 매핑을 분리하는 RowMapper 패턴
-    // DAO의 구조를 유지하면서 Service(Paging, UserInfo)에서 RowMapper 재사용	
+	// DAO의 구조를 유지하면서 Service(Paging, UserInfo)에서 RowMapper 재사용
+	public static final RowMapper<UserInfoDTO> COMMON_ROW_MAPPER = 
+			new UserInfoRowMapper(List.of(
+					HandleAffairsMapper.HANDLE_AFFAIRS)
+	);
+	
+	public static final RowMapper<UserInfoDTO> FULL_ROW_MAPPER = 
+			new UserInfoRowMapper(List.of(
+					HandleAffairsMapper.HANDLE_AFFAIRS,
+				    AdminViewMapper.ADMIN_VIEW)
+	);
+    
+	/* [AS-IS] 확장 불가 RowMapper 패턴
 	public static final RowMapper<UserInfoDTO> ROW_MAPPER = resultSet -> {
 		UserInfoDTO userInfo = new UserInfoDTO();
 		// 개인정보 테이블 연결 객체 생성
@@ -110,11 +93,13 @@ public class UserInfoDAO {
     	return userInfo;
     	// 개인정보 배열 객체 반환    	
 	};
+	*/
 
 	
 	// 4. 사용자의 본인 개인정보 수정
 	// [TO-BE] 하나의 동적 쿼리로 변경된 필드만 업데이트(Java Persistence API [X] → Eclipse + JDBC)
-	public UserInfoDTO updateUserInfo(String userID, String phoneNumber, String officeNumber, 
+	// @SuppressWarnings("finally")
+	public void updateUserInfo(String userID, String phoneNumber, String officeNumber, 
             String email, String address) {
 		Connection connection = null;
 		// DB 연결 객체 초기화
@@ -185,18 +170,19 @@ public class UserInfoDAO {
 					updateStatement.executeUpdate();
 				}
 			}
-			
-			
 			connection.commit();
 			// 모든 DML 쿼리 업데이트
-	        // return true;
+
 		} catch(Exception e) {
+			try { if (connection != null) connection.rollback(); }
+			catch (SQLException ignore) {}
 			// 예외 발생 시 트랜잭션 롤백
-			e.printStackTrace();
-	        // return false;
+			throw new RuntimeException("개인정보 수정에 실패하였습니다.", e);
+
 		} finally {
+			try { if (connection != null) connection.close(); }
+			catch (SQLException ignore) {}
 			// 트랜잭션 종료 후 자원 해제
-			return null;
 		}
 	}	
 	
@@ -261,44 +247,3 @@ public class UserInfoDAO {
 		return null;	    
 	}
 }
-
-/*
- * [AS-IS] 정렬
-    public List<AcademicRecordDTO> getAcademicRecordsByCollege(String userInfoID)
-    	//	, String sortColumn, String sortOrder) {
-    {
-        // [수정 진행중] 정렬 파리미터인 sortColumn, sortOrder 반영
-    	// List<String> sortColumns = List.of("userID", "grade", "gradePoint", "academicYear", "semester");
-    	// 허용되지 않은 컬럼으로 정렬 시에는 기본값으로 수강학기로 필터링되도록 설정
-    	// if (!sortColumns.contains(sortColumn)) sortColumn = "semester";
-
-        // 동일 단과대학에 해당하는 수강생 정보를 가져오는 쿼리    	
-    	String recordQuery = """
-			SELECT
-				U.userID, U.name, P.college, P.major,
-			    R.courseName, R.grade, R.gradePoint, R.academicYear, R.semester
-			FROM USER U
-			JOIN PERSONAL_INFO P ON U.userID = P.userID
-			JOIN ACADEMIC_RECORD R ON U.userID = R.userID
-			WHERE P.college IN (
-				SELECT DISTINCT college FROM PERSONAL_INFO WHERE userID = ?
-			) 
-			ORDER BY R.semester DESC, U.name ASC""";
-        List<AcademicRecordDTO> classRecordsList = new ArrayList<>();
-        
-        try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(recordQuery)) {
-            
-            preparedStatement.setString(1, userInfoID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next()) {
-				AcademicRecordDTO academicRecord = ROW_MAPPER.mapRow(resultSet);
-				classRecordsList.add(academicRecord);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return classRecordsList;
-    }
- */
