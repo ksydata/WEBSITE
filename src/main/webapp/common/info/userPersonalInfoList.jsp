@@ -31,17 +31,17 @@
     		</tr>
     	</thead>
     	<tbody>
-    		<c:forEach var="user" items="${userInfo}">
+    		<c:forEach var="user" items="${userList.items}">
     			<tr>
-    				<td>${user.userID}</td>
-    				<td>${user.name}</td>
-    				<td>${user.residentNumber}</td>
-    				<td>${user.college}</td>
-    				<td>${user.major}</td>
-    				<td>${user.status}</td>
-    				<td>${user.phoneNumber}</td>
-    				<td>${user.email}</td>
-    				<td>${user.address}</td>    				    							
+    				<td>${userlist.userID}</td>
+    				<td>${userlist.name}</td>
+    				<td>${userlist.residentNumber}</td>
+    				<td>${userlist.college}</td>
+    				<td>${userlist.major}</td>
+    				<td>${userlist.status}</td>
+    				<td>${userlist.phoneNumber}</td>
+    				<td>${userlist.email}</td>
+    				<td>${userlist.address}</td>    				    							
     			</tr>
     		</c:forEach>
     	</tbody>

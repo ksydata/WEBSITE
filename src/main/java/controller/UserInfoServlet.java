@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import dto.PagingDTO;
 import dto.UserInfoDTO;
 import service.UserInfoService;
 import util.RoleEnum;
@@ -37,12 +38,25 @@ public class UserInfoServlet extends HttpServlet  {
 		
         // [TO-BE] UserInfo 쪽에서는 AcademicRecord과 달리 ProfileViewMap 필요하지 않음
         // 역할별로 보여줄 항목이 다르기 때문
-		try {
-			UserInfoDTO userInfo = userInfoService.getUserInfo(userID, role, 1);
-			request.setAttribute("userInfo", userInfo);
-			request.getRequestDispatcher("/common/info/myPersonalInfo.jsp").forward(request, response);
-			// jsp 페이지로 포워딩
+		try {			
+			if (role.isROLE_003() || role.isROLE_004()) {
+			    // 현재 페이지 번호 가져오기
+			    int currentPage = 1;
+			    if (request.getParameter("page") != null) {
+			        currentPage = Integer.parseInt(request.getParameter("page"));
+			    }		
+				// 교직원/관리자가 전체 사용자 개인정보 리스트 조회 요청하는 경우 
+	            PagingDTO<UserInfoDTO> userList = userInfoService.getAllUsersInfo(role, currentPage);
+	            request.setAttribute("userList", userList);
+	            request.getRequestDispatcher("/common/info/userPersonalInfoList.jsp").forward(request, response);
 			
+			} else {
+				// 사용자가 본인의 개인정보를 조회 요청하는 경우 
+				UserInfoDTO userInfo = userInfoService.getUserInfo(userID);
+				request.setAttribute("userInfo", userInfo);
+				request.getRequestDispatcher("/common/info/myPersonalInfo.jsp").forward(request, response);
+				// jsp 페이지로 포워딩
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.sendRedirect(request.getContextPath() + "/main.jsp");

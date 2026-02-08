@@ -36,18 +36,13 @@ public class UserInfoService {
 	 * 교직원: 전체 사용자 정보 (공통)
 	 * 관리자: 전체 사용자 정보 (공통 + 전용)
 	 */
-    public UserInfoDTO getUserInfo(String userID, RoleEnum role, int currentPage) {
+    public UserInfoDTO getUserInfo(String userID) {
 		if (userID == null || userID.isEmpty()) {
 			// @WebFilter(gate keeper)에서 접근 가능성 검증하지만, Service에서 또 쓰이는 이유는 
 			// Service는 권한별 비즈니스 로직 실행에 대해 다른 Servlet 등에서도 호출될 수 있기 때문에 의도적으로 중복			
 			throw new IllegalArgumentException("학번/사번이 유효하지 않습니다.");
 		}
-        // 역할이 교직원일 경우 
-    	if (role.isROLE_003()) { getTotalUserInfo(currentPage, UserInfoDAO.COMMON_ROW_MAPPER); }
-    	
-        // 역할이 관리자일 경우 
-    	if (role.isROLE_004()) { getTotalUserInfo(currentPage, UserInfoDAO.FULL_ROW_MAPPER); }
-    	
+		
         // 본인일 경우
     	UserInfoDTO myInfo = userInfoDAO.getMyInfo(userID, UserInfoDAO.COMMON_ROW_MAPPER);
 		// [TO-BE] TYPE ERROR + MASKING    	
@@ -55,6 +50,19 @@ public class UserInfoService {
 		// maskSensitiveInfo(myInfo);
 		return myInfo;     
     }
+    
+    public PagingDTO<UserInfoDTO> getAllUsersInfo(RoleEnum role, int currentPage) {
+        // 역할이 교직원일 경우 
+    	if (role.isROLE_003()) { 
+    		return getTotalUserInfo(currentPage, UserInfoDAO.COMMON_ROW_MAPPER); 
+    	}
+        // 역할이 관리자일 경우 
+    	if (role.isROLE_004()) { 
+    		return getTotalUserInfo(currentPage, UserInfoDAO.FULL_ROW_MAPPER); 
+    	}
+    	throw new IllegalArgumentException("해당 데이터나 페이지에 접근할 수 있는 권한이 없는 계정입니다.");
+    }
+    
     
     // 개인정보 수정 메서드
 	public void updateUserInfo(String userID, String phoneNumber, String officeNumber, 
