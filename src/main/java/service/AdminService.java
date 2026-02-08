@@ -1,5 +1,6 @@
 package service;
 
+import dao.AdminInfoDAO;
 import dao.AdminListDAO;
 import dao.AdminPageDAO;
 import dao.AdminSearchDAO;
@@ -48,7 +49,7 @@ public class AdminService {
     
     // 개인정보 상세 페이지 출력
     public AdminPersonalInfoDTO getUserInfo(String userID) {
-    	AdminPageDAO dao = new AdminPageDAO();
+    	AdminInfoDAO dao = new AdminInfoDAO();
     	return dao.getUserInfo(userID);
     }
     
@@ -59,9 +60,142 @@ public class AdminService {
         return dao.getUserListByRoleWithPagingAndSorting(role, offset, pageSize, sortOrder, orderField);
     }
 
+    // 유저 수 세기
     public int getTotalUserCount(String role) {
     	AdminListDAO dao = new AdminListDAO();
         return dao.countUsersByRole(role);
+    }
+    
+    // 관리자 본인 개인정보 가져오는 서비스 메서드
+    public AdminPersonalInfoDTO getAdminInfo(String userID) {
+    	if (userID == null || userID.isEmpty()) {
+            // userID가 비어있으면 null 반환
+            return null;
+        }
+        // DAO를 통해 DB에서 관리자 정보 조회
+    	AdminPageDAO adminDAO = new AdminPageDAO();
+    	AdminPersonalInfoDTO admin = adminDAO.getMyInfo(userID);
+
+        // 교수 정보가 존재할 경우, 민감 정보 일부를 마스킹 처리
+        if (admin != null) {
+            // 전화번호 뒷 4자리 마스킹 (예: 010-1234-****)
+            // ProfessorDTO.getter method            
+        	String phone = admin.getPhoneNumber();
+            if (phone != null && phone.length() >= 4) {
+                String maskedPhoneNum = phone.substring(0, phone.length() - 4) + "****";
+                // ProfessorDTO.setter method
+                admin.setPhoneNumber(maskedPhoneNum);
+            }
+
+            // 주민등록번호 뒷 6자리 마스킹 (예: 010101-1******)
+            // ProfessorDTO.getter method            
+            String resident = admin.getResidentNumber();
+            if (resident != null && resident.length() >= 7) {
+                String maskedResidentNum = resident.substring(0, 7) + "******";
+                // ProfessorDTO.setter method
+                admin.setResidentNumber(maskedResidentNum);
+            }
+        }
+        
+        // ProfessorDTO의 객체인 학생 1명의 정보를 리턴
+        return admin;
+    }
+    
+    // 개인정보 수정 페이지에 기존 데이터를 띄우기 위한 목적으로 어떻게 서블릿 - JSP 구조를 활용할 것인가?
+    // updateMyInfo.jsp 를 보여주기 위한 servlet이 필요하고 그걸 기반으로 수정 전 데이터를 띄워주도록 진행해야 함
+    // 수정 전 기존 데이터를 가져오기 위한 서비스를 AdminInfoDAO의 getUserInfo를 쪼개는 방식으로 메서드 만들기
+    // 비슷한 원리로, getUserInfo를 쪼개서 비밀번호 수정 시 확인에 필요한 데이터를 가져오고 비밀번호 수정에 활용하는 코드도 삽입해야 함
+        
+    
+    // 본인 개인정보 수정 메서드
+    public void updateAdminInfo(String userID, String phoneNumber, String officeNumber, String email, String address) {
+    	AdminInfoDAO dao = new AdminInfoDAO();
+    	
+    	// 휴대전화번호 수정
+    	if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
+    		dao.updatePhoneNumber(userID, phoneNumber);
+    	}
+    	// 사무실전화번호 수정
+    	if (officeNumber != null && !officeNumber.trim().isEmpty()) {
+    		dao.updateOfficeNumber(userID, officeNumber);
+    	}
+    	// 이메일 수정
+    	if (email != null && !email.trim().isEmpty()) {
+    		dao.updateEmail(userID, email);
+    	}
+    	// 주소 수정
+    	if (address != null && !address.trim().isEmpty()) {
+    		dao.updateAddress(userID, address);
+    	}
+    }
+    
+    // 비밀번호 검증용 개인정보 호출 메서드 : USER 테이블의 email, USER 테이블의 phoneNumber, PERSONAL_INFO 테이블의 residentNumber
+    public AdminPersonalInfoDTO getDataforValidatePW(String userID) {
+    	if (userID == null || userID.isEmpty()) {
+            // userID가 비어있으면 null 반환
+            return null;
+        }
+    	 // DAO를 통해 DB에서 전체 관리자 정보 조회
+        AdminPageDAO adminDAO = new AdminPageDAO();
+        AdminPersonalInfoDTO fullInfo = adminDAO.getMyInfo(userID);
+
+        if (fullInfo == null) {
+            return null;
+        }
+
+        // 필요한 필드만 남긴 새 DTO 생성
+        AdminPersonalInfoDTO filteredInfo = new AdminPersonalInfoDTO();
+        filteredInfo.setEmail(fullInfo.getEmail());
+        filteredInfo.setPhoneNumber(fullInfo.getPhoneNumber());
+        filteredInfo.setResidentNumber(fullInfo.getResidentNumber()); // PERSONAL_INFO 테이블
+
+        // 나머지 필드는 보안을 위해 null 처리
+        // (DTO 내부에서 필요 시 getter 호출해도 null 반환)
+        return filteredInfo;
+    }
+    
+    // 개인정보 검증용 호출 메서드 : USER 테이블의 email, USER 테이블의 phoneNumber, USER 테이블의 officeNumber, PERSONAL_INFO 테이블의 address
+    public AdminPersonalInfoDTO getDataforValidateInfo(String userID) {
+        if (userID == null || userID.isEmpty()) {
+            // userID가 비어있으면 null 반환
+            return null;
+        }
+
+        // DAO를 통해 DB에서 전체 관리자 정보 조회
+        AdminPageDAO adminDAO = new AdminPageDAO();
+        AdminPersonalInfoDTO fullInfo = adminDAO.getMyInfo(userID);
+
+        if (fullInfo == null) {
+            return null;
+        }
+
+        // 필요한 필드만 남긴 새 DTO 생성
+        AdminPersonalInfoDTO filteredInfo = new AdminPersonalInfoDTO();
+        filteredInfo.setEmail(fullInfo.getEmail());               // USER 테이블
+        filteredInfo.setPhoneNumber(fullInfo.getPhoneNumber());   // USER 테이블
+        filteredInfo.setOfficeNumber(fullInfo.getOfficeNumber()); // USER 테이블
+        filteredInfo.setAddress(fullInfo.getAddress());           // PERSONAL_INFO 테이블
+
+        // 나머지 필드는 보안을 위해 null 처리
+        return filteredInfo;
+    }
+    
+    
+    // 비밀번호 검증 메서드 (verify: 과정 중심의 시스템 검증)
+    public boolean verifyCurrentPassword(String userID, String inputPassword) {
+    	AdminInfoDAO dao = new AdminInfoDAO();
+
+    	return dao.checkCurrentPassword(userID, inputPassword);
+    }
+    
+    // 비밀번호 변경 메서드
+    public void updateProfessorPW(String userID, String userPassword) {
+    	AdminInfoDAO dao = new AdminInfoDAO();
+
+    	// 데이터접근객체에서 비밀번호 변경 메서드 적용
+    	if (userPassword != null && !userPassword.trim().isEmpty()) {
+    		dao.updatePassword(userID, userPassword);
+    	}
     }
     
 }

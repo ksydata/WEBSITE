@@ -1,0 +1,77 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+<%@ page import="java.util.*, dto.NoticeDTO" %>
+<%@ include file="/include/header.jsp" %>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<!-- 공지사항 게시글 리스트를 출력하고 paging.jsp include -->	
+	<title>게시글 목록</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- 부트스트랩 스타일 시트 연결 href="./css/bootstrap.min.css?ver=1" -->
+	<link rel="stylesheet" href="./css/bootstrap.min.css">
+	<!--용자 정의(커스텀) 스타일 시트 연결 -->
+	<link rel="stylesheet" href="./css/custom.css">
+</head>
+
+<body> 
+<div class="container mt-5">
+	<h2 class="text-center mb-4">게시판 공지글 목록</h2>
+	
+	<!--  삭제 완료 팝업 띄우기 -->
+	<c:if test="${not empty sessionScope.flashMessage}">
+	    <script>
+	        alert("${sessionScope.flashMessage}");
+	    </script>
+	    <c:remove var="flashMessage" scope="session" />
+	</c:if>
+	
+	<!-- 게시판 글목록 우측 상단의 글쓰기 버튼 생성 -->
+	<div class="text-right">
+        <!-- a태그 내 같은 링크를 클릭 시 브라우저 페이지가 위로 튀는 걸 막기 위해 
+        이벤트 관련 javascript 메서드를 onclick을 통해 글쓰기 버튼에 기능 포함 -->		
+        <a href="${pageContext.request.contextPath}/write" class="btn btn-primary"
+   		onclick="event.preventDefault(); document.getElementById('writeForm').submit();">글쓰기</a>
+        <!-- <a href="common/writePost.jsp" class="btn btn-primary">글쓰기</a> -->
+   		<!-- 글쓰기 버튼을 통해 PostServlet의 doPost()를 활용하여 writePost.jsp 화면으로 이동 -->
+		<form id="writeForm" action="${pageContext.request.contextPath}/write" method="post" style="display: none;"></form>
+    </div>
+    
+    <!-- 게시판 글목록 전체 조회 -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>index</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>제목</th>
+            </tr>
+        </thead>
+        <tbody>
+   		<!-- BoardServlet의 doGet()을 활용하여 noticeList 객체로 공지글에 필요한 데이터 불러오기 -->        
+            <c:forEach var="post" items="${noticeList}">
+               <tr onclick="location.href='post?id=${post.noticeID}'" style="cursor:pointer;">
+                    <td>${post.noticeID}</td>
+                    <td>${post.userID}</td>
+					<td>
+					    <fmt:formatDate value="${post.createDate}" pattern="yyyy-MM-dd HH:mm:ss" timeZone="Asia/Seoul" />
+					</td>                    
+					<td>${post.title}</td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
+	</nav>
+	
+<!-- 페이징 출력 -->
+<%@ include file="/include/paging.jsp" %>
+</div>
+</body>
+</html>
+
+<%@ include file="/include/footer.jsp" %>

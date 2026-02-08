@@ -50,6 +50,22 @@ public class UserInfoListServlet extends HttpServlet {
 	    int blockSize = 10;
 	    int startPage = ((page - 1) / blockSize) * blockSize + 1;
 	    int endPage = Math.min(startPage + blockSize - 1, totalPage);
+	    
+	    // paging.jsp 적용 파라미터 만들기
+	    request.setAttribute("pageURL", "adminUserList");
+
+	    StringBuilder paramBuilder = new StringBuilder();
+	    if (userRole != null && !userRole.isEmpty()) {
+	        paramBuilder.append("&role=").append(userRole);
+	    }
+	    if (filterType != null && !filterType.isEmpty()) {
+	        paramBuilder.append("&searchType=").append(filterType);
+	    }
+	    if (keyword != null && !keyword.isEmpty()) {
+	        paramBuilder.append("&searchKeyword=").append(keyword);
+	    }
+
+	    request.setAttribute("paramStr", paramBuilder.toString());
 
 	    // request attribute 설정
 	    request.setAttribute("userList", userList);

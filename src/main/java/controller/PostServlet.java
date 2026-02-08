@@ -10,51 +10,40 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.NoticeDAO;
 import dto.NoticeDTO;
+import service.NoticeService;
 
+/* GET요청: 특정 공지글 상세 조회
+ * 요청 파라미터 id로 NoticeListDAO에서 게시글(NoticeDTO)을 조회하고,
+ * 세션의 userID, userRole을 이용해 작성자·관리자 여부(isAuthor, isAdmin, canDelete)를 
+ * 판단하여 request로 post와 함께 postpage.jsp로 전달
+ */
 @WebServlet("/post")
 public class PostServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
-
-	// 게시글 조회
+	// 자바객체 직렬화
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		
 		int id = Integer.parseInt(request.getParameter("id"));
 		String loginUserID = (String) session.getAttribute("userID");
-	    String loginUserRole = (String) session.getAttribute("userRole"); // 예: 관리자, 교직원, 학생, 교수
+//	    String loginUserRole = (String) session.getAttribute("userRole"); 
+	    // userRole: 학생, 교수, 교직원, 관리자 
 	    
-	    NoticeDAO dao = new NoticeDAO();
-	    NoticeDTO post = dao.getNoticeByID(id); 
+	    NoticeService noticeService = new NoticeService();
+	    NoticeDTO post = noticeService.getNotice(id);
 	    request.setAttribute("post", post);
+	    // 글쓴이 아이디에 따라 특정 게시판 공지글 관련 데이터를 조회하는 post 객체
+	    // SELECT * FROM NOTICE WHERE noticeID = ?;
+	    
 	    
 	    boolean isAuthor = loginUserID != null && loginUserID.equals(post.getUserID());
-	    boolean isAdmin = loginUserRole != null && loginUserRole.equals("관리자");
-	    boolean canDelete = isAuthor || isAdmin;
-	    
-	    // 권한 관련 플래그 JSP로 전달
 	    request.setAttribute("isAuthor", isAuthor);
-	    request.setAttribute("isAdmin", isAdmin);
-	    request.setAttribute("canDelete", canDelete);
-	    
-	    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/postpage.jsp");
-	    dispatcher.forward(request, response);       // JSP로 전달
-	    
-	
-	}
-	
-	// 게시글 작성 폼으로 이동
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    HttpSession session = request.getSession();
-	    String userID = (String) session.getAttribute("userID");
-	    String permissionRole = (String) session.getAttribute("permissionRole");
+	    // 논리곱 연산자를 통해 사용자 아이디가 공백값이 아니면서 + 현재 접속한 사용자 아이디와 작성자 아이디가 일치할 경우 true
 
-	    request.setAttribute("userID", userID);
-	    request.setAttribute("permissionRole", permissionRole);
-
-	    RequestDispatcher dispatcher = request.getRequestDispatcher("/common/writePost.jsp");
+	    
+	    RequestDispatcher dispatcher = request.getRequestDispatcher("common/notice/postpage.jsp");
 	    dispatcher.forward(request, response);
 	}
 }

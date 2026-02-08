@@ -1,0 +1,62 @@
+/*
+@AcdemicRecordDAO OR UserInfoDAO.java
+
+public class UserInfoDAO {
+  public static final RowMapper<UserInfoRecord> ROW_MAPPER = resultSet -> {
+    UserInfo info = new AcademicReocrdDTO();
+    record.setCollege(resultSet.getString("college"));
+    record.setMajor(resultSet.getString("major"));
+  }
+}
+  [TO-BE] 
+  record.setStatus(resultSet.getString("status"));
+}
+*/
+
+/*
+@AcademicRecordDTO OR UserInfoDTO.java
+
+[TO-BE]
+Employee(RoleEnum.role_003)가 UserInfo MVC 패턴에서 모든 사용자의 
+{'college', 'status', 'phoneNumber', 'officeNumber', 'address'를 조회하고 
+일부 수정할 수 있도록 DAO에 기능을 추가하고 Service로 역할 분기 처리하고자 함
+
+[HOW-TO]
+RowMapper를 Entity 기준이 아닌 조회 목적과 주체별로 다른 View 모델이 필요한 상황
+기존 RowMapper에서는 공통 컬럼 중심으로 재사용 불가 [X]
+조회 목적 단위로 DTO+RowMapper 분리 [X]
+
+DAO는 단일 책임 원칙으로 유지하면서 역할 / 목적 차이는 쿼리와 매핑 전략으로만 분리하는 방식 지향 [V]
+대안 1. 조합형 RowMapper(공통, 전용, 합성)
+public interface ColumnMapper<T> {
+  void map(ResultSet, resultSetm, T target) throws SQLException
+}
+
+public class CompositeRowMapper<T> implements RowMapper<T> {
+}
+
+[WHY]
+|-- 구분 | 목적 --|
+|-- Admin | 계정 / 권한 / 관리 --|
+|-- Employee | 연락 / 소속 / 상태 확인 등 행정 처리 --|
+|-- Student, Prof | 본인 정보 조회 --|
+
+
+*/
+
+/*
+@AcdemicRecordService OR UserInfoService.java
+
+public class AcademicRecordService {
+
+*/
+
+/*
+DAO의 메서드가 Service 로직에 따라 쿼리문에 데이터베이스 스키마 / 테이블명이나 컬럼명이 고정되는 이테이블명이 고정되는 이유
+: mybatis 연결 설정하는 방식을 채택하지 않았기 때문
+: mapper.xml 파일 생성 후 SqlSession 객체에서 쿼리문 실행 시 해결
+: 프로젝트 규모와 목적에 부합하지 않으므로 제외
+
+[Q&A] new BeanPropertyRowMapper<>(Product.class)
+@https://velog.io/@wtj1998/TIL-2025.07.24-
+*/

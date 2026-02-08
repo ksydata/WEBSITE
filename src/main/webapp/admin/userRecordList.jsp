@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ include file="/common/header.jsp" %>
+<%@ include file="/include/header.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,21 +27,21 @@
             <tr>
                 <th>
 				    학생 ID
-				    <a href="studentRecordListSort?sort=asc&field=userID&page=1" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
+				    <!-- <a href="studentRecordListSort?sort=asc&field=userID&page=1" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
 				        ▲
 				    </a>
 				    <a href="studentRecordListSort?sort=desc&field=userID&page=1" class="btn btn-sm btn-light ms-1" title="내림차순 정렬">
 				        ▼
-				    </a>
+				    </a> -->
 				</th>
 				<th>
 				    이름
-				    <a href="studentRecordListSort?sort=asc&field=name&page=1" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
+				    <!-- <a href="studentRecordListSort?sort=asc&field=name&page=1" class="btn btn-sm btn-light ms-1" title="오름차순 정렬">
 				        ▲
 				    </a>
 				    <a href="studentRecordListSort?sort=desc&field=name&page=1" class="btn btn-sm btn-light ms-1" title="내림차순 정렬">
 				        ▼
-				    </a>
+				    </a> -->
 				</th>
                 <th>이메일</th>
                 <th>단과대학</th>
@@ -64,44 +64,16 @@
             </c:forEach>
         </tbody>
     </table>
-    <!-- 페이지 네비게이션 -->
-<div class="d-flex justify-content-center mt-4">
-    <nav>
-        <ul class="pagination">
-
-            <!-- 이전 블록 이동 -->
-            <c:if test="${startPage > 1}">
-                <li class="page-item">
-                    <a class="page-link" href="studentRecordList?page=${startPage - 1}">&laquo;</a>
-                </li>
-            </c:if>
-
-            <!-- 각 페이지 번호 출력 -->
-            <c:forEach var="p" begin="${startPage}" end="${endPage}">
-                <li class="page-item ${p == currentPage ? 'active' : ''}">
-                    <a class="page-link" href="studentRecordList?page=${p}">${p}</a>
-                </li>
-            </c:forEach>
-
-            <!-- 다음 블록 이동 -->
-            <c:if test="${endPage < totalPage}">
-                <li class="page-item">
-                    <a class="page-link" href="studentRecordList?page=${endPage + 1}">&raquo;</a>
-                </li>
-            </c:if>
-
-        </ul>
-    </nav>
-</div>
-
-<%-- 정렬 조건 기본값 지정 --%>
+    </div>
+    
+    <%-- 정렬 조건 기본값 지정
 <c:if test="${not empty sortOrder && not empty orderField}">
-<%-- 정렬 이후 페이지 네비게이션 --%>
+정렬 이후 페이지 네비게이션
 <div class="d-flex justify-content-center mt-4">
     <nav>
         <ul class="pagination">
 
-            <%-- 이전 블록 이동 --%>
+            이전 블록 이동
             <c:if test="${startPage > 1}">
                 <li class="page-item">
                     <a class="page-link"
@@ -111,7 +83,7 @@
                 </li>
             </c:if>
 
-            <%-- 각 페이지 번호 출력 --%>
+            각 페이지 번호 출력
             <c:forEach var="p" begin="${startPage}" end="${endPage}">
                 <li class="page-item ${p == currentPage ? 'active' : ''}">
                     <a class="page-link"
@@ -121,7 +93,7 @@
                 </li>
             </c:forEach>
 
-            <%-- 다음 블록 이동 --%>
+            다음 블록 이동
             <c:if test="${endPage < totalPage}">
                 <li class="page-item">
                     <a class="page-link"
@@ -134,8 +106,12 @@
         </ul>
     </nav>
 </div>
-</c:if>
-</div>
+</c:if> --%>
+
+<!-- 페이징 출력 -->
+<%@ include file="/include/paging.jsp" %>
+</body>
+
 </body>
 </html>
-<%@ include file="/common/footer.jsp" %>
+<%@ include file="/include/footer.jsp" %>
