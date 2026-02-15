@@ -51,9 +51,7 @@
             <p><strong>이름:</strong> ${userInfo.name}</p>
             <p><strong>생년월일:</strong> ${userInfo.residentNumber}</p>
             <p><strong>상태:</strong> ${userInfo.status}</p>
-            <p><strong>휴대전화번호:</strong> ${userInfo.phoneNumber}</p>
-            <p><strong>이메일:</strong> ${userInfo.email}</p> 
-            <p><strong>주소:</strong> ${userInfo.address}</p>           
+            <p><strong>사무실내선번호:</strong> ${userInfo.officeNumber}</p>                                  
         </c:if>
         
         <!-- ▷ 교수 권한(professor) -->
@@ -64,10 +62,7 @@
             <p><strong>단과대학:</strong> ${userInfo.college}</p>
             <p><strong>전공:</strong> ${userInfo.major}</p>
             <p><strong>상태:</strong> ${userInfo.status}</p>
-            <p><strong>휴대전화번호:</strong> ${userInfo.phoneNumber}</p>
-            <p><strong>휴대전화번호:</strong> ${userInfo.officeNumber}</p>            
-            <p><strong>이메일:</strong> ${userInfo.email}</p> 
-            <p><strong>주소:</strong> ${userInfo.address}</p>   
+            <p><strong>사무실내선번호:</strong> ${userInfo.officeNumber}</p>            
         </c:if>
 
         <!-- ▷ 학생 권한(student) -->
@@ -78,9 +73,6 @@
             <p><strong>단과대학:</strong> ${userInfo.college}</p>
             <p><strong>전공:</strong> ${userInfo.major}</p>
             <p><strong>상태:</strong> ${userInfo.status}</p>
-            <p><strong>휴대전화번호:</strong> ${userInfo.phoneNumber}</p>
-            <p><strong>이메일:</strong> ${userInfo.email}</p> 
-            <p><strong>주소:</strong> ${userInfo.address}</p>
         </c:if>
     </div>
 </div>

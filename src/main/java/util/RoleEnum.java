@@ -17,6 +17,7 @@ public enum RoleEnum {
 	private RoleEnum(String role) {
 	// 생성자(싱글톤)
 		this.role = role;
+		// Implicit super constructor Enum(String, int) is undefined. Must explicitly invoke another constructor
 	}
 	
 	public String getRole() {

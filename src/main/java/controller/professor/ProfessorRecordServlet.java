@@ -38,7 +38,7 @@ public class ProfessorRecordServlet extends HttpServlet {
 		
 		// 교수 소속 단과대 가져오기
 		UserInfoService userInfoService = new UserInfoService();
-		UserInfoDTO professorInfo = userInfoService.getUserInfo(userID, role, 1);
+		UserInfoDTO professorInfo = userInfoService.getUserInfo(userID);
 		String college = professorInfo.getCollege();
 		
 		// [TO-BE] AcademicRecordService에서 메서드 가져와서 실행

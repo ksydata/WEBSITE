@@ -45,8 +45,8 @@ public class DatabaseUtil {
 			BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
 			
 			// 임시 변수
-			String encryptKey = "JASYPT_ENCRYPTOR_KEY";
-					
+			String encryptKey = System.getenv("JASYPT_ENCRYPTOR_KEY");
+			
 			// UNIT TEST
 			// System.out.println("복호화 키: " + System.getProperty("JASYPT_ENCRYPTOR_KEY"));
 			// 윈도우 시스템 환경변수에 저장된 복호화 키값 불러오기 
