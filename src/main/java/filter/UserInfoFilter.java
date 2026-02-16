@@ -15,12 +15,16 @@ import javax.servlet.http.*;
 // @https://velog.io/@hameee/Servlet-Filter
 // @https://blog.naver.com/redsuit/120118985886
 
-@WebFilter("/userinfo")
+@WebFilter("/userInfo")
 // 요청과 응답을 동적으로 가로채어 포함된 정보를 변형 / 인증 및 권한 부여 / 로깅 및 감시
-public abstract class UserInfoFilter implements Filter {
+public class UserInfoFilter implements Filter {
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {}
 	// 필터 초기화
+	/*
+	 * SEVERE: Exception starting filter [filter.UserInfoFilter] 
+	 * java.lang.InstantiationException
+	 */
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, 

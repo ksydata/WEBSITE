@@ -1,0 +1,52 @@
+코드를 보니 몇 가지 버그와 개선이 필요한 부분들이 눈에 띄네요. 분석해 드릴게요.
+
+발견된 버그 및 문제점
+1. UserInfoFilter.java — abstract 키워드 문제 (심각)
+javapublic abstract class UserInfoFilter implements Filter {
+```
+
+필터 클래스가 `abstract`로 선언되어 있어서 서블릿 컨테이너가 인스턴스를 생성하지 못합니다. 코드 주석에도 이미 증상이 기록되어 있습니다.
+```
+// SEVERE: Exception starting filter [filter.UserInfoFilter]
+// java.lang.InstantiationException
+abstract를 제거해야 합니다.
+
+2. myPersonalInfo.jsp — 교수 officeNumber 라벨 오타
+jsp<!-- 교수 권한 블록 -->
+<p><strong>휴대전화번호:</strong> ${userInfo.phoneNumber}</p>
+<p><strong>휴대전화번호:</strong> ${userInfo.officeNumber}</p>  <!-- ← 버그 -->
+officeNumber를 출력하는 줄의 라벨이 "휴대전화번호"로 잘못 되어 있습니다. "연구실 전화번호" 혹은 "오피스번호" 등으로 수정해야 합니다.
+
+3. myPersonalInfo.jsp — 기본 정보 카드와 수정 가능한 정보 카드 중복 출력
+기본 정보 카드에서 이미 phoneNumber, email, address를 권한별로 출력하고 있는데, 그 아래 "수정 가능한 정보" 카드에서 동일한 세 필드를 또 출력합니다. 사용자에게 같은 정보가 두 번 보이게 됩니다.
+수정 가능한 정보 카드는 읽기 전용 표시 대신 수정 폼으로 바로 연결되는 안내 역할을 하거나, 기본 정보 카드에서 해당 필드들을 제거하는 방향으로 정리가 필요합니다.
+
+4. updateMyInfo.jsp — 전화번호/이메일 초기값 미분리
+hidden 필드에는 ${userInfo.phoneNumber}와 ${userInfo.email} 전체 값이 설정되지만, 사용자에게 보이는 분리 입력 필드(phoneNum1st, emailId 등)에는 초기값이 없습니다. 수정 폼을 열었을 때 기존 값이 빈 칸으로 보여서 사용자가 현재 값을 알 수 없습니다.
+서버에서 값을 파싱하거나, JSP 단에서 EL/JSTL로 분리해 value를 채워줘야 합니다. 예를 들어 간단하게는 자바스크립트로 페이지 로드 시 기존 값을 역분리해 넣는 방법이 있습니다.
+javascriptwindow.onload = function () {
+    const phone = "${userInfo.phoneNumber}".split("-");
+    if (phone.length === 3) {
+        document.getElementById("phoneNum1st").value = phone[0];
+        document.getElementById("phoneNum2nd").value = phone[1];
+        document.getElementById("phoneNum3rd").value = phone[2];
+    }
+    const email = "${userInfo.email}".split("@");
+    if (email.length === 2) {
+        document.getElementById("emailId").value = email[0];
+        document.getElementById("emailDomain").value = email[1];
+    }
+};
+
+5. updateMyInfo.jsp — 입력값 유효성 검사 미흡
+combineInputs()에서 전화번호와 이메일을 합치기만 할 뿐, 각 부분이 비어 있거나 형식이 잘못된 경우를 걸러내지 않습니다. 예를 들어 phoneNum1st가 비어 있으면 --가 전송될 수 있습니다. 최소한 빈 값 체크와 숫자 형식 확인 정도는 추가하는 것이 좋습니다.
+
+6. myPersonalInfo.jsp — "메인으로 돌아가기" 링크가 카드 바깥, </div> 닫힘 구조 혼재
+jsp</div>  <!-- container 닫힘 -->
+<br>
+<a href="...">메인으로 돌아가기</a>
+"메인으로 돌아가기" 링크가 container div 바깥에 있습니다. 레이아웃 의도에 따라 다르지만, 버튼들과 함께 container 안에 두는 것이 일반적으로 더 자연스럽고 Bootstrap 레이아웃과도 맞습니다.
+
+요약 정리
+번호위치유형내용1UserInfoFilter.java심각한 버그abstract 키워드로 인스턴스 생성 불가2myPersonalInfo.jsp오타 버그교수 officeNumber 라벨이 "휴대전화번호"로 잘못 표기3myPersonalInfo.jspUX/논리 문제동일 필드 두 카드에서 중복 출력4updateMyInfo.jspUX 버그분리 입력 필드에 기존 값 미표시5updateMyInfo.jsp유효성 검사 누락입력 합산 전 빈 값/형식 검증 없음6myPersonalInfo.jsp레이아웃 문제링크가 container 밖에 위치
+특히 1번(abstract) 은 필터 자체가 동작하지 않아 인증 우회가 가능한 보안상 위험한 버그이므로 가장 먼저 수정해야 합니다.

@@ -25,76 +25,19 @@
 		</a>
 
 		<!-- ========================= -->
-		<!--  권한별 조건부 메뉴 영역   -->
+		<!--  권한별 조건부메뉴 영역 (c:choose 태그삭제) -->
 		<!-- ========================= -->
-		<c:choose>
 
-			<!-- 학생 권한 -->
-			<c:when test="${sessionScope.userRole.isROLE_001()}">
-				<a href="<c:url value='/studentRecord' />" class="btn btn-success m-2">
-					나의 학사정보 조회
-				</a>
-			</c:when>
-			
-			<%-- [AS-IS]
-			<c:when test="${sessionScope.userRole eq '학생'}">
-				<a href="<c:url value='/studentRecord' />" class="btn btn-success m-2">
-					나의 학사정보 조회
-				</a>
-			</c:when> --%>
-
-			<!-- 관리자 권한 -->
-			<c:when test="${sessionScope.userRole.isROLE_004()}">
-				<a href="<c:url value='/adminUserList' />" class="btn btn-warning m-2">
-					사용자 개인정보 조회
-				</a>
-				<a href="<c:url value='/studentRecordList' />" class="btn btn-warning m-2">
-					사용자 학사정보 조회
-				</a>
-			</c:when>
-			
-			<%-- [AS-IS] 
-			<c:when test="${sessionScope.userRole eq '관리자'}">
-				<a href="<c:url value='/adminUserList' />" class="btn btn-warning m-2">
-					사용자 개인정보 조회
-				</a>
-				<a href="<c:url value='/studentRecordList' />" class="btn btn-warning m-2">
-					사용자 학사정보 조회
-				</a>
-			</c:when> --%>
-
-			<!-- 교수 권한 -->
-			<c:when test="${sessionScope.userRole.isROLE_002()}">
-				<a href="<c:url value='/classRecord' />" class="btn btn-info m-2">
-					전공생 학사정보 조회/수정
-				</a>
-			</c:when>
-			
-			<%-- [AS-IS]
-			<c:when test="${sessionScope.userRole eq '교수'}">
-				<a href="<c:url value='/classRecord' />" class="btn btn-info m-2">
-					전공생 학사정보 조회/수정
-				</a>
-			</c:when> --%>
-
-			<!-- 교직원 권한 -->
-			<c:when test="${sessionScope.userRole.isROLE_003()}">
-				<a href="studentPersonalInfo.jsp" class="btn btn-dark m-2">
-					학생 개인정보 조회
-				</a>
-			</c:when>
-			
-			<%-- [AS-IS] 
-			<c:when test="${sessionScope.userRole eq '교직원'}">
-				<a href="studentPersonalInfo.jsp" class="btn btn-dark m-2">
-					학생 개인정보 조회
-				</a>
-			</c:when> --%>
-
-		</c:choose>
-		<!-- 권한별 메뉴 끝 -->
-
-		<!-- 공통 메뉴 2 -->
+		<!-- 공통 메뉴 -->
+		<a href="<c:url value='/userInfo' />" class="btn btn-primary m-2">
+			나의 개인정보 조회 및 수정
+		</a>
+		<a href="<c:url value='/userPassword' />" class="btn btn-primary m-2">
+			나의 비밀번호 변경
+		</a>
+		<a href="<c:url value='/academicRecord' />" class="btn btn-primary m-2">
+			학사정보 조회
+		</a>							
 		<a href="<c:url value='/board' />" class="btn btn-primary m-2">
 			공지사항
 		</a>

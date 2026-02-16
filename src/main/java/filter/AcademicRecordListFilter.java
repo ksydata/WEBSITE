@@ -18,10 +18,14 @@ import javax.servlet.http.HttpSession;
 
 // 교수의 소속 단과대학 학생 성적 조회 및 관리자의 전체 학생 성적 조회 접근권한 인증 필터 
 @WebFilter("/academicRecord")
-public abstract class AcademicRecordListFilter implements Filter {
+public class AcademicRecordListFilter implements Filter {
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {}
 	// 필터 초기화
+	/*
+	 * SEVERE: Exception starting filter [filter.AcademicRecordListFilter]
+	 * java.lang.InstantiationException
+	 */
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, 

@@ -8,10 +8,14 @@ import javax.servlet.http.*;
 // @https://drg2524.tistory.com/206
 
 @WebFilter("/userPassword")
-public abstract class UserPWFilter implements Filter {
+public class UserPWFilter implements Filter {
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {}
 	// 필터 초기화
+	/*
+	 * SEVERE: Exception starting filter [filter.UserPWFilter]
+	 * java.lang.InstantiationException
+	 */
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, 
@@ -35,4 +39,8 @@ public abstract class UserPWFilter implements Filter {
         // 3. 요청 → Servlet
         filterChain.doFilter(request,response);
 	}
+	
+	@Override
+	public void destroy() {}
+	// 객체/리소스 불필요하여 종료 시 메서드 호출
 }
