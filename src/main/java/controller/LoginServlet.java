@@ -46,7 +46,7 @@ public class LoginServlet extends HttpServlet {
 	    	session.setAttribute("userName", result.getUserName());
 	        
             // 역할별 분기는 IndexServlet에서 role에 따라 직접 main.jsp로 redirect하도록 LoginServlet 변경
-	        response.sendRedirect(request.getContextPath() + "/index");
+	    	response.sendRedirect(request.getContextPath() + "/index.jsp");
 	        // request.getRequestDispatcher(path).forward(request, response);
 	        // 로그인 서블릿에서 리다이렉션 대상을 index.jsp에서 index(메인 서블릿)으로 변경
 	        // response.sendRedirect(request.getContextPath() + "/index.jsp");
