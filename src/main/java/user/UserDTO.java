@@ -1,5 +1,7 @@
 package user;
 
+import util.RoleEnum;
+
 // Data Transport Object: getter/setter method
 // CRUD 작업을 만드는 클래스
 public class UserDTO {
@@ -7,9 +9,12 @@ public class UserDTO {
 	private String userID;
 	private String userPassword;
 	// userID를 통해 DB USER 테이블에서 불러올 사용자 유형 (학생/교수/교직원/관리자)
-	private String userRole;
+	private RoleEnum userRole;
+	// userRole 타입을 RoleEnum으로 변경 
+	// private String userRole;
 	private String userName;
 	// 문제는 "login 함수(UserDAO)"가 아니라, "login 결과(UserDTO)"를 세션에 저장하는 방식이 틀린 것
+	
 
 	// 설정한 아이디를 불러오는 getter 메서드
 	public String getUserID() {
@@ -32,12 +37,12 @@ public class UserDTO {
 	}
 
 	// 설정한 사용자 유형을 불러오는 getter 메서드
-	public String getUserRole() {
+	public RoleEnum getUserRole() {
 		return userRole;
 	}
 
 	// 사용자 유형을 설정하는 setter 메서드
-	public void setUserRole(String userRole) {
+	public void setUserRole(RoleEnum userRole) {
 		this.userRole = userRole;
 	}
 
