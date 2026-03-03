@@ -41,10 +41,12 @@ public class LoginServlet extends HttpServlet {
 	    	// 계정 아이디를 세션에 저장
 	    	session.setAttribute("userID", userID);
 	    	// 계정별 권한(학생, 교수, 교직원, 관리자)을 세션에 저장
-	    	session.setAttribute("userRole", result.getUserRole());
+	    	// 이후 호출 과정에서 세션명이 'userRole'이 아닌 'role'이므로 이후 내용에 따라 서블릿을 수정함
+	    	session.setAttribute("role", result.getUserRole());
+	    	// [AS-IS] session.setAttribute("userRole", result.getUserRole());
 	    	// 사용자 이름을 세션에 저장
 	    	session.setAttribute("userName", result.getUserName());
-	        
+	    		        
             // 역할별 분기는 IndexServlet에서 role에 따라 직접 main.jsp로 redirect하도록 LoginServlet 변경
 	    	response.sendRedirect(request.getContextPath() + "/index.jsp");
 	        // request.getRequestDispatcher(path).forward(request, response);
