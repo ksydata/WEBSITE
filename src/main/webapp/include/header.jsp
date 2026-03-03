@@ -54,10 +54,12 @@
 			
 				<%-- 1. 공통 메뉴 --%>
 		        <li class="nav-item">
-		            <a class="nav-link" href="<c:url value='/common/notice'/>">공지사항</a>
+		            <%-- [AS-IS] <a class="nav-link" href="<c:url value='/common/notice'/>">공지사항</a> --%>
+		            <a class="nav-link" href="<c:url value='/board'/>">공지사항</a>
 		        </li>
 		        <li class="nav-item">
-		            <a class="nav-link" href="<c:url value='/common/info'/>">개인정보</a>
+		            <%-- [AS-IS] <a class="nav-link" href="<c:url value='/common/info'/>">개인정보</a> --%>
+		            <a class="nav-link" href="<c:url value='/userInfo'/>">개인정보</a>
 		        </li>
 		        
 		        <%-- [TO-BE] 2. 역할 기반 메뉴: RoleEnum#getRole() 값으로 비교 (student/professor/employee/admin) --%>
@@ -65,14 +67,16 @@
                 <%-- 학생 --%>
                 <c:if test="${not empty roleEnum and roleEnum.role eq 'student'}">
                     <li class="nav-item">
-                        <a class="nav-link" href="<c:url value='/student/myAcademicRecord'/>">나의 학사정보</a>
+                        <%-- [AS-IS] <a class="nav-link" href="<c:url value='/student/myAcademicRecord'/>">나의 학사정보</a> --%>
+                        <a class="nav-link" href="<c:url value='/studentRecord'/>">나의 학사정보</a>
                     </li>
                 </c:if>
 
                 <%-- 교수 --%>
                 <c:if test="${not empty roleEnum and roleEnum.role eq 'professor'}">
                     <li class="nav-item">
-                        <a class="nav-link" href="<c:url value='/professor/classAcademicRecord'/>">전공생 학사정보 관리</a>
+                        <%-- [AS-IS] <a class="nav-link" href="<c:url value='/professor/classAcademicRecord'/>">전공생 학사정보 관리</a> --%>
+                    	<a class="nav-link" href="<c:url value='/classRecord'/>">전공생 학사정보 관리</a>
                     </li>
                 </c:if>
 
@@ -86,10 +90,13 @@
                 <%-- 관리자 --%>
                 <c:if test="${not empty roleEnum and roleEnum.role eq 'admin'}">
                     <li class="nav-item">
-                        <a class="nav-link" href="<c:url value='/admin/userPersonalInfo'/>">관리자 개인정보 관리</a>
+                        <%-- [AS-IS] <a class="nav-link" href="<c:url value='/admin/userPersonalInfo'/>">관리자 개인정보 관리</a> --%>
+                        <a class="nav-link" href="<c:url value='/userInfoAdmin'/>">관리자 개인정보 관리</a>
+                        
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<c:url value='/admin/userAcademicRecord'/>">관리자 학사정보 관리</a>
+                        <%-- [AS-IS] <a class="nav-link" href="<c:url value='/admin/userAcademicRecord'/>">관리자 학사정보 관리</a> --%>
+                        <a class="nav-link" href="<c:url value='/userRecord'/>">관리자 학사정보 관리</a>
                     </li>
                 </c:if>
 		
