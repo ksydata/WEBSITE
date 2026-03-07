@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Types;
 
 import util.DatabaseUtil;
+import util.RoleEnum;
 
 /* 로그인 인증 결과(로직과 메시지를 분리하여 유지보수의 편의성 확보)
   1 : 로그인 / 회원가입 등 작업 성공
@@ -155,9 +156,15 @@ public class UserDAO {
                 	// 로그인 성공했을 때 사용자 정보 활용
                 	UserDTO user = new UserDTO();
                 	user.setUserID(userID);
-                	// 쿼리 실행결과 객체에서 name, role값 추출
+                	// 쿼리 실행결과 객체에서 name 값 추출
                     user.setUserName(resultSet.getString("name"));
-                    user.setUserRole(resultSet.getString("role"));
+                    // DB에 한국어로 저장된 role 값 추출 
+                    String dbrole = resultSet.getString("role"); // 학생 
+                    RoleEnum roleEnum = RoleEnum.fromKorean(dbrole); // ROLE_001
+//                    user.setUserRole(roleEnum.getRole()); // "student"
+                    user.setUserRole(roleEnum); // [TO-BE] fromKorean 정적 메서드를 통해 리턴한 roleEnum을 DTO에 넣음
+                    // user.setUserRole(resultSet.getString("role")); // [AS-IS]
+                    
                     // UserDTO 객체를 생성하여 반환하는 형태
                     return user;
                     

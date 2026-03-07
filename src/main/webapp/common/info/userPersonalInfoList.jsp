@@ -31,8 +31,20 @@
     		</tr>
     	</thead>
     	<tbody>
-    		<c:forEach var="user" items="${userList.items}">
+    		<%-- [AS-IS] <c:forEach var="user" items="${userList.items}"> --%>
+    		<c:forEach var="user" items="${userList.pagingDataList}">
     			<tr>
+    				<td>${user.userID}</td>
+    				<td>${user.name}</td>
+    				<td>${user.residentNumber}</td>
+    				<td>${user.college}</td>
+    				<td>${user.major}</td>
+    				<td>${user.status}</td>
+    				<td>${user.phoneNumber}</td>
+    				<td>${user.email}</td>
+    				<td>${user.address}</td>
+    			
+    				<%-- [AS-IS]
     				<td>${userlist.userID}</td>
     				<td>${userlist.name}</td>
     				<td>${userlist.residentNumber}</td>
@@ -41,7 +53,7 @@
     				<td>${userlist.status}</td>
     				<td>${userlist.phoneNumber}</td>
     				<td>${userlist.email}</td>
-    				<td>${userlist.address}</td>    				    							
+    				<td>${userlist.address}</td>  --%>	
     			</tr>
     		</c:forEach>
     	</tbody>

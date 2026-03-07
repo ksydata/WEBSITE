@@ -29,6 +29,12 @@
 </head>
 
 <body>
+	<%-- [TO-BE] session에 userRole로 넣었든 role로 넣었든 둘 다 커버하도록 roleEnum 변수 설정 --%>
+    <c:set var="roleEnum"
+           value="${not empty sessionScope.userRole ? sessionScope.userRole : sessionScope.role}" />
+	
+
+
 	<%-- 네비게이션 바(반응형 디자인을 위한 설정, 하얀색 배경) 추가 --%>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 	    <%-- 메인으로 이동하는 링크: 항상 IndexServlet(/index)으로 이동 --%>
@@ -48,34 +54,75 @@
 			
 				<%-- 1. 공통 메뉴 --%>
 		        <li class="nav-item">
-		            <a class="nav-link" href="<c:url value='/common/notice'/>">공지사항</a>
+		            <%-- [AS-IS] <a class="nav-link" href="<c:url value='/common/notice'/>">공지사항</a> --%>
+		            <a class="nav-link" href="<c:url value='/board'/>">공지사항</a>
 		        </li>
 		        <li class="nav-item">
-		            <a class="nav-link" href="<c:url value='/common/info'/>">개인정보</a>
+		            <%-- [AS-IS] <a class="nav-link" href="<c:url value='/common/info'/>">개인정보</a> --%>
+		            <a class="nav-link" href="<c:url value='/userInfo'/>">개인정보</a>
 		        </li>
+		        
+		        <%-- [TO-BE] 2. 역할 기반 메뉴: RoleEnum#getRole() 값으로 비교 (student/professor/employee/admin) --%>
+
+                <%-- 학생 --%>
+                <c:if test="${not empty roleEnum and roleEnum.role eq 'student'}">
+                    <li class="nav-item">
+                        <%-- [AS-IS] <a class="nav-link" href="<c:url value='/student/myAcademicRecord'/>">나의 학사정보</a> --%>
+                        <a class="nav-link" href="<c:url value='/studentRecord'/>">나의 학사정보</a>
+                    </li>
+                </c:if>
+
+                <%-- 교수 --%>
+                <c:if test="${not empty roleEnum and roleEnum.role eq 'professor'}">
+                    <li class="nav-item">
+                        <%-- [AS-IS] <a class="nav-link" href="<c:url value='/professor/classAcademicRecord'/>">전공생 학사정보 관리</a> --%>
+                    	<a class="nav-link" href="<c:url value='/classRecord'/>">전공생 학사정보 관리</a>
+                    </li>
+                </c:if>
+
+                <%-- 교직원 --%>
+                <c:if test="${not empty roleEnum and roleEnum.role eq 'employee'}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="<c:url value='/employee/studentPersonalInfo'/>">학생 개인정보 조회</a>
+                    </li>
+                </c:if>
+
+                <%-- 관리자 --%>
+                <c:if test="${not empty roleEnum and roleEnum.role eq 'admin'}">
+                    <li class="nav-item">
+                        <%-- [AS-IS] <a class="nav-link" href="<c:url value='/admin/userPersonalInfo'/>">관리자 개인정보 관리</a> --%>
+                        <a class="nav-link" href="<c:url value='/userInfoAdmin'/>">관리자 개인정보 관리</a>
+                        
+                    </li>
+                    <li class="nav-item">
+                        <%-- [AS-IS] <a class="nav-link" href="<c:url value='/admin/userAcademicRecord'/>">관리자 학사정보 관리</a> --%>
+                        <a class="nav-link" href="<c:url value='/userRecord'/>">관리자 학사정보 관리</a>
+                    </li>
+                </c:if>
 		
 		
-		        <%-- 2. 역할 기반 권한: 학생 메뉴 --%>
+		        <%-- [AS-IS]
+		        <%-- 2. 역할 기반 권한: 학생 메뉴
 		        <c:if test="${sessionScope.userRole eq 'student'}">
 		            <li class="nav-item">
 		                <a class="nav-link" href="<c:url value='/student/myAcademicRecord'/>">나의 학사정보</a>
 		            </li>
 		        </c:if>
 		
-		        <%-- 3. 역할 기반 권한: 교수 메뉴 --%>
+		        3. 역할 기반 권한: 교수 메뉴
 		        <c:if test="${sessionScope.userRole eq 'professor'}">
 		            <li class="nav-item">
 		                <a class="nav-link" href="<c:url value='/professor/classAcademicRecord'/>">전공생 학사정보 관리</a>
 		            </li>
 		        </c:if>
 		
-		        <%-- 4. 역할 기반 권한: 관리자 메뉴 --%>
+		        4. 역할 기반 권한: 관리자 메뉴
 		        <c:if test="${sessionScope.userRole eq 'admin'}">
 		            <li class="nav-item">
 		                <a class="nav-link" href="<c:url value='/admin/userPersonalInfo'/>">관리자 개인정보 관리</a>
 						<a class="nav-link" href="<c:url value='/admin/userAcademicRecord'/>">관리자 학사정보 관리</a>    
 		            </li>
-		        </c:if>
+		        </c:if> --%>
 			
 				
 			</ul>

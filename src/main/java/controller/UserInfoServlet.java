@@ -59,7 +59,8 @@ public class UserInfoServlet extends HttpServlet  {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			response.sendRedirect(request.getContextPath() + "/main.jsp");
+//			response.sendRedirect(request.getContextPath() + "main.jsp");
+			response.sendRedirect(request.getContextPath() + "/common/main.jsp");
 			// 아이디로 받아 세션에 저장된 사번으로 사용자 1명의 정보를 가져오지 못한 경우 메인으로 이동
 		}
 	}
@@ -91,7 +92,8 @@ public class UserInfoServlet extends HttpServlet  {
             // 수정된 정보로 HTTP 웹에 다시 GET 메서드 수행 요청(데이터 조회)
         } catch (Exception e) {
 			e.printStackTrace();
-			response.sendRedirect(request.getContextPath() + "/main.jsp");
+//			response.sendRedirect(request.getContextPath() + "/main.jsp");
+			response.sendRedirect(request.getContextPath() + "/common/main.jsp");
 			// 아이디로 받아 세션에 저장된 사번으로 사용자 1명의 정보를 변경하지 못한 경우 메인으로 이동
         }
 	}
