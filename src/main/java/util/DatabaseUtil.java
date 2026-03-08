@@ -2,15 +2,15 @@ package util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
-//import java.io.Console;
-//import java.io.FileInputStream;
-// import java.util.Scanner;
-
-import org.jasypt.util.text.BasicTextEncryptor;
-
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Properties;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 // JAVA에서 MySQL에 JDBC(Java Database Connectivity)를 통해 연결하는 기능을 제공하는 유틸리티 클래스
 // DB 접속 비밀번호는 해시(일방향 암호화)가 아닌, 복호화 가능한 양방향 암호화
@@ -29,35 +29,24 @@ public class DatabaseUtil {
             // 리소스(프로퍼티) 경로 디버깅
             if (inputStream == null) {
                 System.err.println("config.properties 파일을 찾을 수 없습니다.");
-            } else {
-                System.out.println("config.properties 파일을 성공적으로 로드했습니다.");
+                return null;
             }
-			properties.load(inputStream);
-			// properties.load(new FileInputStream("resources/config.properties"));
-			
+            properties.load(inputStream);
+
 			String dbURL = properties.getProperty("db.url");
 			String dbID = properties.getProperty("db.user");
-
-			// 복호화된 데이터베이스 비밀번호 불러오기
 			String encryptedPW = properties.getProperty("db.password");
 
-			// Jasypt 라이브러리로 키값을 활용하여 복호화
-			BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
-			
-			// 임시 변수
-//			String encryptKey = System.getenv("JASYPT_ENCRYPTOR_KEY");
-			String encryptKey = "JASYPT_ENCRYPTOR_KEY";
-			
-			// UNIT TEST
-			// System.out.println("복호화 키: " + System.getProperty("JASYPT_ENCRYPTOR_KEY"));
-			// 윈도우 시스템 환경변수에 저장된 복호화 키값 불러오기 
-			// String encryptKey = System.getenv("JASYPT_ENCRYPTOR_KEY"); 
-			
-			textEncryptor.setPassword(encryptKey);
-			// 프로퍼티 파일 내 암호화된 비밀번호를 복호화된 키값을 통해 보안 해제 후 문자열로 저장 
-			String dbPW = textEncryptor.decrypt(
-				    encryptedPW.replace(
-				    		"ENC(", "").replace(")", ""));
+			// 환경 변수에서 마스터 키 가져오기
+			String masterKey = System.getenv("DB_MASTER_KEY");
+			if (masterKey == null || masterKey.isEmpty()) {
+				System.err.println("DB_MASTER_KEY 환경 변수가 설정되지 않았습니다.");
+				// 로컬 개발 환경을 위한 대체 키 (실제 운영에서는 사용하지 마세요)
+				masterKey = "your-default-master-key";
+				System.err.println("대체 마스터 키를 사용합니다. (개발용)");
+			}
+
+			String dbPW = decrypt(encryptedPW, masterKey);
 
 			// MySQL 드라이버 로딩
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -82,6 +71,26 @@ public class DatabaseUtil {
 		// 예외 발생 시 null 반환
 		return null;
 	}
+
+    private static String decrypt(String encryptedText, String masterKey) throws Exception {
+        if (encryptedText == null || !encryptedText.startsWith("ENC(") || !encryptedText.endsWith(")")) {
+            throw new IllegalArgumentException("암호화된 문자열 형식이 올바르지 않습니다.");
+        }
+        String base64Encrypted = encryptedText.substring(4, encryptedText.length() - 1);
+
+        // 마스터 키를 SHA-256으로 해시하여 32바이트 키 생성
+        MessageDigest sha = MessageDigest.getInstance("SHA-256");
+        byte[] key = sha.digest(masterKey.getBytes(StandardCharsets.UTF_8));
+        key = Arrays.copyOf(key, 32); // 256비트(32바이트) 키로 조정
+        SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+
+        // AES/ECB/PKCS5Padding으로 복호화
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(base64Encrypted));
+
+        return new String(decryptedBytes, StandardCharsets.UTF_8);
+    }
 }
 
 /*

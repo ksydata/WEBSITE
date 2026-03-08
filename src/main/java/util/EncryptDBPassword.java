@@ -1,28 +1,49 @@
 package util;
 
 import java.io.Console;
-import org.jasypt.util.text.BasicTextEncryptor;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.Base64;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
-// 비밀번호 보안 구조: Jasypt 라이브러리 + 환경변수 + 프로파일 분리 조합
 public class EncryptDBPassword {
-	public static void main(String[] args) {
-		Console console = System.console();
-		// IDE 환경의 콘솔을 사용할 수 없는 경우로 터미널에서 작업
-		if (console == null) {
-			System.exit(1);
-		}
-		
-		// 원하는 마스터 키와 암호화할 비밀번호 평문을 입력
-		// 단, 보안 목적으로 IDE 콘솔창이 아닌 cmd 터미널(명령 프롬프트)에서 실행될 때만 동작
-		String masterKey = new String(console.readPassword("Input master-key"));
-		String plainText = new String(console.readPassword("Input plain text to encrypt"));
-		
-		BasicTextEncryptor encryptor = new BasicTextEncryptor();
-		encryptor.setPassword(masterKey);
-		String encrytedText = encryptor.encrypt(plainText);
-		
-        System.out.println("db.password=ENC(" + encrytedText + ")");
-	}
+    public static void main(String[] args) {
+        Console console = System.console();
+        if (console == null) {
+            System.err.println("콘솔을 사용할 수 없습니다. 터미널에서 실행해주세요.");
+            System.exit(1);
+        }
+
+        String masterKey = new String(console.readPassword("Input master-key: "));
+        String plainText = new String(console.readPassword("Input plain text to encrypt: "));
+
+        if (masterKey.isEmpty() || plainText.isEmpty()) {
+            System.err.println("마스터 키와 평문은 비워둘 수 없습니다.");
+            return;
+        }
+
+        try {
+            // 마스터 키를 SHA-256으로 해시하여 32바이트 키 생성
+            MessageDigest sha = MessageDigest.getInstance("SHA-256");
+            byte[] key = sha.digest(masterKey.getBytes(StandardCharsets.UTF_8));
+            key = Arrays.copyOf(key, 32); // 256비트(32바이트) 키로 조정
+            SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+
+            // AES/ECB/PKCS5Padding으로 암호화
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            byte[] encryptedBytes = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
+
+            // Base64로 인코딩하여 출력
+            String encryptedText = Base64.getEncoder().encodeToString(encryptedBytes);
+            System.out.println("db.password=ENC(" + encryptedText + ")");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 /*
@@ -32,29 +53,8 @@ public class EncryptDBPassword {
 2. Show in Local Terminal
 	: Terminal 선택
 3. 컴파일 명령어
-	: (win) javac -d . -cp ".;C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar" EncryptDBPassword.java
-    : (mac) javac -d . -cp ".:/Users/minjoo/codeStudy/FDSStudy/WEBSITE/src/main/webapp/WEB-INF/lib/jasypt-1.9.3.jar" EncryptDBPassword.java
-    : (mac) javac -d . -cp ".:/Users/ksydata/eclipse-workspace/WEBSITE/src/main/webapp/WEB-INF/lib/jasypt-1.9.3.jar" EncryptDBPassword.java
+	: javac -d . EncryptDBPassword.java
 4. 실행 명령어
-	: (win) java -cp ".;C:\Users\sooyeon Kang\.m2\repository\org\jasypt\jasypt\1.9.3\jasypt-1.9.3.jar" util.EncryptDBPassword
-    : (mac) java -cp ".:/Users/minjoo/codeStudy/FDSStudy/WEBSITE/src/main/webapp/WEB-INF/lib/jasypt-1.9.3.jar" util.EncryptDBPassword
-    : (mac) java -cp ".:/Users/ksydata/eclipse-workspace/WEBSITE/src/main/webapp/WEB-INF/lib/jasypt-1.9.3.jar" util.EncryptDBPassword
+	: java util.EncryptDBPassword
 5. Input master-key & Input plain text to encrypt
-	: db.password=ENC(iyuY71EO0RHCr4XEqHLiXMcusVAkVTYR)
-	
-[에러 메시지]
-EncryptDBPassword.java:4: error: package org.jasypt.util.text does not exist
-import org.jasypt.util.text.BasicTextEncryptor;
-                           ^
-EncryptDBPassword.java:20: error: cannot find symbol
-                BasicTextEncryptor encryptor = new BasicTextEncryptor();
-                ^
-  symbol:   class BasicTextEncryptor
-  location: class EncryptDBPassword
-EncryptDBPassword.java:20: error: cannot find symbol
-                BasicTextEncryptor encryptor = new BasicTextEncryptor();
-                                                   ^
-  symbol:   class BasicTextEncryptor
-  location: class EncryptDBPassword
-3 errors
 */

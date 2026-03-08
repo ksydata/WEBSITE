@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
-
 import util.DatabaseUtil;
 import util.RoleEnum;
+import util.ValidatePassword;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /* 로그인 인증 결과(로직과 메시지를 분리하여 유지보수의 편의성 확보)
   1 : 로그인 / 회원가입 등 작업 성공
@@ -23,6 +25,11 @@ public class UserDAO {
             String role, String address, String residentNumberFront, String residentNumberBack, String gender,
             String college, String major, int admissionYear, String status) {
         
+        // 비밀번호 유효성 검사
+        if (!ValidatePassword.isValidByRegex(userPassword) || !ValidatePassword.isValidById(userID, userPassword)) {
+            return -3; // -3: 비밀번호 정책 위반
+        }
+
         // 이미 해당 아이디가 존재하는지 확인하는 SQL 쿼리
         String checkSQL = "SELECT userID FROM USER WHERE userID = ?";
         
@@ -67,7 +74,7 @@ public class UserDAO {
                 userStatement.setString(1, userID);
                 // 비밀번호는 원칙적으로 평문이 아닌 해시(일방향) 암호화하여 저장하여야 함
                 // e.g. MessageDigest.getInstance("SHA-256") password.getBytes() messageDigest.digest()
-                userStatement.setString(2, userPassword);
+                userStatement.setString(2, hashPassword(userPassword));
                 userStatement.setString(3, email);
                 userStatement.setString(4, name);
                 userStatement.setString(5, phoneNumber);
@@ -152,7 +159,7 @@ public class UserDAO {
             if (resultSet.next()) {
                 String storedPassword = resultSet.getString("userPassword");
                // 아이디, 비밀번호 모두 일치하여 로그인 성공
-                if (storedPassword.equals(userPassword)) {
+                if (storedPassword.equals(hashPassword(userPassword))) {
                 	// 로그인 성공했을 때 사용자 정보 활용
                 	UserDTO user = new UserDTO();
                 	user.setUserID(userID);
@@ -181,6 +188,20 @@ public class UserDAO {
             e.printStackTrace();
             // 데이터베이스 오류 발생
             return null; // return -2;
+        }
+    }
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 algorithm not found", e);
         }
     }
 }

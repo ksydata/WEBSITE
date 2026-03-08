@@ -15,6 +15,9 @@ import dao.mapper.AdminViewMapper;
 
 import dto.UserInfoDTO;
 import util.DatabaseUtil;
+import util.ValidatePassword;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 // [AS-IS] 사용자 로그인 시 아이디로 받아온 학번/사번(userID)으로 DB에 접근하여 사용자 1명의 정보를 UserInfoDTO에 담아 반환
 // [TO-BE] DAO는 단일 책임 원칙 유지하면서 역할과 목적 차이에 따라 쿼리와 매핑 전략으로 분리
@@ -220,7 +223,7 @@ public class UserInfoDAO {
 				// 해당 사번(아이디)에 매칭되는 비밀번호를 변수로 저장
 				String dbPassword = resultSet.getString("userPassword");
 				// 사용자에게 입력받은 비밀번호와 데이터베이스에 저장된 비밀번호 같은지 비교하여 T/F 반환
-				return dbPassword.equals(inputPassword);
+				return dbPassword.equals(hashPassword(inputPassword));
 			}
 		} catch (Exception e) {
 			// 예외 발생 시 에러 메시지 반환
@@ -231,13 +234,16 @@ public class UserInfoDAO {
 	}	
 	
 	// 6. 사용자의 본인 비밀번호 변경
-	public UserInfoDTO updatePassword(String userID, String userPassword) {
+	public UserInfoDTO updatePassword(String userID, String newPassword) {
+        if (!ValidatePassword.isValidByRegex(newPassword) || !ValidatePassword.isValidById(userID, newPassword)) {
+            throw new IllegalArgumentException("새 비밀번호가 정책에 맞지 않습니다.");
+        }
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 비밀번호를 변경하는 SQL 쿼리
 		String updateQuery = "UPDATE USER SET userPassword = ? WHERE userID = ?";
 		
 	    try (Connection connection = DatabaseUtil.getConnection();
 	         PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-			statement.setString(1, userPassword);
+			statement.setString(1, hashPassword(newPassword));
 			statement.setString(2, userID);
 			statement.executeUpdate();
 			
@@ -246,4 +252,18 @@ public class UserInfoDAO {
 		}
 		return null;	    
 	}
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 algorithm not found", e);
+        }
+    }
 }
