@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import service.UserInfoService;
+import util.ValidatePassword;
 
 
 @WebServlet("/userPassword")
@@ -58,8 +59,18 @@ public class UserPWServlet extends HttpServlet {
         	request.getRequestDispatcher("/common/updateMyPassword.jsp").forward(request, response);
         	return ;
         }
-        
-        // iiii. 변경 비밀번호를 DB에 업데이트
+
+        // iv. 새 비밀번호 정책 검증 (ValidatePassword 활용)
+        //     - 8자 이상, 대/소문자·숫자·특수문자 중 3종 이상 조합
+        //     - 아이디 포함 불가
+        if (!ValidatePassword.isValidByRegex(newPassword) || !ValidatePassword.isValidById(userID, newPassword)) {
+            request.setAttribute("error",
+                    "비밀번호 정책을 충족하지 않습니다. (8자 이상, 대/소문자·숫자·특수문자 중 3종 이상 조합, 아이디 포함 불가)");
+            request.getRequestDispatcher("/common/updateMyPassword.jsp").forward(request, response);
+            return;
+        }
+
+        // v. 변경 비밀번호를 DB에 업데이트
         userInfoService.updateUserInfoPW(userID, newPassword);   
         // 비밀번호 변경 완료 후 알림
         request.setAttribute("success", "비밀번호가 성공적으로 변경되었습니다.");
@@ -67,4 +78,3 @@ public class UserPWServlet extends HttpServlet {
 	}
 
 }
-

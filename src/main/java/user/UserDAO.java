@@ -6,13 +6,16 @@ import java.sql.ResultSet;
 import java.sql.Types;
 
 import util.DatabaseUtil;
+import util.PasswordHashUtil;
 import util.RoleEnum;
+import util.ValidatePassword;
 
 /* 로그인 인증 결과(로직과 메시지를 분리하여 유지보수의 편의성 확보)
   1 : 로그인 / 회원가입 등 작업 성공
   0 : 비밀번호 불일치
  -1 : 아이디 없음
  -2 : 데이터베이스 오류
+ -3 : 비밀번호 정책 위반 (형식/아이디 포함/이메일 포함/전화번호 포함/생년월일 포함)
   2 : 이미 존재하는 아이디와 중복값
 */
 
@@ -44,6 +47,35 @@ public class UserDAO {
         Connection connection = null; 
         	// connection 변수 선언 사유: try-with-resources 구문에서 접근할 수 없는 범위에서 객체가 선언되면, 에러 메시지 반환하기 어려움 
 
+        // ── ValidatePassword 검증 ──────────────────────────────────────────────
+        // 1. 형식 검증: 8자 이상 + 대/소문자/숫자/특수문자 중 3종 이상 조합
+        if (!ValidatePassword.isValidByRegex(userPassword)) {
+            return -3;
+        }
+        // 2. 아이디 포함 여부
+        if (!ValidatePassword.isValidById(userID, userPassword)) {
+            return -3;
+        }
+        // 3. 이메일 포함 여부 (이메일이 입력된 경우에만 검사)
+        if (email != null && !email.trim().isEmpty()
+                && !ValidatePassword.isValidByEmail(email, userPassword)) {
+            return -3;
+        }
+        // 4. 전화번호 포함 여부 (전화번호가 입력된 경우에만 검사)
+        if (phoneNumber != null && !phoneNumber.trim().isEmpty()
+                && !ValidatePassword.isValidByPhone(phoneNumber, userPassword)) {
+            return -3;
+        }
+        // 5. 생년월일 포함 여부 (주민등록번호 앞자리가 입력된 경우에만 검사)
+        if (residentNumberFront != null && !residentNumberFront.trim().isEmpty()
+                && !ValidatePassword.isValidByBirthdate(residentNumberFront, userPassword)) {
+            return -3;
+        }
+        // ─────────────────────────────────────────────────────────────────────
+
+        // 비밀번호 SHA-256 해시 (DB에는 평문이 아닌 해시값 저장)
+        String hashedPassword = PasswordHashUtil.hash(userPassword);
+
         // DB 연결 및 쿼리 실행
         try {
         	// connection 초기화
@@ -65,9 +97,8 @@ public class UserDAO {
                 // USER 테이블에 데이터 삽입
                 userStatement = connection.prepareStatement(insertUserSQL);
                 userStatement.setString(1, userID);
-                // 비밀번호는 원칙적으로 평문이 아닌 해시(일방향) 암호화하여 저장하여야 함
-                // e.g. MessageDigest.getInstance("SHA-256") password.getBytes() messageDigest.digest()
-                userStatement.setString(2, userPassword);
+                // 비밀번호는 SHA-256 해시값으로 저장 (PasswordHashUtil.hash() 적용)
+                userStatement.setString(2, hashedPassword);
                 userStatement.setString(3, email);
                 userStatement.setString(4, name);
                 userStatement.setString(5, phoneNumber);
@@ -151,8 +182,8 @@ public class UserDAO {
             
             if (resultSet.next()) {
                 String storedPassword = resultSet.getString("userPassword");
-               // 아이디, 비밀번호 모두 일치하여 로그인 성공
-                if (storedPassword.equals(userPassword)) {
+                // 입력된 비밀번호를 SHA-256 해시한 값과 DB에 저장된 해시값을 비교
+                if (PasswordHashUtil.matches(userPassword, storedPassword)) {
                 	// 로그인 성공했을 때 사용자 정보 활용
                 	UserDTO user = new UserDTO();
                 	user.setUserID(userID);
