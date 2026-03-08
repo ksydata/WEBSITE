@@ -15,6 +15,8 @@ import dao.mapper.AdminViewMapper;
 
 import dto.UserInfoDTO;
 import util.DatabaseUtil;
+import util.PasswordHashUtil;
+import util.ValidatePassword;
 
 // [AS-IS] 사용자 로그인 시 아이디로 받아온 학번/사번(userID)으로 DB에 접근하여 사용자 1명의 정보를 UserInfoDTO에 담아 반환
 // [TO-BE] DAO는 단일 책임 원칙 유지하면서 역할과 목적 차이에 따라 쿼리와 매핑 전략으로 분리
@@ -206,6 +208,17 @@ public class UserInfoDAO {
 	
 	// 5. 사용자의 본인 비밀번호 변경 전 검증
 	public boolean checkCurrentPassword(String userID, String inputPassword) {
+		// ── ValidatePassword 검증 ─────────────────────────────────────────────
+		// 기본 형식 검증: 8자 이상 + 대/소문자/숫자/특수문자 중 3종 이상 조합
+		if (!ValidatePassword.isValidByRegex(inputPassword)) {
+			return false;
+		}
+		// 아이디 포함 여부 검사
+		if (!ValidatePassword.isValidById(userID, inputPassword)) {
+			return false;
+		}
+		// ─────────────────────────────────────────────────────────────────────
+
 		// 비밀번호 변경 전 현재 비밀번호에 대한 확인용 메서드
 		String checkQuery = "SELECT userPassword FROM USER WHERE userID = ?";
 		
@@ -219,8 +232,8 @@ public class UserInfoDAO {
 			if (resultSet.next()) {
 				// 해당 사번(아이디)에 매칭되는 비밀번호를 변수로 저장
 				String dbPassword = resultSet.getString("userPassword");
-				// 사용자에게 입력받은 비밀번호와 데이터베이스에 저장된 비밀번호 같은지 비교하여 T/F 반환
-				return dbPassword.equals(inputPassword);
+				// 입력된 비밀번호를 SHA-256 해시한 값과 DB에 저장된 해시값 비교
+				return PasswordHashUtil.matches(inputPassword, dbPassword);
 			}
 		} catch (Exception e) {
 			// 예외 발생 시 에러 메시지 반환
@@ -234,10 +247,13 @@ public class UserInfoDAO {
 	public UserInfoDTO updatePassword(String userID, String userPassword) {
 		// 학번/사번(userID)으로 나의 개인정보 페이지에서 조회되는 비밀번호를 변경하는 SQL 쿼리
 		String updateQuery = "UPDATE USER SET userPassword = ? WHERE userID = ?";
-		
+
+		// 비밀번호는 SHA-256 해시값으로 저장 (PasswordHashUtil.hash() 적용)
+		String hashedPassword = PasswordHashUtil.hash(userPassword);
+
 	    try (Connection connection = DatabaseUtil.getConnection();
 	         PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-			statement.setString(1, userPassword);
+			statement.setString(1, hashedPassword);
 			statement.setString(2, userID);
 			statement.executeUpdate();
 			
