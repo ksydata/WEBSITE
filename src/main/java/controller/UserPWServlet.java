@@ -15,7 +15,24 @@ import util.ValidatePassword;
 public class UserPWServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	
+
+	private static final String UPDATE_PW_JSP = "/common/info/updateMyPassword.jsp";
+
+	// GET: '나의 비밀번호 변경' 버튼 클릭 시 비밀번호 변경 폼으로 이동
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// 세션에 로그인 정보가 없으면 로그인 페이지로 리다이렉트
+		String userID = (String) request.getSession().getAttribute("userID");
+		if (userID == null) {
+			response.sendRedirect(request.getContextPath() + "/index.jsp");
+			return;
+		}
+
+		// 비밀번호 변경 폼(JSP)으로 포워딩
+		request.getRequestDispatcher(UPDATE_PW_JSP).forward(request, response);
+	}
+
 	// 비밀번호 변경 메서드
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {

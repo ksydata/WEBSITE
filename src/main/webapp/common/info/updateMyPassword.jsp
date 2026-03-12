@@ -51,7 +51,7 @@
 			<!-- 4. 비밀번호 변경 처리: 백엔드(전용서블릿 생성 및 데이터접근 객체 업데이트 쿼리 메서드 추가) -->
 			<div class="text-center mt-4">
 				<button type="submit" class="btn btn-primary">변경</button>
-				<a href="<c:url value='/userInfo' />" class="btn btn-secondary">취소</a>
+				<a href="<c:url value='/index.jsp' />" class="btn btn-secondary">취소</a>
 			</div>
 	</form>
 </div>
