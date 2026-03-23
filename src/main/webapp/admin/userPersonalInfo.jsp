@@ -20,7 +20,7 @@
 	<c:if test="${empty studentInfo}">
     	<script>
         	alert("개인정보를 찾을 수 없습니다.");
-        	window.location.href = "<c:url value='student/main.jsp' />";
+        	window.location.href = "<c:url value='/index.jsp' />";
     	</script>
 	</c:if>
 

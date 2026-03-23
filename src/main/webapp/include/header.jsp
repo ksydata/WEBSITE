@@ -91,7 +91,7 @@
                 <c:if test="${not empty roleEnum and roleEnum.role eq 'admin'}">
                     <li class="nav-item">
                         <%-- [AS-IS] <a class="nav-link" href="<c:url value='/admin/userPersonalInfo'/>">관리자 개인정보 관리</a> --%>
-                        <a class="nav-link" href="<c:url value='/userInfoAdmin'/>">관리자 개인정보 관리</a>
+                        <a class="nav-link" href="<c:url value='/adminUserList'/>">관리자 개인정보 관리</a>
                         
                     </li>
                     <li class="nav-item">
