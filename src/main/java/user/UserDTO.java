@@ -13,6 +13,7 @@ public class UserDTO {
 	// userRole 타입을 RoleEnum으로 변경 
 	// private String userRole;
 	private String userName;
+	private String college;
 	// 문제는 "login 함수(UserDAO)"가 아니라, "login 결과(UserDTO)"를 세션에 저장하는 방식이 틀린 것
 	
 
@@ -52,5 +53,13 @@ public class UserDTO {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getCollege() {
+		return college;
+	}
+
+	public void setCollege(String college) {
+		this.college = college;
 	}
 }

@@ -171,7 +171,9 @@ public class UserDAO {
     public UserDTO login(String userID, String userPassword) {
         // 로그인 SQL 쿼리
         // 각각 사용자명과 계정 유형을 사용자 아이디(학번/사번)을 통해 DB에서 불러옴  
-    	String SQL = "SELECT userPassword, name, role FROM USER WHERE userID = ?";
+    	String SQL = "SELECT u.userPassword, u.name, u.role, p.college " +
+    			     "FROM USER u LEFT JOIN PERSONAL_INFO p ON u.userID = p.userID " +
+    			     "WHERE u.userID = ?";
     		// String SQL = "SELECT userPassword FROM USER WHERE userID = ?";
 
         try (Connection connection = DatabaseUtil.getConnection();
@@ -195,6 +197,7 @@ public class UserDAO {
 //                    user.setUserRole(roleEnum.getRole()); // "student"
                     user.setUserRole(roleEnum); // [TO-BE] fromKorean 정적 메서드를 통해 리턴한 roleEnum을 DTO에 넣음
                     // user.setUserRole(resultSet.getString("role")); // [AS-IS]
+                    user.setCollege(resultSet.getString("college"));
                     
                     // UserDTO 객체를 생성하여 반환하는 형태
                     return user;
